@@ -10,12 +10,19 @@ const NavBar = () => {
             <link rel="stylesheet" type="text/css" href="/assets/css/NavBar.css" />
 
             <div className="Navlogo">
-                <img src="/assets/images/logo.png" alt="Logo" />
+                <Link to="/home">
+                    <img src="/assets/images/logo.png" alt="Logo" />
+                </Link>
             </div>
 
             <div className="nav-buttons">
-                <Button1 text="Dashboard" style={"button1"} />
-                <Button1 text="Explore" style={"button1"} />
+                <Link to="/home">
+                    <Button1 text="Dashboard" style={"button1"} />
+                </Link>
+
+                <Link to="/explore">
+                    <Button1 text="Explore" style={"button1"} />
+                </Link>
             </div>
             <div className="NavProfileImage">
                 <Link to="/profile" >

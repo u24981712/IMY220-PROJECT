@@ -1,7 +1,7 @@
 import React from 'react';
 
 import NavBar from '../components/NavBar';
-import SearchBar from '../components/searchBar';
+import SearchBar from '../components/SearchBar';
 import Button1 from '../components/Button1';
 import ProjectCard from '../components/ProjectCard';
 import Footer from '../components/Footer';
@@ -142,9 +142,7 @@ const Home = () => {
 
             </div>
 
-            <div className="AllProject">
-                <img  />
-                
+            <div className="AllProject">                
                 {tempData.map((data, index) => (
                     <ProjectCard key={index} data={data} />
                 ))}
