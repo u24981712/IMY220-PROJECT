@@ -1,0 +1,120 @@
+:root {
+  --bg: #011a27;
+  --bgLight: #0e2736;
+  --secondary: #017b7e;
+  --accent: #7be3d0;
+  --light: #f5edd8;
+  --bb: #ffffff
+  ;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+.projectCardContainer {
+  color: var(--light);
+  width: 85%;
+  background-color: var(--bgLight);
+  padding: 20px 30px;
+  border-radius: 15px;
+  border: 2px solid var(--secondary);
+  transition: all 0.3s linear;
+  margin: 0 auto;
+}
+
+.projectCardContainer:hover {
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 5px var(--secondary);
+}
+
+.projectcard {
+  background: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 100%);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 16px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.projectCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.projectCardName {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0;
+  flex: 1;
+}
+
+.label {
+  background: #666;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-left: 12px;
+}
+
+.label.public {
+  background: #4caf50;
+}
+
+.label.private {
+  background: #af4c4c;
+}
+
+.projectDescription {
+  color: white;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0 0 20px 0;
+}
+
+.projectCardFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.projectCardStats {
+  display: flex;
+  gap: 20px;
+}
+
+.projectCardItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.projectCardDot {
+  color: var(--light);
+  font-size: 12px;
+}
+
+.projectCardText {
+  color: var(--light);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.projectCardActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dateCreated {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+}

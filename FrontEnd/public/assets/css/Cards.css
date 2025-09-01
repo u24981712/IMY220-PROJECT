@@ -1,0 +1,60 @@
+.cards-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-content: center;
+  align-items: stretch;
+  text-align: center;
+  gap: 29px;
+  margin: 0 auto;
+  max-width: 100%;
+  padding: 20px;
+}
+
+.card {
+  background-color: var(--bg);
+  width: 300px;
+  /* border: 1px solid var(--light); */
+  padding: 10px 40px;
+  text-align: center;
+  border-radius: 10px;
+  margin-top: 50px;
+  box-shadow: 0 0 0px 2px var(--light), 0 3px 10px 3px var(--bgLight);
+  transition: all 0.5s ease;
+}
+
+.card-image {
+  height: 130px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+}
+
+.card-title {
+  font-family: "Montserrat", italic, sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  margin: 10px 0;
+}
+
+.card-description {
+  font-family: "Poppins", sans-serif;
+  font-weight: 200;
+  margin: 0 0 20px 0; /* Bottom margin only */
+  font-size: 14px;
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  align-items: center; /* Centers text vertically */
+  justify-content: center; /* Centers text horizontally */
+}
+
+.card * {
+  margin: 20px 0;
+}
+
+.card:hover {
+  scale: 1.05;
+  gap: 25px;
+  transform: translateY(-5px);
+  transition: all 0.3s ease;
+  box-shadow: 0 0 0px 2px var(--accent);
+}

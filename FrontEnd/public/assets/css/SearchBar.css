@@ -1,0 +1,90 @@
+:root {
+  --bg: #011a27;
+  --bgLight: #0a2231;
+  --secondary: #017b7e;
+  --accent: #7be3d0;
+  --light: #f5edd8;
+  --BACKWIDTH: 500px;
+}
+
+.searchBarContainer {
+  display: grid;
+  grid-template-columns: 15fr 1fr;
+  justify-content: left;
+  margin-left: 100px;
+}
+
+input[placeholder="Search..."] {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  width: 95%;
+  height: 20px;
+  border: 2px solid var(--light);
+  padding: 10px;
+  background-color: var(--light);
+  color: var(--bg);
+  border-radius: 50px 0 0 50px;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+  margin-left: 20px;
+  margin-right: 30px;
+}
+
+input[placeholder="Search..."]:focus {
+  border-color: var(--light);
+  background-color: var(--bgLight);
+  color: var(--light);
+  box-shadow: 0 0 1px var(--accent);
+}
+
+button[className="SearchButton"] {
+  /* position: absolute;
+  right: 50px;
+  top: 0; */
+  transform: translateY(-50%);
+  background-color: var(--secondary);
+  border: none;
+  color: var(--light);
+  padding: 10px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  transition: all 0.3s ease;
+}
+
+/************** DROPDOWNS **************/
+
+.HomePageDropDowns {
+  display: flex;
+  gap: 15px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dropdown {
+  padding: 10px 15px;
+  background-color: var(--bgLight);
+  border: 2px solid var(--secondary);
+  border-radius: 15px;
+  color: var(--light);
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  cursor: pointer;
+  min-width: 300px;
+  transition: all 0.3s ease;
+}
+
+.dropdown:hover {
+  border-color: var(--accent);
+  background-color: var(--bg);
+}
+
+.dropdown:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(123, 227, 208, 0.2);
+}
