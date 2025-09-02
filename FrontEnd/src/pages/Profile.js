@@ -4,9 +4,23 @@ import Button1 from "../components/Button1";
 import ProjectCard from "../components/ProjectCard";
 import Footer from "../components/Footer";
 
-import { tempData, profileImage } from "./Home"
+// import { profileImage } from "../pages/LogIn"
 
 const Profile = () => {
+
+    const username = localStorage.getItem("username");
+
+    const [Repositories, setRepositories] = useState([]);
+
+    useEffect(() => {
+        fetch('http://localhost:8000/getRepos')
+            .then(res => {
+                return res.json();
+            }).then(data => {
+                setRepositories(data);
+            })
+    }, []);
+
     return (
         <>
             <NavBar />
@@ -33,7 +47,7 @@ const Profile = () => {
                                 <div className="stat-label">Following</div>
                             </div>
                             <div className="stat">
-                                <div className="stat-number">{tempData.length}</div>
+                                {/* <div className="stat-number">{dummydata.length}</div> */}
                                 <div className="stat-label">Repos</div>
                             </div>
                         </div>
@@ -68,14 +82,14 @@ const Profile = () => {
                             <span>📚</span>
                             Popular Repositories
                         </h2>
-                        <div className="activity-grid">
-                            {tempData
-                                .filter(data => data.downloads > 100 && data.Label == "Public")
+                        {/* <div className="activity-grid">
+                            {dummydata
+                                .filter(data => data.downloads > 800 && data.Label == "Public")
                                 .map((data, index) => (
                                     <ProjectCard key={index} data={data} />
                                 ))
                             }
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="section">

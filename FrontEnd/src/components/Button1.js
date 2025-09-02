@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Button1 = ({ text ,style }) => {
+const Button1 = ({ text ,style , toggle }) => {
     return (
         <>
             <link rel="stylesheet" type="text/css" href="/assets/css/Button.css" />
 
-            <button className={style}>
+            <button onClick={toggle} className={style}>
                 {text}
             </button>
         </>

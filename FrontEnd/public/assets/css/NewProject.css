@@ -1,0 +1,103 @@
+:root {
+  --bg: #011a27;
+  --bgLight: #0a2231;
+  --secondary: #017b7e;
+  --accent: #7be3d0;
+  --light: #f5edd8;
+  --red: #dd3e3e;
+  --redOutline: #e37b7b;
+}
+
+.newProjectModal {
+  font-family: "Montserrat";
+  color: var(--light);
+  width: 80%;
+  background-color: #0a2231;
+  border-radius: 20px;
+  border: 2px solid var(--accent);
+  margin: 30px auto;
+  padding: 10px 20px;
+  box-shadow: 0 0 2px var(--accent);
+}
+
+.newProjectModal h2 {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  margin-left: 20px;
+}
+
+.NewProjectBtns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 20px auto;
+  justify-content: center;
+  width: 20%;
+}
+
+.NewProjectInputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-weight: 600;
+  color: var(--light);
+}
+
+.input-group input,
+.input-group textarea,
+.input-group select {
+  background-color: var(--bgLight);
+  padding: 12px;
+  border: 2px solid var(--secondary);
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+  color: var(--light);
+}
+
+.input-group input:focus,
+.input-group textarea:focus,
+.input-group select:focus {
+  outline: none;
+  border-color: var(--accent);
+  color: var(--light);
+  box-shadow: 0 0 0 1px var(--secondary);
+}
+
+.input-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.input-group select {
+  background-color: var(--bgLight);
+  cursor: pointer;
+  color: var(--light);
+}
+
+.preview {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #017b7e;
+}
+
+.preview h4 {
+  margin: 0 0 10px 0;
+  color: #017b7e;
+}
+
+.preview p {
+  margin: 5px 0;
+  color: #555;
+}

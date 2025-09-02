@@ -273,3 +273,16 @@ body {
   top: 10px;
   left: 10px;
 }
+
+
+/*** ERROR MESSAGE ***/
+
+.errorSpan{
+  color: red;
+  text-align: center;
+}
+
+.validSpan{
+  color: rgb(115, 255, 0);
+  text-align: center;
+}

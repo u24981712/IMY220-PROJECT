@@ -15,7 +15,7 @@ const SignUp = () => {
 
             <div className='BackBTN'>
                 <Link to="/">
-                    <Button1 text={"Home"} style={"button4"} />
+                    <Button1 text={"Home"} style={"button3"} />
                 </Link>
             </div>
 
@@ -88,7 +88,7 @@ const SignUp = () => {
                 </div>
 
                 <div className="signup-prompt">
-                    Already have an account? <Link to="/login" className="signup-link">Sign in</Link>
+                    Already have an account? <Link to="/login" className="signup-link"> Sign in</Link>
                 </div>
             </div>
         </>

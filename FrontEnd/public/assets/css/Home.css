@@ -94,16 +94,49 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
   gap: 20px;
-  padding: 20px 80px;  
+  padding: 20px 80px;
   margin: 0 auto;
   /* border: 2px solid red ; */
 }
 
+/******* Loadmore ********/
 
-/******* Loadmore ********/ 
-
-.Loadmore{
+.Loadmore {
   display: flex;
   justify-content: center;
   margin: 30px 0;
 }
+
+/******** MODAL *********/
+
+.newProjectContainer {
+  position: fixed;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.281);
+  width: 100%;
+  height: 100vh;
+}
+
+.Loading {
+  /* position: absolute; */
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 50px;
+  text-align: center;
+  color: var(--light);
+  animation: flash 2s infinite linear alternate;
+}
+
+@keyframes flash {
+  0%{
+    opacity: 1;
+  }
+  50%{
+    opacity: 0.5;
+  }
+  100%{
+    opacity: 1;
+  }
+
+}
+

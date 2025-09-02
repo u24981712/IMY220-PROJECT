@@ -1,0 +1,55 @@
+.not-found-container {
+  min-height: 100vh;
+  background: var(--bgLight);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: "Poppins", sans-serif;
+}
+
+.not-found-content {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 40px 50px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(122, 227, 208, 0.1);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+}
+
+.errorNumber {
+  font-size: 100px;
+  font-weight: 900;
+  margin: 0;
+  color: var(--accent);
+  text-shadow: 0 0 30px rgba(123, 227, 208, 0.4);
+  line-height: 1;
+}
+
+.errorTitle {
+  font-size: 15px;
+  color: var(--light);
+  font-weight: 600;
+}
+
+.errorDescription {
+  color: var(--light);
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  opacity: 0.9;
+}
+
+.NotFoundButtonContainer {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.NotFoundHomeButton {
+  text-decoration: none;
+} 

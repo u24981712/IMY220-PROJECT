@@ -3,9 +3,17 @@ import NavBar from "../components/NavBar";
 import ProjectCard from "../components/ProjectCard";
 import SearchBar from "../components/SearchBar";
 
-import { data } from "../components/data"
-
 const Explore = () => {
+    const [Repositories, setRepositories] = useState([]);
+
+    useEffect(() => {
+        fetch('http://localhost:8000/getRepos')
+            .then(res => {
+                return res.json();
+            }).then(data => {
+                setRepositories(data);
+            })
+    }, []);
 
     return (
         <>
@@ -43,9 +51,9 @@ const Explore = () => {
                 </div>
 
                 <div className="ExplorePageProjects">
-                    {data.map((d, index) => (
+                    {Repositories && Repositories.map((data, index) => (
                         <div key={index} >
-                            <ProjectCard data={d} />
+                            <ProjectCard data={data} />
                         </div>
                     ))}
                 </div>

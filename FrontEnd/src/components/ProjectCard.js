@@ -1,7 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Button1 from "../components/Button1"
+import { Link } from "react-router-dom";
 
-const ProjectCard = ({ data }) => {
+const ProjectCard = ({ data, pos }) => {
+
+    // const [repository, setRepository] = useState(null);
+    // const [loading, setLoading] = useState(true);
+
+    // useEffect(() => {
+    //     fetch('http://localhost:8000/getRepos')
+    //         .then(res => res.json())
+    //         .then(data => {
+
+    //             if (Array.isArray(data) && data[pos]) {
+    //                 setRepository(data[pos]);
+    //             }
+    //             setLoading(false);
+    //         })
+    //         .catch(error => {
+    //             console.error('Error fetching repos:', error);
+    //             setLoading(false);
+    //         });
+    // }, [pos]);
+
+    // if (loading) {
+    //     return <div className="Loading">Loading...</div>;
+    // }
+
     return (
         <div className="projectCardContainer">
             <link rel="stylesheet" type="text/css" href="/assets/css/ProjectCard.css" />
@@ -22,7 +47,7 @@ const ProjectCard = ({ data }) => {
                 <div className="projectCardStats">
                     <div className="projectCardItem">
                         <span className="projectCardDot">●</span>
-                        <span className="projectCardText">file no. {data.fileNo}</span>
+                        <span className="projectCardText">file no. {data.files.length}</span>
                     </div>
                     <div className="projectCardItem">
                         <span className="projectCardDot">●</span>
@@ -36,7 +61,9 @@ const ProjectCard = ({ data }) => {
 
                 <div className="projectCardActions">
                     <div className="projectCardButtons">
-                        <Button1 text="OPEN" style="button4" />
+                        <Link to={`/project/${pos}`}>
+                            <Button1 text="OPEN" style="button4" />
+                        </Link>
                         <Button1 text="Share" style="button4" />
                     </div>
                     <span className="dateCreated">{data.dateCreated}</span>

@@ -19,7 +19,7 @@
   box-shadow: 0 -10px 50px var(--secondary);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 100;
 }
 
 .Navlogo img {

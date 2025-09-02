@@ -54,7 +54,7 @@ body {
 }
 
 .label {
-  background: #666;
+  background: var(--accent);
   color: white;
   padding: 4px 12px;
   border-radius: 12px;

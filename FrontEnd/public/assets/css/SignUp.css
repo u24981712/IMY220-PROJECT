@@ -4,16 +4,17 @@
   --secondary: #017b7e;
   --accent: #7be3d0;
   --light: #f5edd8;
+  --BH: 400px;
 }
 
 .mesh-wrap {
   position: absolute;
   inset: 0;
-  z-index: -15;
+  /* z-index: -15; */
   pointer-events: none;
   display: block;
   overflow: hidden;
-  /* height: 100vh; */
+  height: 100vh;
 }
 
 .mesh-layer {
@@ -43,48 +44,42 @@
 @keyframes floatAround {
   0%,
   100% {
-    top: 80%;
-    left: 0%;
+    top: 15%;
+    left: 10%;
   }
   25% {
-    top: 20%;
-    left: 40%;
+    top: 75%;
+    left: 70%;
   }
   50% {
-    top: 60%;
-    left: 80%;
+    top: 30%;
+    left: 90%;
   }
   75% {
-    top: 40%;
-    left: 20%;
+    top: 85%;
+    left: 25%;
   }
 }
 
 @keyframes floatAroundReverse {
   0%,
   100% {
-    top: -20%;
-    left: 100%;
+    top: 90%;
+    left: 85%;
   }
   25% {
-    top: 40%;
-    left: 60%;
+    top: 10%;
+    left: 15%;
   }
   50% {
-    top: 0%;
-    left: 20%;
+    top: 70%;
+    left: 5%;
   }
   75% {
-    top: 20%;
-    left: 80%;
+    top: 45%;
+    left: 95%;
   }
 }
-
-/* * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-} */
 
 body {
   font-family: "Poppins", sans-serif;
@@ -258,10 +253,9 @@ input[id="firstName"] {
   text-decoration: underline;
 }
 
-
 /**** BackBTN *****/
 
-.BackBTN{
+.BackBTN {
   position: absolute;
   top: 10px;
   left: 10px;

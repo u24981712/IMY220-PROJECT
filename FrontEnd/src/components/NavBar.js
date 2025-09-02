@@ -2,9 +2,11 @@ import React from 'react';
 
 import Button1 from '../components/Button1';
 import { Link } from 'react-router-dom';
-import { profileImage } from "../pages/Home"
 
 const NavBar = () => {
+
+    const profileImage = localStorage.getItem("profileImage") || "";
+    
     return (
         <nav className="navbar">
             <link rel="stylesheet" type="text/css" href="/assets/css/NavBar.css" />
