@@ -12,6 +12,7 @@ const Explore = () => {
                 return res.json();
             }).then(data => {
                 setRepositories(data);
+                console.log(data);
             })
     }, []);
 

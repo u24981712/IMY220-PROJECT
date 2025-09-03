@@ -7,6 +7,7 @@ import Profile from './pages/Profile';
 import Explore from './pages/Explore';
 import Project from './pages/Project';
 import NotFound from './components/NotFound';
+import SingleFile from './components/SingleFile';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // const router = createBrowserRouter([
@@ -45,8 +46,9 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/explore" element={<Explore />} />
-        <Route path="/project/:id" element={<Project />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/project/:projectName" element={<Project />} />
+        <Route path="/file/:fileName" element={<SingleFile />} />
+        <Route path="/*" element={<NotFound />} />
       </Routes>
 
     </BrowserRouter>

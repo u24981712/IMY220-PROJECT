@@ -57,14 +57,15 @@ const NewProject = ({ toggle }) => {
                             value={projectData.description}
                             onChange={handleInputChange}
                             rows="4"
+                            maxLength="120"
                         />
                     </div>
 
                     <div className="input-group">
                         <label htmlFor="visibility">Visibility *</label>
                         <select
-                            id="visibility"
-                            name="visibility"
+                            id="Label"
+                            name="Label"
                             value={projectData.Label}
                             onChange={handleInputChange}
                         >

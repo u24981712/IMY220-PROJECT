@@ -4,6 +4,8 @@
   --secondary: #017b7e;
   --accent: #7be3d0;
   --light: #f5edd8;
+  --red: #dd3e3e;
+  --redOutline: #e37b7b;
 }
 
 * {
@@ -21,6 +23,7 @@ body {
 .profileContainer {
   display: grid;
   grid-template-columns: 350px 1fr;
+  grid-template-rows: auto auto;
   gap: 30px;
   padding: 30px;
   max-width: 1400px;
@@ -28,11 +31,30 @@ body {
   min-height: 100vh;
 }
 
-/* Profile Sidebar */
 .profile-sidebar {
-  position: sticky;
+  /* position: sticky; */
   top: 30px;
   height: fit-content;
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.main-content {
+  overflow-y: auto;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.friendsContainer {
+  grid-column: 1 / span 2;
+  grid-row: 2;
+  width: 100%;
+  height: fit-content;
+  padding: 20px 40px;
+  background-color: var(--bgLight);
+  border-radius: 20px;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 2px 2px var(--secondary);
 }
 
 .profile-card {
@@ -59,9 +81,9 @@ body {
   position: relative;
 }
 
-.avatarImage{
-    position: absolute;
-    width: 100%;
+.avatarImage {
+  position: absolute;
+  width: 100%;
 }
 
 .username {
@@ -125,10 +147,6 @@ body {
   font-size: 14px;
   color: var(--light);
   opacity: 0.9;
-}
-
-.main-content {
-  overflow-y: auto;
 }
 
 .section {
@@ -255,3 +273,124 @@ body {
   transform: scale(1.05);
 }
 
+.buttonOut {
+  background-color: var(--red);
+  border: none;
+  width: 220px;
+  color: var(--light);
+  padding: 10px 0px;
+  text-align: center;
+  text-overflow: none;
+  border-radius: 50px;
+  text-decoration: none;
+  display: inline;
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.buttonOut:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  scale: 0.8;
+  opacity: 0.3;
+}
+
+.LogoutBTN {
+  display: flex;
+  justify-self: center;
+  margin: 20px auto;
+}
+
+.buttonEdit {
+  background-color: var(--bg);
+  border: 2px solid var(--accent);
+  width: 100px;
+  color: var(--light);
+  padding: 10px 0px;
+  text-align: center;
+  text-overflow: none;
+  border-radius: 50px;
+  text-decoration: none;
+  display: inline;
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.3s ease;
+  margin: 10px 0;
+}
+
+.buttonEdit:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  scale: 0.8;
+  opacity: 0.3;
+}
+
+.friendsTitle {
+  color: var(--light);
+  font-size: 24px;
+  text-align: center;
+  gap: 10px;
+  font-family: "Montserrat";
+  font-weight: 700;
+}
+
+.friendsDivider {
+  width: 99%;
+  height: 4px;
+  background-color: var(--light);
+  border-radius: 2px;
+  margin: 20px auto;
+}
+
+.friendsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.friendCard {
+  background-color: var(--bg);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  font-family: "Poppins";
+  font-weight: 300;
+  transition: all 0.3s ease-in;
+}
+
+.friendCard:hover {
+  box-shadow: 0 0 2px var(--secondary);
+}
+
+.friendAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--secondary);
+  transition: all 0.25s ease-in-out;
+}
+
+.friendAvatar:hover {
+  border-radius: 20%;
+  object-fit: cover;
+  background-color: var(--accent);
+}
+
+.friendInfoo h4 {
+  color: var(--light);
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}

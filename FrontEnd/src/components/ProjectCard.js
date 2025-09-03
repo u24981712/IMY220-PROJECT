@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Button1 from "../components/Button1"
 import { Link } from "react-router-dom";
 
-const ProjectCard = ({ data, pos }) => {
+const ProjectCard = ({ data, projectName }) => {
 
     // const [repository, setRepository] = useState(null);
     // const [loading, setLoading] = useState(true);
@@ -61,7 +61,7 @@ const ProjectCard = ({ data, pos }) => {
 
                 <div className="projectCardActions">
                     <div className="projectCardButtons">
-                        <Link to={`/project/${pos}`}>
+                        <Link to={`/project/${data.projectName}`}>
                             <Button1 text="OPEN" style="button4" />
                         </Link>
                         <Button1 text="Share" style="button4" />

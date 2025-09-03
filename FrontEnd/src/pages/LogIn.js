@@ -28,6 +28,8 @@ const LogIn = () => {
 
             localStorage.setItem("username", user.email);
 
+            localStorage.setItem("homeLink", "Home");
+
             localStorage.setItem("profileImage", user.profileImage || "");
 
             navigate('/home');

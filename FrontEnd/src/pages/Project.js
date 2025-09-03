@@ -1,22 +1,35 @@
 import React, { useState, useEffect } from "react"
 import NavBar from "../components/NavBar"
 import Button1 from "../components/Button1"
-import { useParams } from "react-router-dom";
+import SingleFile from "../components/SingleFile";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import Messages from "../components/Messages";
+import ProfileViewer from "../components/ProfileViewer";
 
 const Project = () => {
 
+    const navigate = useNavigate();
 
-    const { id } = useParams();
+    const handleGoBack = () => {
+        navigate(-1);
+    };
+
+    const email = localStorage.getItem("username");
+
+    const profileImage = localStorage.getItem("profileImage") || "";
+
+    const { projectName } = useParams();
 
     const [repository, setRepository] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [repoData, setSearchQuery] = useState({});
 
     useEffect(() => {
-        fetch('http://localhost:8000/getRepos/:' + id)
+        fetch('http://localhost:8000/getRepo/' + projectName)
             .then(res => res.json())
             .then(data => {
 
-                setRepository(data[id]);
+                setRepository(data);
 
                 setLoading(false);
             })
@@ -24,9 +37,8 @@ const Project = () => {
                 console.error('Error fetching repos:', error);
                 setLoading(false);
             });
-    }, [id]);
+    }, [projectName]);
 
-    // const [ repoData, setSearchQuery ] = useState({});
 
     // repoData = dummydata[id];
 
@@ -57,11 +69,18 @@ const Project = () => {
             <div className="IndivProjectContainer">
 
                 <div className="ProjectInfoHeader">
-                    <p className={`label ${repository.Label.toLowerCase()}`}>
-                        {repository.Label}
-                    </p>
-                    <h2 className="projectCardName">{repository.projectName}</h2>
+                    <div>
+                        <p className={`label ${repository.Label.toLowerCase()}`}>
+                            {repository.Label}
+                        </p>
+                        <h2 className="projectCardName">{repository.projectName}</h2>
+                    </div>
+
+                    <div className="GoBackBTN">
+                        <Button1 toggle={handleGoBack} text={"Go Back"} style={"buttonBack"} />
+                    </div>
                 </div>
+
 
                 <div className="horintalLine">
                 </div>
@@ -72,31 +91,42 @@ const Project = () => {
                         <Button1 text={"Download Files"} style={"DownloadFiles"} />
                     </div>
                     <div className="addfiles">
-                        <Button1 text={"Add Files"} style={"addFiles"} />
+                        <Button1 text={"Add Files"} style={"DownloadFiles"} />
                     </div>
                 </div>
 
-                <div className="fileContainer">
+                <div className="fileGrid">
 
-                    {repository.files.map((file, index) => (
+                    <div className="fileContainer">
+                        {repository.files.map((file, index) => (
 
-                        <div key={index} className="singleFiles">
-                            <div>
-                                {file.includes('/') ? '📁' : '📄'}{file}
+                            <div key={index} className="singleFiles">
+                                <div>
+                                    {file.includes('/') ? '📁' : '📄'}
+                                    <Link to={`/file/${file}`}>{file}</Link>
+                                </div>
+                                <div>
+                                    2025-09-02
+                                </div>
                             </div>
-                            <div>
-                                2025-09-02
+                        ))}
+                    </div>
+
+                    <div className="MessagesContainer">
+                        {repository.messages.map((messages, index) => (
+                            <div className="SingleMessage" key={index}>
+                                <Messages messages={messages} />
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
-
             </div>
 
+            <div className="ProjectOwner">
+                {email == repository.email ? <h1>THIS OWENER</h1> : <ProfileViewer />}
+            </div>
         </>
     )
-
 }
-
 
 export default Project;

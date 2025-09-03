@@ -24,15 +24,18 @@ const Home = () => {
         console.log("****** SAVED ******")
     }
 
+
     useEffect(() => {
 
-        fetch('http://localhost:8000/getRepos')
-        .then(res => {
-            return res.json();
-        }).then(data => {
-            setData(data);
-            // console.log(data);
-        })
+        const email = localStorage.getItem("username");
+
+        fetch('http://localhost:8000/getRepos/' + email)
+            .then(res => {
+                return res.json();
+            }).then(data => {
+                setData(data);
+                // console.log(data);
+            })
 
         if (repoModal) {
             document.body.style.overflow = 'hidden';
@@ -48,6 +51,7 @@ const Home = () => {
     return (
         <>
             <link rel="stylesheet" type="text/css" href="/assets/css/Home.css" />
+
             {repoModal ? <div className="newProjectContainer">
                 <NewProject toggle={toggleModal} />
             </div> : ''}
@@ -104,7 +108,7 @@ const Home = () => {
 
             <div className="AllProject">
                 {Repositories && Repositories.map((data, index) => (
-                    <ProjectCard key={index} data={data} pos={index} />
+                    <ProjectCard key={data.projectName} data={data} pos={index} />
                 ))}
             </div>
 
