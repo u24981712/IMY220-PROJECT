@@ -24,7 +24,8 @@
   align-items: start;
 }
 .footer-logo img {
-  width: 70px;
+  width: 140px;
+  margin-right: 50px;
 }
 
 .footer-left {

@@ -23,9 +23,9 @@
 }
 
 .Navlogo img {
-    height: 30px;
-    width: auto;
-    margin-left:10px ;
+  height: 30px;
+  width: auto;
+  margin-left: 50px;
 }
 
 .nav-buttons {
@@ -63,7 +63,6 @@
   transform: scale(0.8);
   box-shadow: 0 0 20px var(--accent);
 }
-
 
 .NavProfileImage:hover img {
   transform: scale(1.1);

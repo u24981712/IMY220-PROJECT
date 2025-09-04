@@ -110,7 +110,7 @@ const SplashPage = () => {
 
             <nav className='NAV'>
                 <div className="logo">
-                    <img src="/assets/images/logo.png" alt="Logo" />
+                    <img src="/assets/images/codex.png" alt="Logo" />
                 </div>
 
                 <Link to="/login">
