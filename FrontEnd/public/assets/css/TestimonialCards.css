@@ -33,7 +33,7 @@
 
 .testimonial {
   position: absolute;
-  left: max(calc(400px * 8), 100%);
+  left: calc(400px * 8);
   width: 400px;
   height: 200px;
   background: var(--bgLight);
@@ -42,7 +42,7 @@
   backdrop-filter: blur(10px);
   border: 1px solid var(--light);
   animation-name: scrollLeft;
-  animation-duration: 72s;
+  animation-duration: 64s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }

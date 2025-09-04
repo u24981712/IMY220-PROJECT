@@ -9,6 +9,7 @@ import Project from './pages/Project';
 import NotFound from './components/NotFound';
 import SingleFile from './components/SingleFile';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ExploreFeatures from './pages/ExploreFeatures';
 
 // const router = createBrowserRouter([
 //   {
@@ -46,6 +47,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/explore" element={<Explore />} />
+        <Route path="/explorefeatures" element={<ExploreFeatures />} />
         <Route path="/project/:projectName" element={<Project />} />
         <Route path="/file/:fileName" element={<SingleFile />} />
         <Route path="/*" element={<NotFound />} />

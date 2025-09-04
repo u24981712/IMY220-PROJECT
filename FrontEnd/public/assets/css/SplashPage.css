@@ -151,7 +151,6 @@ body {
   font-family: "Montserrat", italic, sans-serif;
 }
 
-
 .LovedDevelopers {
   font-size: 50px;
   line-height: 30px;
@@ -208,4 +207,47 @@ body {
 .CTAbtns {
   margin-top: 60px;
   text-align: center;
+}
+
+.ShowExampleContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  background-color: #00020655;
+  backdrop-filter: blur(50px);
+}
+
+.ShowExample {
+  margin: auto auto;
+}
+
+.closeBTN {
+  position: absolute;
+  top: 28%;
+  right: 17%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: rgb(220, 68, 68);
+  padding: 5px;
+  margin: auto auto;
+  border: none;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.closeBTN:hover {
+  background-color: rgb(200, 48, 48);
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.closeBTN:active {
+  transform: scale(0.95);
 }

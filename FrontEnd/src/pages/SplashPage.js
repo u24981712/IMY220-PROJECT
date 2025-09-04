@@ -4,6 +4,7 @@ import Button1 from '../components/Button1';
 import Cards from '../components/Cards';
 import Footer from '../components/Footer';
 import TestimonialCards from '../components/TestimonialCards';
+import ProjectCard from '../components/ProjectCard';
 
 const SplashPage = () => {
     const reasons =
@@ -44,7 +45,38 @@ const SplashPage = () => {
         },
     ];
 
+    const exampleProject = {
+        "email": "xxxxx@example.com",
+        "projectName": "Project Name",
+        "Label": "Private",
+        "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
+        "dateCreated": "2024-09-03",
+        "commits": "31",
+        "collabs": "8",
+        "downloads": 456,
+        "shares": 312,
+        "files": [
+            "src/",
+            "components/",
+            "store/",
+            "assets/",
+            "ProductList.vue",
+            "ShoppingCart.vue",
+            "Checkout.vue",
+            "main.js",
+            "package.json"
+        ],
+        "messages": [
+            {
+                "editor": "jane.smith@example.com",
+                "message": "Optimized shopping cart performance with Vuex",
+                "dateEditted": "2024-09-06"
+            }
+        ]
+    }
+
     const [testimonials, setTestimonials] = useState([]);
+    const [ShowExample, setShowExample] = useState(false);
 
     useEffect(() => {
 
@@ -55,8 +87,12 @@ const SplashPage = () => {
                 setTestimonials(data.testimonials);
                 // console.log(data.testimonials);
             })
-        
+
     }, []);
+
+    const toggleShowExample = () => {
+        setShowExample(!ShowExample);
+    }
 
 
     return (
@@ -95,8 +131,13 @@ const SplashPage = () => {
             </div>
 
             <div className="callToActionBtns">
-                <Button1 text="Start Exploring" style={"button2"} />
-                <Button1 text="Explore Features" style={"button1"} />
+                <Link to="/login">
+                    <Button1 text="Start Exploring" style={"button2"} />
+                </Link>
+
+                <Link to="/explorefeatures">
+                    <Button1 text="Explore Features" style={"button1"} />
+                </Link>
             </div>
 
             <div className='SECTION1'>
@@ -130,7 +171,11 @@ const SplashPage = () => {
                     <Link to="/signup">
                         <Button1 text="Create Account" style={"button3"} />
                     </Link>
-                    <Button1 text="See Examples" style={"button4"} />
+
+                    <Link >
+                        <Button1 toggle={toggleShowExample} text="See Examples" style={"button4"} />
+                    </Link>
+
                 </div>
 
             </div>
@@ -138,6 +183,13 @@ const SplashPage = () => {
             <div className='Footer'>
                 <Footer />
             </div>
+
+            {ShowExample ? <div className='ShowExampleContainer'>
+                <Button1 toggle={toggleShowExample} text={"x"} style={"closeBTN"} />
+                <div className='ShowExample'>
+                    <ProjectCard data={exampleProject} />
+                </div>
+            </div> : ""}
         </div>
     );
 };

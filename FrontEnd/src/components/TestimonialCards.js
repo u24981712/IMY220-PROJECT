@@ -10,7 +10,7 @@ const TestimonialCards = ({ testimonials }) => {
             <link rel="stylesheet" type="text/css" href="/assets/css/TestimonialCards.css" />
 
             <div className="testimonials-container">
-                {testimonials.slice(0, 10).map((testimonial, index) => (
+                {testimonials.slice(0, 8).map((testimonial, index) => (
                     <div className={`testimonial testimonial${index + 1}`} key={index}>
                         <p className="testimonial-description">{testimonial.description}</p>
 
