@@ -5,6 +5,8 @@
   --accent: #7be3d0;
   --light: #f5edd8;
   --BH: 400px;
+  --red: #dd3e3e;
+  --redOutline: #e37b7b;
 }
 
 .mesh-wrap {
@@ -131,6 +133,7 @@ body {
   font-size: 32px;
   font-weight: 300;
   margin-bottom: 8px;
+  margin-top: 0;
   text-align: center;
   letter-spacing: 1px;
 }
@@ -146,7 +149,7 @@ body {
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 15px;
   width: 100%;
 }
 
@@ -259,4 +262,140 @@ input[id="firstName"] {
   position: absolute;
   top: 10px;
   left: 10px;
+}
+
+.passwordInfo {
+  position: absolute;
+  top: 35px;
+  right: 25px;
+  background-color: var(--light);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  text-align: center;
+  align-items: center;
+  padding: 10px;
+  font-size: 22px;
+  margin: auto auto;
+}
+
+.passwordSuggest {
+  position: absolute;
+  bottom: 100%;
+  right: 10%;
+  z-index: 100;
+  background: var(--bgLight);
+  border: 2px solid var(--secondary);
+  border-radius: 12px;
+  padding: 20px;
+  width: fit-content;
+  height: fit-content;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(123, 227, 208, 0.1);
+  backdrop-filter: blur(10px);
+  animation: slideInFade 0.3s ease-out;
+  font-family: "Poppins", sans-serif;
+}
+
+@keyframes slideInFade {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.passwordSuggest h3 {
+  margin: 0 0 16px 0;
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 8px 0;
+}
+
+.suggestion-item:last-of-type {
+  margin-bottom: 16px;
+}
+
+.suggestion-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.suggestion-item p {
+  margin: 0;
+  color: var(--light);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.suggestion-item strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.example-passwords {
+  background: rgba(1, 123, 126, 0.1);
+  border: 1px solid rgba(123, 227, 208, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 16px;
+}
+
+.example-title {
+  margin: 0 0 8px 0;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.example-passwords code {
+  background: rgba(1, 26, 39, 0.6);
+  color: var(--light);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: "Poppins";
+  font-size: 12px;
+  margin: 0 4px;
+  border: 1px solid rgba(123, 227, 208, 0.3);
+}
+.password-input-container {
+  position: relative;
+  display: inline-block;
+}
+
+.passdontmatch {
+  font-family: "Poppins";
+  color: var(--red);
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+  width: fit-content;
+  margin: 0 auto;
+  justify-content: center;
+  padding: 10px;
+}
+
+.passdontmatch::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  margin: 0 auto;
+  background-color: var(--red);
 }

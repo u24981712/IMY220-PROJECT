@@ -31,12 +31,12 @@ const NewProject = ({ toggle }) => {
             <link rel="stylesheet" type="text/css" href="/assets/css/NewProject.css" />
 
             <div className="newProjectModal">
-                <h2>Add New Repositories</h2>
+                <h2>Add New Project</h2>
 
                 <div className="NewProjectInputs">
                     {/* Repository Name Input */}
                     <div className="input-group">
-                        <label htmlFor="repoName">Repository Name *</label>
+                        <label htmlFor="repoName">Project Name *</label>
                         <input
                             id="repoName"
                             name="repoName"
@@ -76,7 +76,7 @@ const NewProject = ({ toggle }) => {
 
                     <div className="preview">
                         <h4>Preview:</h4>
-                        <p>Repo Name: {projectData.repoName}</p>
+                        <p>Project Name: {projectData.repoName}</p>
                         <p>Description: {projectData.description}</p>
                         <p>Visibility: {projectData.Label}</p>
                     </div>

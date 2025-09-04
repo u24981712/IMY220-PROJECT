@@ -145,10 +145,12 @@ body {
 /* Section 3 */
 
 .SECTION3 {
-  padding: 100px;
+  /* padding: 10px; */
+  margin-bottom: 30px;
   text-align: center;
   font-family: "Montserrat", italic, sans-serif;
 }
+
 
 .LovedDevelopers {
   font-size: 50px;
@@ -156,6 +158,8 @@ body {
   font-family: "Montserrat", italic, sans-serif;
   font-weight: 900;
   font-style: italic;
+  width: 100%;
+  position: relative;
 }
 
 /* Call-To-Action Section */

@@ -10,6 +10,7 @@ import Footer from '../components/Footer';
 const Home = () => {
 
     const [Repositories, setData] = useState([]);
+    const [user, setUser] = useState({});
     const [repoModal, setRepoModal] = useState(false);
 
     const toggleModal = () => {
@@ -35,6 +36,14 @@ const Home = () => {
             }).then(data => {
                 setData(data);
                 // console.log(data);
+            })
+
+        fetch('http://localhost:8000/getUser/' + email)
+            .then(res => {
+                return res.json();
+            }).then(data => {
+                setUser(data);
+                console.log(data);
             })
 
         if (repoModal) {
@@ -68,7 +77,7 @@ const Home = () => {
 
             <div className="homePage">
                 <div className='welcomeMessage'>
-                    <h1>Welcome </h1>
+                    <h1>Welcome {user.name} </h1>
                     <p>Let's build something amazing</p>
                 </div>
                 <div className='BTNsearchBar'>

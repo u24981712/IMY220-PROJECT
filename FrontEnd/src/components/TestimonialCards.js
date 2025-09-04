@@ -2,15 +2,16 @@ import React from "react";
 
 const TestimonialCards = ({ testimonials }) => {
 
-    const duplicatedTestimonials = [...testimonials, ...testimonials];
+    // const duplicatedTestimonials = [...testimonials, ...testimonials];
 
     return (
+        
         <div className="testimonials-wrapper">
             <link rel="stylesheet" type="text/css" href="/assets/css/TestimonialCards.css" />
 
             <div className="testimonials-container">
-                {duplicatedTestimonials.map((testimonial, index) => (
-                    <div className="testimonial" key={index}>
+                {testimonials.slice(0, 10).map((testimonial, index) => (
+                    <div className={`testimonial testimonial${index + 1}`} key={index}>
                         <p className="testimonial-description">{testimonial.description}</p>
 
                         <div className="testimonial-inner-card">
@@ -18,7 +19,7 @@ const TestimonialCards = ({ testimonials }) => {
 
                             <div className="testimonial-nameAndTile">
                                 <p>{testimonial.name}</p>
-                                <h2>{testimonial.tile}</h2>
+                                <h2>{testimonial.title}</h2>
                             </div>
                         </div>
                     </div>

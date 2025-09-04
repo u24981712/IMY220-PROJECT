@@ -4,7 +4,7 @@ import Button1 from "../components/Button1"
 import SingleFile from "../components/SingleFile";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Messages from "../components/Messages";
-import ProfileViewer from "../components/ProfileViewer";
+import ProfilePreview from "../components/ProfilePreview";
 
 const Project = () => {
 
@@ -21,26 +21,43 @@ const Project = () => {
     const { projectName } = useParams();
 
     const [repository, setRepository] = useState(null);
+
+    const [repoUser, setRepoUser] = useState(null);
+
     const [loading, setLoading] = useState(true);
-    const [repoData, setSearchQuery] = useState({});
+    // const [repoData, setSearchQuery] = useState({});
+
+    const [showProfile, setShowProfile] = useState(false);
+
+    const toggleShowProfile = () => {
+        setShowProfile(!showProfile);
+    }
+
+
 
     useEffect(() => {
-        fetch('http://localhost:8000/getRepo/' + projectName)
-            .then(res => res.json())
-            .then(data => {
+        const fetchData = async () => {
+            try {
 
-                setRepository(data);
+                const repoResponse = await fetch('http://localhost:8000/getRepo/' + projectName);
+                const repoData = await repoResponse.json();
+                setRepository(repoData);
 
+                const userResponse = await fetch('http://localhost:8000/getUser/' + repoData.email);
+                const userData = await userResponse.json();
+                setRepoUser(userData);
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
                 setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error fetching repos:', error);
-                setLoading(false);
-            });
-    }, [projectName]);
+            }
+        };
+
+        fetchData();
+    }, [projectName]); // Add projectName as dependency
 
 
-    // repoData = dummydata[id];
 
     // const handleInputChange = (e) => {
     //     setSearchQuery(e.target.value);
@@ -59,7 +76,6 @@ const Project = () => {
     if (loading) {
         return <div className="Loading">Loading...</div>;
     }
-
 
     return (
         <>
@@ -122,9 +138,19 @@ const Project = () => {
                 </div>
             </div>
 
-            <div className="ProjectOwner">
-                {email == repository.email ? <h1>THIS OWENER</h1> : <ProfileViewer />}
-            </div>
+            <button onClick={toggleShowProfile} className="ProfileViewerCard">
+                <div className="ProfileViewerAvatar" >
+                    <img src={repoUser.profileImage} />
+                </div>
+                <div className="ProfileViewerInfo">
+                    <p>Project Owner: {repoUser.email} </p>
+                </div>
+            </button>
+
+            {showProfile ?
+                <div className="ProjectOwner">
+                    <ProfilePreview className="ProjectOwnerPreview" toggle={toggleShowProfile} profile={repoUser} />
+                </div> : ""}
         </>
     )
 }

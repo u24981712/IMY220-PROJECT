@@ -5,6 +5,8 @@
   --accent: #7be3d0;
   --light: #f5edd8;
   --BACKWIDTH: 500px;
+  --red: #dd3e3e;
+  --redOutline: #e37b7b;
 }
 
 .button1 {
@@ -110,7 +112,7 @@
   margin: 0 5px;
 }
 
-.button1::after{
+.button1::after {
   content: "";
   position: absolute;
   left: -100%;
@@ -122,13 +124,13 @@
   z-index: -1;
 }
 
-.button1:hover{
+.button1:hover {
   color: var(--bg);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border: 2px solid rgba(0, 0, 0, 0);
 }
 
-.button1:hover::after{
+.button1:hover::after {
   left: 0;
 }
 
@@ -157,7 +159,7 @@
 .button1:active,
 .button2:active,
 .button3:active,
-.button4:active{
+.button4:active {
   transform: translateY(0);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   scale: 0.8;
@@ -183,7 +185,7 @@
   transition: all 0.3s ease;
 }
 
-.button0:active{
+.button0:active {
   transform: translateY(0);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   scale: 0.8;

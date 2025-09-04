@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Button1 from '../components/Button1';
 import Cards from '../components/Cards';
@@ -44,44 +44,20 @@ const SplashPage = () => {
         },
     ];
 
-    const testimonials = [
-        {
-            name: "Njabulo Nhlengethwa",
-            tile: "Senior Full-Stack Developer",
-            description: "CodeX transformed how our team collaborates. Real-time editing and instant feedback make development so much smoother.",
-            image: ""
-        },
-        {
-            name: "Thabo Seripe",
-            tile: "Frontend Engineer",
-            description: "The syntax highlighting is gorgeous, and the community is incredibly helpful. Found solutions to problems I've been stuck on for days.",
-            image: ""
-        },
-        {
-            name: "Karabo Matsile",
-            tile: "Senior Full-Stack Developer",
-            description: "CodeX transformed how our team collaborates. Real-time editing and instant feedback make development so much smoother.",
-            image: ""
-        },
-        {
-            name: "Senamile Shabangu",
-            tile: "Backend Developer",
-            description: "The debugging tools in CodeX are exceptional. I can trace issues faster than ever before, and the integrated terminal saves me tons of time.",
-            image: ""
-        },
-        {
-            name: "Owen Julies",
-            tile: "DevOps Engineer",
-            description: "CodeX's deployment integration is seamless. One-click deployments and environment management have revolutionized our workflow.",
-            image: ""
-        },
-        {
-            name: "Senamile Shabangu",
-            tile: "Mobile Developer",
-            description: "Cross-platform development became effortless with CodeX. The code completion and error detection are incredibly accurate.",
-            image: ""
-        }
-    ]
+    const [testimonials, setTestimonials] = useState([]);
+
+    useEffect(() => {
+
+        fetch('http://localhost:8000/testimonials')
+            .then(res => {
+                return res.json();
+            }).then(data => {
+                setTestimonials(data.testimonials);
+                // console.log(data.testimonials);
+            })
+        
+    }, []);
+
 
     return (
         <div className="splash-page">
@@ -102,7 +78,7 @@ const SplashPage = () => {
                 </div>
 
                 <Link to="/login">
-                    <Button1 text="Sign In" style={"button1"}/>
+                    <Button1 text="Sign In" style={"button1"} />
                 </Link>
 
                 <Link to="/signup">

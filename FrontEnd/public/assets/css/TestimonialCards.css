@@ -1,11 +1,26 @@
-/* Testimonials Infinite Scroll Styles */
+:root {
+  --bg: #011a27;
+  --bgLight: #0a2231;
+  --secondary: #017b7e;
+  --accent: #7be3d0;
+  --light: #f5edd8;
+  --BACKWIDTH: 500px;
+}
+
 .testimonials-wrapper {
-  /* overflow: hidden; */
-  width: 100%;
-  /* border: 2px solid red; */
+  /* width: 100%;
   height: 240px;
-  padding: 40px 10px;
+  padding: 40px 10px; */
+}
+
+.testimonials-container {
   position: relative;
+  /* border: 1px solid red; */
+  padding: 10px;
+  width: 100%;
+  margin: 0 auto;
+  align-items: center;
+  height: 250px;
   mask-image: linear-gradient(
     to right,
     rgba(0, 0, 0, 0),
@@ -13,25 +28,69 @@
     rgba(0, 0, 0, 1) 90%,
     rgba(0, 0, 0, 0)
   );
-}
-
-.testimonials-container {
-  display: flex;
-  gap: 2rem;
-  position: relative;
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 
 .testimonial {
-  position: relative;
-  left: -10%;
-  min-width: 250px;
-  flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.1);
+  position: absolute;
+  left: max(calc(400px * 8), 100%);
+  width: 400px;
+  height: 200px;
+  background: var(--bgLight);
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 20px;
   backdrop-filter: blur(10px);
   border: 1px solid var(--light);
+  animation-name: scrollLeft;
+  animation-duration: 72s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes scrollLeft {
+  to {
+    left: -100%;
+  }
+}
+
+.testimonial1 {
+  animation-delay: 0s;
+}
+
+.testimonial2 {
+  animation-delay: -8s;
+}
+
+.testimonial3 {
+  animation-delay: -16s;
+}
+
+.testimonial4 {
+  animation-delay: -24s;
+}
+
+.testimonial5 {
+  animation-delay: -32s;
+}
+
+.testimonial6 {
+  animation-delay: -40s;
+}
+
+.testimonial7 {
+  animation-delay: -48s;
+}
+
+.testimonial8 {
+  animation-delay: -56s;
+}
+
+.testimonial8 {
+  animation-delay: -64s;
+}
+
+.testimonial8 {
+  animation-delay: -72s;
 }
 
 .testimonial-inner-card {

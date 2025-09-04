@@ -11,8 +11,11 @@ const Explore = () => {
             .then(res => {
                 return res.json();
             }).then(data => {
-                setRepositories(data);
-                console.log(data);
+
+                const newData = data.filter((data) => data.Label === "Public" )
+
+                setRepositories(newData);
+                // console.log(newData);
             })
     }, []);
 
@@ -22,7 +25,7 @@ const Explore = () => {
 
             <NavBar />
             <div className="ExplorePage">
-                <h1>EXPLORE PAGE</h1>
+                <h2 className="LETSEXPLORE" >Let's <span>X</span>plore!</h2>
 
                 <div className="ExplorePageSearchBar">
                     <SearchBar />
@@ -35,11 +38,6 @@ const Explore = () => {
                         <option value="Shared">Sort by Most Shared</option>
                         <option value="Downloads">Sort by Most Downloads</option>
                         <option value="Alphabetical">Sort Alphabetically</option>
-                    </select>
-
-                    <select className="dropdown" defaultValue="Private">
-                        <option value="Private">Private</option>
-                        <option value="Public">Public</option>
                     </select>
 
                     <select className="dropdown" defaultValue="All Time">

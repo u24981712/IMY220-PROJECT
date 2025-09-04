@@ -179,10 +179,57 @@ body {
   padding: 10px 20px;
 }
 
+.ProfileViewerCard {
+  display: grid;
+  grid-template-columns: 1fr 8fr;
+  gap: 16px;
+  background-color: var(--bgLight);
+  border-radius: 15px;
+  padding: 15px 40px;
+  position: relative;
+  width: fit-content;
+  border: 2px solid var(--light);
+  margin: 10px auto;
+  height: fit-content;
+  align-items: center;
+  transition: all 0.3s ease-in;
+  scale: 0.8;
+}
+.ProfileViewerCard:hover {
+  scale: 0.82;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 var(--secondary);
+}
 
-.ProjectOwner{
-  width: 200px;
-  height: 200px;
+.ProfileViewerCard:active {
+  scale: 0.75;
+  opacity: 0.4;
+}
+
+.ProfileViewerAvatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--secondary);
+  transition: all 0.25s ease-in-out;
+}
+
+.friendAvatar:hover {
+  border-radius: 20%;
+  object-fit: cover;
+  background-color: var(--accent);
+}
+
+.ProfileViewerInfo p {
+  font-family: "Poppins";
+  font-weight: 200;
+}
+
+.ProfileViewerInfo p {
+  color: var(--light);
+  font-size: 25px;
+  margin: 0;
 }
 
 .ProjectMessage {
@@ -275,4 +322,30 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   scale: 0.8;
   opacity: 0.3;
+}
+.ProjectOwner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.441);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+
+}
+
+.ProjectOwnerPreview {
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+
+  margin: 20px;
 }
