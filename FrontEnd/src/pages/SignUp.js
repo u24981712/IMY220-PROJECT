@@ -37,7 +37,7 @@ const SignUp = () => {
 
     useEffect(() => {
 
-        fetch('http://localhost:8000/getEmails')
+        fetch('/getEmails')
             .then(res => {
                 return res.json();
             }).then(data => {
@@ -129,7 +129,7 @@ const SignUp = () => {
 
     const handleSignUp = () => {
 
-        fetch('http://localhost:8000/signup', {
+        fetch('/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -40,7 +40,7 @@ const LogIn = () => {
     };
 
     useEffect(() => {
-        fetch('http://localhost:8000/getUsers')
+        fetch('/getUsers')
             .then(res => {
                 return res.json();
             }).then(data => {

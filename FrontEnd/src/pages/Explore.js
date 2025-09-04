@@ -7,7 +7,7 @@ const Explore = () => {
     const [Repositories, setRepositories] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:8000/getRepos')
+        fetch('/getRepos')
             .then(res => {
                 return res.json();
             }).then(data => {

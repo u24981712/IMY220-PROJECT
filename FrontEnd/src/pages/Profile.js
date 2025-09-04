@@ -39,7 +39,7 @@ const Profile = () => {
     useEffect(() => {
         try {
 
-            fetch('http://localhost:8000/getRepos/' + email)
+            fetch('/getRepos/' + email)
                 .then(res => {
                     return res.json();
                 }).then(data => {
@@ -47,7 +47,7 @@ const Profile = () => {
                     // console.log(data);
                 });
 
-            fetch('http://localhost:8000/getUser/' + email)
+            fetch('/getUser/' + email)
                 .then(res => {
                     return res.json();
                 }).then(data => {

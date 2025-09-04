@@ -8,6 +8,7 @@
     "watch": "webpack -w"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "path": "^0.12.7",
     "prop-types": "^15.8.1",

@@ -2,30 +2,7 @@ import React, { useState, useEffect } from "react";
 import Button1 from "../components/Button1"
 import { Link } from "react-router-dom";
 
-const ProjectCard = ({ data, projectName }) => {
-
-    // const [repository, setRepository] = useState(null);
-    // const [loading, setLoading] = useState(true);
-
-    // useEffect(() => {
-    //     fetch('/getRepos')
-    //         .then(res => res.json())
-    //         .then(data => {
-
-    //             if (Array.isArray(data) && data[pos]) {
-    //                 setRepository(data[pos]);
-    //             }
-    //             setLoading(false);
-    //         })
-    //         .catch(error => {
-    //             console.error('Error fetching repos:', error);
-    //             setLoading(false);
-    //         });
-    // }, [pos]);
-
-    // if (loading) {
-    //     return <div className="Loading">Loading...</div>;
-    // }
+const ExampleProjectCard = ({ data }) => {
 
     return (
         <div className="projectCardContainer">
@@ -61,9 +38,9 @@ const ProjectCard = ({ data, projectName }) => {
 
                 <div className="projectCardActions">
                     <div className="projectCardButtons">
-                        <Link to={`/project/${data.projectName}`}>
-                            <Button1 text="OPEN" style="button4" />
-                        </Link>
+                        
+                        <Button1 text="OPEN" style="button4" />
+
                         <Button1 text="Share" style="button4" />
                     </div>
                     <span className="dateCreated">{data.dateCreated}</span>
@@ -73,4 +50,4 @@ const ProjectCard = ({ data, projectName }) => {
     )
 }
 
-export default ProjectCard;
+export default ExampleProjectCard;

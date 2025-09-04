@@ -30,7 +30,7 @@ const Home = () => {
 
         const email = localStorage.getItem("username");
 
-        fetch('http://localhost:8000/getRepos/' + email)
+        fetch('/getRepos/' + email)
             .then(res => {
                 return res.json();
             }).then(data => {
@@ -38,7 +38,7 @@ const Home = () => {
                 // console.log(data);
             })
 
-        fetch('http://localhost:8000/getUser/' + email)
+        fetch('/getUser/' + email)
             .then(res => {
                 return res.json();
             }).then(data => {

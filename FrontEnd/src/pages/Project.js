@@ -39,11 +39,11 @@ const Project = () => {
         const fetchData = async () => {
             try {
 
-                const repoResponse = await fetch('http://localhost:8000/getRepo/' + projectName);
+                const repoResponse = await fetch('/getRepo/' + projectName);
                 const repoData = await repoResponse.json();
                 setRepository(repoData);
 
-                const userResponse = await fetch('http://localhost:8000/getUser/' + repoData.email);
+                const userResponse = await fetch('/getUser/' + repoData.email);
                 const userData = await userResponse.json();
                 setRepoUser(userData);
 

@@ -4,7 +4,7 @@ import Button1 from '../components/Button1';
 import Cards from '../components/Cards';
 import Footer from '../components/Footer';
 import TestimonialCards from '../components/TestimonialCards';
-import ProjectCard from '../components/ProjectCard';
+import ExampleProjectCard from '../components/ExampleProjectCard';
 
 const SplashPage = () => {
     const reasons =
@@ -80,7 +80,7 @@ const SplashPage = () => {
 
     useEffect(() => {
 
-        fetch('http://localhost:8000/testimonials')
+        fetch('/testimonials')
             .then(res => {
                 return res.json();
             }).then(data => {
@@ -187,7 +187,7 @@ const SplashPage = () => {
             {ShowExample ? <div className='ShowExampleContainer'>
                 <Button1 toggle={toggleShowExample} text={"x"} style={"closeBTN"} />
                 <div className='ShowExample'>
-                    <ProjectCard data={exampleProject} />
+                    <ExampleProjectCard data={exampleProject} />
                 </div>
             </div> : ""}
         </div>
