@@ -283,8 +283,38 @@ body {
   border-bottom: var(--light);
   padding: 15px;
   display: grid;
-  grid-template-columns: 5fr 1fr;
+  grid-template-columns: 9fr 1fr 1fr;
   border-bottom: 2px solid var(--light);
+  position: relative;
+}
+
+.creationDate{
+  text-align: left;
+  margin: auto auto;
+}
+
+.more_vert{
+  text-align: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+
+.showEditOptions{
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  right: 5%;
+  width: fit-content;
+  height: fit-content;
+  border-radius: 10px;
+  background-color: var(--light);
+  color: var(--bgLight);
+  padding: 15px;
+  font-weight: 400;
+  font-family: "Poppins";
+  border: 2px solid var(--bgLight);
+  box-shadow: 0 0 15px var(--bg);
 }
 
 .ProjectInfoHeader {

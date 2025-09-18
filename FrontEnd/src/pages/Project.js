@@ -33,6 +33,22 @@ const Project = () => {
         setShowProfile(!showProfile);
     }
 
+    const [showEditOptions, setShowEditOptions] = useState([]);
+
+    const toggleShowEditOptions = (index) => {
+
+        console.log("FILE INDEX :" + index);
+
+        // setShowEditOptions(!showEditOptions[index]);
+        setShowEditOptions( prev => {
+            let newOptionsArray = [...prev];
+
+            newOptionsArray[index] = !newOptionsArray[index]; 
+
+            return newOptionsArray;
+        });
+    }
+
 
 
     useEffect(() => {
@@ -55,7 +71,17 @@ const Project = () => {
         };
 
         fetchData();
-    }, [projectName]); // Add projectName as dependency
+
+        // PROJECT NAME USED AS A DEPENDENCY FOR EACH PROJECT
+    }, [projectName]);
+
+
+    useEffect(() => {
+        if (repository && repository.files) {
+            setShowEditOptions(new Array(repository.files.length).fill(false));
+        }
+    }, [repository]);
+
 
 
 
@@ -121,9 +147,20 @@ const Project = () => {
                                     {file.includes('/') ? '📁' : '📄'}
                                     <Link to={`/file/${file}`}>{file}</Link>
                                 </div>
-                                <div>
+                                <div className="creationDate">
                                     2025-09-02
                                 </div>
+                                <span onClick={() => toggleShowEditOptions(index)} className="more_vert material-symbols-outlined">
+                                    more_vert
+                                </span>
+
+                                {showEditOptions[index] ?
+                                    <div onMouseLeave={() => toggleShowEditOptions(index)} className="showEditOptions">
+
+                                    <p>DELETE {file.includes('/') ? "FOLDER" : "FILE"}</p>
+                                    </div> : ''
+                                    // SHOW SETTING RELATED OPTIONS FOR THE SPECTIFIC FILE
+                                }
                             </div>
                         ))}
                     </div>

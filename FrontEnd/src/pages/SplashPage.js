@@ -109,33 +109,57 @@ const SplashPage = () => {
             </div>
 
             <nav className='NAV'>
-                <div className="logo">
+                <div data-aos="fade-down" data-aos-duration="1000" className="logo">
                     <img src="/assets/images/codex.png" alt="Logo" />
                 </div>
 
-                <Link to="/login">
-                    <Button1 text="Sign In" style={"button1"} />
+                <Link data-aos="fade-down" data-aos-duration="2000" to="/login">
+                    <Button1 data-aos="fade-down" data-aos-duration="2000" text="Sign In" style={"button1"} />
                 </Link>
 
-                <Link to="/signup">
+                <Link data-aos="fade-down" data-aos-duration="3000" to="/signup">
                     <Button1 text="Get Started" style={"button2"} />
                 </Link>
 
             </nav>
 
             <div className="heroSection">
-                <h1>Share Code.</h1>
-                <h1>Build Together.</h1>
-                <h1>Create Magic.</h1>
-                <p>Where developers connect, collaborate, and create.Join thousands already building together.</p>
+                <h1 data-aos="fade-zoom-in"
+                    data-aos-easing="ease-in-back"
+                    data-aos-delay="300"
+                    data-aos-offset="0" 
+                    data-aos-duration="2000">Share Code.</h1>
+                <h1 data-aos="fade-zoom-in"
+                    data-aos-easing="ease-in-back"
+                    data-aos-delay="300"
+                    data-aos-offset="0" 
+                    data-aos-duration="2500">Build Together.</h1>
+                <h1 data-aos="fade-zoom-in"
+                    data-aos-easing="ease-in-back"
+                    data-aos-delay="300"
+                    data-aos-offset="0" 
+                    data-aos-duration="3000">Create Magic.</h1>
+                <p data-aos="fade-zoom-in"
+                    data-aos-easing="ease-in-back"
+                    data-aos-delay="300"
+                    data-aos-offset="0" 
+                    data-aos-duration="3000">Where developers connect, collaborate, and create.Join thousands already building together.</p>
             </div>
 
             <div className="callToActionBtns">
-                <Link to="/login">
+                <Link data-aos="fade-zoom-in"
+                    data-aos-easing="ease-in-back"
+                    data-aos-delay="300"
+                    data-aos-offset="0" 
+                    data-aos-duration="3000" to="/login">
                     <Button1 text="Start Exploring" style={"button2"} />
                 </Link>
 
-                <Link to="/explorefeatures">
+                <Link data-aos="fade-zoom-in"
+                    data-aos-easing="ease-in-back"
+                    data-aos-delay="300"
+                    data-aos-offset="0" 
+                    data-aos-duration="3000" to="/explorefeatures">
                     <Button1 text="Explore Features" style={"button1"} />
                 </Link>
             </div>
