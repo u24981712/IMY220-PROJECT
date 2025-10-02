@@ -5,6 +5,9 @@
   --accent: #7be3d0;
   --light: #f5edd8;
   --BACKWIDTH: 500px;
+  --red: #dd3e3e;
+  --success: #70dd3e;
+
 }
 
 body {
@@ -17,8 +20,92 @@ body {
   padding: 10px 50px;
 }
 
-.ProjectInfoHeader {
+.projectBanner {
+  position: relative;
+  width: 100%;
+  height: fit-content;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background-color: var(--bgLight);
+  backdrop-filter: blur(15px);
+  overflow: hidden;
+  border: 2px solid #017c7eb7;
+  box-shadow: 0 0 5px #017c7e58;
+  color: var(--light);
 }
+
+.updateBannerForm {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.bannerImage {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  object-position: center;
+  box-sizing: border-box;
+}
+
+.message.error {
+  color: var(--red);
+}
+
+.message.success {
+  color: var(--success);
+  text-align: right;
+}
+
+.noProjectBanner span {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--light);
+}
+
+.noProjectBanner span.recommendedDimension {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* .noProjectBanner div {
+    margin: 0 auto;
+    } */
+
+.noProjectBanner {
+  display: flex;
+  flex-direction: column;
+  color: var(--bgLight);
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.imageform {
+  margin: 10px 0;
+
+}
+
+.imageLabel {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: var(--bg);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.imageLabel:hover {
+  background-color: var(--secondary);
+}
+
+.imageInput {
+  display: none;
+}
+
+.ProjectInfoHeader {}
 
 .label {
   background: var(--accent);
@@ -195,6 +282,7 @@ body {
   transition: all 0.3s ease-in;
   scale: 0.8;
 }
+
 .ProfileViewerCard:hover {
   scale: 0.82;
   border: 2px solid var(--accent);
@@ -256,6 +344,20 @@ body {
   background-color: var(--light);
 }
 
+.noCheckins {
+  font-family: "Poppins";
+  font-size: 20px;
+  color: var(--accent);
+  width: 100%;
+}
+
+.noProjectFiles {
+  font-family: "Poppins";
+  font-size: 20px;
+  margin: 200px auto;
+  text-align: center;
+}
+
 .ProjectMessage {
   grid-column: 1 / span 2;
   grid-row: 1;
@@ -288,19 +390,18 @@ body {
   position: relative;
 }
 
-.creationDate{
+.creationDate {
   text-align: left;
   margin: auto auto;
 }
 
-.more_vert{
+.more_vert {
   text-align: center;
   align-items: center;
   cursor: pointer;
 }
 
-
-.showEditOptions{
+.showEditOptions {
   position: absolute;
   z-index: 10;
   top: 0;
@@ -353,6 +454,7 @@ body {
   scale: 0.8;
   opacity: 0.3;
 }
+
 .ProjectOwner {
   position: fixed;
   top: 0;
@@ -367,8 +469,6 @@ body {
   overflow: hidden;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-
-
 }
 
 .ProjectOwnerPreview {
@@ -376,6 +476,52 @@ body {
   width: 90%;
   max-height: 80vh;
   overflow-y: auto;
-
   margin: 20px;
+}
+
+.projectDelete {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background: var(--bgLight); */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+}
+
+.modal {
+  background: var(--secondary);
+  border-radius: 8px;
+  padding: 24px;
+  width: fit-content;
+  max-width: 90vw;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modalContent p {
+  margin: 0 0 24px 0;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.modalButtons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  justify-content: center;
 }

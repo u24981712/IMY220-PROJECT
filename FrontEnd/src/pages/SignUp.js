@@ -18,6 +18,7 @@ const SignUp = () => {
         "https://api.dicebear.com/9.x/adventurer/svg?seed=Caleb",
         "https://api.dicebear.com/9.x/adventurer/svg?seed=Mason",
     ]
+
     const randomIndex = Math.floor(Math.random() * 10);
 
     const [newUser, setNewUser] = useState({
@@ -32,7 +33,9 @@ const SignUp = () => {
         "skills": {
             "programmingLanguages": [],
             "technologies": []
-        }
+        },
+        "followers": [],
+        "following": []
     });
 
     useEffect(() => {
@@ -42,6 +45,7 @@ const SignUp = () => {
                 return res.json();
             }).then(data => {
                 setCodeXUsers(data);
+                // console.log(data);
             })
     }, [])
 
@@ -54,9 +58,10 @@ const SignUp = () => {
     const [passwordLength, setPasswordLength] = useState(false);
 
     const [passwordEmpty, setPasswordEmpty] = useState(false);
-    
+
     const [userExists, setUserExists] = useState(false);
 
+    // GET DATABASE USER-EMAILS AND CHECK IF USER EMAIL ALREADY EXIST
     const userVerification = () => {
 
         const exists = CodeXUsers.includes(newUser.email);
@@ -67,12 +72,13 @@ const SignUp = () => {
 
         } else {
 
+            // IF IT DOESN'T EXIST, VERIFY PASSWORD
             passwordVerification();
+
             setUserExists(false)
 
             // console.log("Exists", exists)
         }
-
     }
 
     const passwordVerification = () => {
@@ -121,6 +127,7 @@ const SignUp = () => {
             setPasswordMatch(false)
             setPasswordCharacter(false);
 
+            // IF USER DOESN'T EXIST AND PASSWORDS IS SUFFICIENT, ADD USER TO THE DATA BASE
             handleSignUp();
         }
     }
@@ -136,9 +143,13 @@ const SignUp = () => {
             },
             body: JSON.stringify(newUser)
         })
+            .then(res => res.json())
             .then(res => {
-                if (!res.ok) {
-                    throw new Error('Signup failed');
+                if (res.message === "User already exist") {
+
+                    console.log(res.message);
+
+                    throw new Error('User already exists');
                 }
 
                 localStorage.setItem("username", newUser.email);
@@ -153,7 +164,9 @@ const SignUp = () => {
                 console.log('User created:', data);
             })
             .catch(error => {
-                console.error('Error:', error);
+                // console.error('Error:', error);
+                setUserExists(true);
+
             });
 
     }
@@ -255,7 +268,10 @@ const SignUp = () => {
                         <span onMouseEnter={() => setIsHovered(true)}
                             onMouseLeave={() => setIsHovered(false)}
                             className="passwordInfo material-symbols-outlined">
-                            info
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                            </svg>
+
 
                             {isHovered ?
                                 <div className='passwordSuggest'>
@@ -298,7 +314,7 @@ const SignUp = () => {
                         {passwordCharacter ? <p className='passdontmatch'>Passwords Must Have Atleast One Special character</p> : ""}
                         {passwordLength ? <p className='passdontmatch'>Passwords Is Too Short</p> : ""}
                         {passwordEmpty ? <p className='passdontmatch'>Passwords Can Not Be Empty</p> : ""}
-                        {userExists ? <p className='passdontmatch'>User Already Exist</p> : ""}
+                        {userExists ? <p className='passdontmatch'>User Already Exist. Try Logging In</p> : ""}
 
                     </div>
 

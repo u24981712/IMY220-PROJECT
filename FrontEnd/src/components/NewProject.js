@@ -1,30 +1,14 @@
 import React, { useState } from "react"
 import Button1 from "./Button1";
 
-const NewProject = ({ toggle }) => {
+const NewProject = ({ handlePorpulatingNewProject, toogleProjectNameExists, projectNameExists, newProject, handleSaveNewProject, toggle }) => {
 
     const [RepoName, setRepoName] = useState("");
     const [RepoLabel, setRepoLabel] = useState("Private");
 
-    const [projectData, setProjectData] = useState({
-        repoName: '',
-        description: '',
-        Label: 'Public',
-        dateCreated: "",
-        commits: 0,
-        collabs: 0,
-        downloads: 0,
-        shares: 0,
-        files: []
-    });
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setProjectData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
+    // const handleInputChange = (e) => {
+    //     console.log(e)
+    // };
 
     return (
         <div className="newProjectContainer">
@@ -37,13 +21,17 @@ const NewProject = ({ toggle }) => {
                     {/* Repository Name Input */}
                     <div className="input-group">
                         <label htmlFor="repoName">Project Name *</label>
+                        {projectNameExists ? <span className="projectNameCheck"> Project name already exist</span> : null}
                         <input
-                            id="repoName"
-                            name="repoName"
+                            id="projectName"
+                            name="projectName"
                             type="text"
                             placeholder="Enter repository name"
-                            value={projectData.repoName}
-                            onChange={handleInputChange}
+                            value={newProject.projectName}
+                            onChange={(e) => {
+                                handlePorpulatingNewProject(e.target.name, e.target.value);
+                                toogleProjectNameExists(false);
+                            }}
                             required
                         />
                     </div>
@@ -54,8 +42,8 @@ const NewProject = ({ toggle }) => {
                             id="description"
                             name="description"
                             placeholder="Describe your project..."
-                            value={projectData.description}
-                            onChange={handleInputChange}
+                            value={newProject.description}
+                            onChange={(e) => handlePorpulatingNewProject(e.target.name, e.target.value)}
                             rows="4"
                             maxLength="120"
                         />
@@ -66,8 +54,8 @@ const NewProject = ({ toggle }) => {
                         <select
                             id="Label"
                             name="Label"
-                            value={projectData.Label}
-                            onChange={handleInputChange}
+                            value={newProject.Label}
+                            onChange={(e) => handlePorpulatingNewProject(e.target.name, e.target.value)}
                         >
                             <option value="Public">Public</option>
                             <option value="Private">Private</option>
@@ -76,14 +64,14 @@ const NewProject = ({ toggle }) => {
 
                     <div className="preview">
                         <h4>Preview:</h4>
-                        <p>Project Name: {projectData.repoName}</p>
-                        <p>Description: {projectData.description}</p>
-                        <p>Visibility: {projectData.Label}</p>
+                        <p>Project Name: {newProject.projectName}</p>
+                        <p>Description: {newProject.description}</p>
+                        <p>Visibility: {newProject.Label}</p>
                     </div>
                 </div>
 
                 <div className="NewProjectBtns">
-                    <Button1 text={"Save"} style={"button4"} />
+                    <Button1 toggle={handleSaveNewProject} text={"Save"} style={"button4"} />
                     <Button1 toggle={toggle} text={"Cancel"} style={"button0"} />
                 </div>
             </div>

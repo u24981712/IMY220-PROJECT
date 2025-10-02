@@ -394,3 +394,29 @@ body {
   font-weight: 500;
   margin: 0;
 }
+
+.deleteProfile {
+  display: flex;
+  justify-content: center;
+  /* background-color: #017b7e; */
+  width: 100%;
+  grid-column: span 2;
+}
+
+.friendRequest {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.friendRequestCard {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr;
+  position: relative;
+}
+
+.friendRequest h3 {
+  font-size: 25px;
+  font-weight: 400;
+  margin: 0 auto;
+}

@@ -84,6 +84,10 @@
   color: var(--light);
 }
 
+.projectNameCheck{
+  color: var(--red);
+}
+
 .preview {
   margin-top: 20px;
   padding: 15px;

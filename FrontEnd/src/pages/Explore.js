@@ -2,17 +2,18 @@ import React, { useState, useEffect } from "react";
 import NavBar from "../components/NavBar";
 import ProjectCard from "../components/ProjectCard";
 import SearchBar from "../components/SearchBar";
+import Footer from "../components/Footer";
 
 const Explore = () => {
     const [Repositories, setRepositories] = useState([]);
 
     useEffect(() => {
-        fetch('/getRepos')
+        fetch('/getProjects')
             .then(res => {
                 return res.json();
             }).then(data => {
 
-                const newData = data.filter((data) => data.Label === "Public" )
+                const newData = data.filter((data) => data.Label === "Public")
 
                 setRepositories(newData);
                 // console.log(newData);
@@ -56,6 +57,9 @@ const Explore = () => {
                         </div>
                     ))}
                 </div>
+            </div>
+            <div className='footerDiv'>
+                <Footer />
             </div>
         </>
     );

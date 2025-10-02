@@ -4,6 +4,8 @@ const TestimonialCards = ({ testimonials }) => {
 
     // const duplicatedTestimonials = [...testimonials, ...testimonials];
 
+    // console.log(testimonials);
+
     return (
         
         <div className="testimonials-wrapper">

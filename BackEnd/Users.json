@@ -151,5 +151,18 @@
         "Unity"
       ]
     }
+  },
+  {
+    "name": "micheal",
+    "surname": "tarr",
+    "email": "njabulonhlengethwa08@gmail.com",
+    "password": "123456789@",
+    "bio": "",
+    "profileImage": "https://api.dicebear.com/9.x/adventurer/svg?seed=Alexander",
+    "friends": [],
+    "skills": {
+      "programmingLanguages": [],
+      "technologies": []
+    }
   }
 ]

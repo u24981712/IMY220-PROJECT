@@ -3,19 +3,30 @@ import NavBar from "../components/NavBar"
 import Button1 from "../components/Button1";
 import ProjectCard from "../components/ProjectCard";
 import Footer from "../components/Footer";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import EditProfile from "../components/EditProfile";
 
 const Profile = () => {
 
-    const email = localStorage.getItem("username");
+    const currentUserEmail = localStorage.getItem("username");
+
+    const [searchParams] = useSearchParams();
+
+    const email = searchParams.get('email');
+
+    // console.log(email);
 
     const profileImage = localStorage.getItem("profileImage") || "";
 
-    const [Repositories, setRepositories] = useState([]);
-    const [user, setUser] = useState(null);
-    const [friends, setFriends] = useState(null);
+    const [Projects, setProjects] = useState([]);
 
+    const [user, setUser] = useState(null);
+
+    const [followers, setFollowers] = useState([]);
+
+    const [following, setFollowing] = useState([]);
+
+    const [friendRequests, setFriendRequests] = useState([]);
 
     const [loading, setLoading] = useState(true);
 
@@ -37,33 +48,129 @@ const Profile = () => {
     }
 
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Fetch user projects
+                const projectsRes = await fetch('/getProjects/' + email);
+                const projectsData = await projectsRes.json();
+
+                if (Array.isArray(projectsData)) {
+                    setProjects(projectsData);
+                } else {
+                    setProjects([]);
+                }
+
+                // Fetch user data
+                const userRes = await fetch('/getUser/' + email);
+                const userData = await userRes.json();
+                setUser(userData);
+
+                if (userData.following && Array.isArray(userData.following)) {
+
+                    const followingPromises = userData.following.map(followEmail =>
+                        fetch('/getUser/' + followEmail).then(res => res.json())
+                    );
+
+                    const followingUsers = await Promise.all(followingPromises);
+
+                    console.log(followingUsers);
+                    setFollowers(followingUsers);
+
+                }
+
+                if (userData.followers && Array.isArray(userData.followers)) {
+
+                    const followingPromises = userData.followers.map(followEmail =>
+                        fetch('/getUser/' + followEmail).then(res => res.json())
+                    );
+
+                    const followingUsers = await Promise.all(followingPromises);
+
+                    console.log(followingUsers);
+                    setFollowing(followingUsers);
+
+                }
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (email) {
+            fetchData();
+        }
+    }, [email]);
+
+
+    // SENDIND A FRIEND REQEUST
+    const sendFriendRequest = async (receiverEmail) => {
         try {
+            const email = localStorage.getItem('username');
 
-            fetch('/getRepos/' + email)
-                .then(res => {
-                    return res.json();
-                }).then(data => {
-                    setRepositories(data);
-                    // console.log(data);
-                });
-
-            fetch('/getUser/' + email)
-                .then(res => {
-                    return res.json();
-                }).then(data => {
-                    setUser(data);
-                    setFriends(data.friends)
-                    // console.log(data);
+            const response = await fetch('/sendFriendRequest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    receiverEmail: receiverEmail
                 })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Failed to send friend request');
+            }
+
+            console.log('Friend request sent successfully:', result);
 
         } catch (error) {
-            console.log(error)
-        } finally {
-            setLoading(false);
+            console.error('Error sending friend request:', error);
         }
-    }, []);
+    };
 
 
+    // ACCEPT A FRIEND REQUEST
+    const acceptFriendRequest = async (requesterEmail) => {
+        try {
+
+            const userData = JSON.parse(localStorage.getItem('user'));
+
+            const userEmail = userData?.email;
+
+            if (!userEmail) {
+
+                return;
+            }
+
+            const response = await fetch('/acceptFriendRequest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userEmail: userEmail,
+                    requesterEmail: requesterEmail
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Failed to accept friend request');
+            }
+
+            console.log('Friend request accepted:', result);
+
+
+        } catch (error) {
+            console.error('Error accepting friend request:', error);
+        }
+    };
 
     if (loading) {
         return <div>Loading...</div>;
@@ -93,46 +200,32 @@ const Profile = () => {
 
                             <div className="stats">
                                 <div className="stat">
-                                    <div className="stat-number">127</div>
-                                    <div className="stat-label">Followers</div>
+                                    <div className="stat-number">{followers?.length}</div>
+                                    <div className="stat-label">Follower</div>
                                 </div>
                                 <div className="stat">
-                                    <div className="stat-number">89</div>
+                                    <div className="stat-number">{following?.length}</div>
                                     <div className="stat-label">Following</div>
                                 </div>
                                 <div className="stat">
-                                    <div className="stat-number">{Repositories.length}</div>
-                                    <div className="stat-label">Repos</div>
+                                    <div className="stat-number">{Projects.length}</div>
+                                    <div className="stat-label">Projects</div>
                                 </div>
                             </div>
 
-                            <div className="profile-info">
-                                <div className="info-item">
-                                    <span>🏢</span>
-                                    <span>University Of Preotoria</span>
-                                </div>
-                                <div className="info-item">
-                                    <span>📍</span>
-                                    <span>Preotoria, Gauteng</span>
-                                </div>
-                                <div className="info-item">
-                                    <span>📧</span>
-                                    <span>u24981712@tuks.co.za</span>
-                                </div>
-                                <div className="info-item">
-                                    <span>📅</span>
-                                    <span>Joined March 2020</span>
-                                </div>
-                            </div>
+                            {/* CHECK IF PASSED IN EMAIL IS THE CURRENT LOGGED IN USER'S EMAIL
+                                IF SO, SHOW LOG OUT BUTTON
+                                ELSE SHOW FOLLOW BUTTON
+                            */}
+                            {
+                                currentUserEmail !== email ?
 
-                            <Button1 text={"Follow"} style={"button4 followButton"} />
+                                    <Button1 text={"Follow"} style={"button4 followButton"} />
+                                    :
+                                    <Button1 toggle={handleLogout} text={"Log out"} style={"buttonOut"} />
+                            }
 
                         </div>
-
-                        <div className="LogoutBTN">
-                            <Button1 toggle={handleLogout} text={"Log out"} style={"buttonOut"} />
-                        </div>
-
 
                     </div>
 
@@ -140,11 +233,11 @@ const Profile = () => {
                         <div className="section">
                             <h2 className="section-title">
                                 <span>📚</span>
-                                Popular Repositories
+                                Popular Projects
                             </h2>
                             <div className="activity-grid">
-                                {Repositories
-                                    .filter(data => data.downloads > 600 && data.Label == "Public")
+                                {Projects
+                                    .filter(data => data.downloads > 200 && data.Label == "Public")
                                     .map((data, index) => (
                                         <ProjectCard pos={index} key={index} data={data} />
                                     ))
@@ -186,36 +279,68 @@ const Profile = () => {
                     <div className="friendsContainer">
                         <h2 className="friendsTitle">
                             <span>💖</span>
-                            Friends ({friends ? friends.length : 0})
+                            Friends ({user?.followers ? user?.followers?.length : 0})
                         </h2>
 
                         <div className="friendsDivider"></div>
 
                         {loading ? (
                             <div>Loading friends...</div>
-                        ) : friends && friends.length > 0 ? (
-                            <div className="friendsGrid">
-                                {friends.map((friend, index) => (
-                                    <div key={index} className="friendCard">
-                                        <div className="friendAvatar" >
-                                            <img src={friend.image} />
-                                        </div>
-                                        <div className="friendInfo">
-                                            <p>{friend.username} </p>
-                                        </div>
+                        )
+                            :
+                            followers > 0 ? (
+                                <>
+                                    <div className="friendsGrid">
+                                        {followers.map((friend, index) => (
+                                            <div key={index} className="friendCard">
+                                                <div className="friendAvatar" >
+                                                    <img src={friend.profileImage} />
+                                                </div>
+                                                <div className="friendInfo">
+                                                    <p>{friend.email} </p>
+                                                </div>
+                                            </div>
+                                        ))}
+
                                     </div>
-                                ))}
+
+
+                                </>
+                            ) : (
+                                <div className="no-friends">
+                                    <p>No friends found</p>
+                                </div>
+                            )}
+
+                        <div className="friendRequest">
+                            <h3> Friend Requests</h3>
+                            <div className="friendsDivider">
                             </div>
-                        ) : (
-                            <div className="no-friends">
-                                <p>No friends found</p>
-                            </div>
-                        )}
+
+
+                            {user.friendRequests.map((friend, index) => (
+
+                                <div key={index} className="friendCard friendRequestCard">
+                                    <div className="friendInfo">
+                                        <p>{friend} </p>
+                                    </div>
+                                    <div className="friendReqBTN" >
+                                        <Button1 text={"Accept"} style={"acceptBtn"} />
+                                    </div>
+                                    <div className="friendReqBTN" >
+                                        <Button1 text={"Decline"} style={"button0"} />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="deleteProfile">
+                        <Button1 text={"Delete Profile"} style={"button0"} />
                     </div>
                 </div>
 
             }
-            <Footer />
         </>
     )
 }

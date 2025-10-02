@@ -80,12 +80,12 @@ const SplashPage = () => {
 
     useEffect(() => {
 
-        fetch('/testimonials')
+        fetch('/getTestimonials')
             .then(res => {
                 return res.json();
             }).then(data => {
-                setTestimonials(data.testimonials);
-                // console.log(data.testimonials);
+                setTestimonials(data);
+                // console.log(data);
             })
 
     }, []);

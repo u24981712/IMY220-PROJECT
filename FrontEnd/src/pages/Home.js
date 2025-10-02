@@ -9,33 +9,54 @@ import Footer from '../components/Footer';
 
 const Home = () => {
 
-    const [Repositories, setData] = useState([]);
+    const [projects, setProjects] = useState([]);
+
     const [user, setUser] = useState({});
+
     const [repoModal, setRepoModal] = useState(false);
 
-    const toggleModal = () => {
-        setRepoModal(!repoModal);
-        console.log("******REACHED HERE....******")
-    }
+    const [projectNameExists, setProjectNameExists] = useState(false);
 
-    const toggleModalSave = () => {
-
-        // SAVE IMPLEMENTATION BUDDY, DON'T FOR GET ***************
-        setRepoModal(!repoModal);
-        console.log("****** SAVED ******")
-    }
-
+    const [newProject, setNewProject] = useState({
+        email: "",
+        projectName: "",
+        Label: "Public",
+        description: "New Codex APP",
+        dateCreated: "",
+        downloads: 0,
+        shares: 0,
+        files: [],
+        changes: [
+            {
+                editor: "",
+                message: "",
+                dateEditted: ""
+            }
+        ],
+        collaborators: [],
+        hashtags: []
+    });
 
     useEffect(() => {
 
         const email = localStorage.getItem("username");
 
-        fetch('/getRepos/' + email)
+        if (email) {
+            setNewProject(prev => ({
+                ...prev,
+                email: email
+            }));
+        }
+
+        fetch('/getProjects/' + email)
             .then(res => {
                 return res.json();
             }).then(data => {
-                setData(data);
-                // console.log(data);
+                if (Array.isArray(data)) {
+                    setProjects(data);
+                } else if (data.message) {
+                    setProjects([]);
+                }
             })
 
         fetch('/getUser/' + email)
@@ -43,7 +64,7 @@ const Home = () => {
                 return res.json();
             }).then(data => {
                 setUser(data);
-                console.log(data);
+                // console.log(data);
             })
 
         if (repoModal) {
@@ -57,23 +78,115 @@ const Home = () => {
         };
     }, []);
 
+    // TOGGLE FUNCTION DEFINITION SECTION
+    const toggleModal = () => {
+        setRepoModal(!repoModal);
+        console.log("******REACHED HERE....******")
+    }
+
+    // const toggleModalSave = () => {
+    //     // SAVE IMPLEMENTATION BUDDY, DON'T FORGET ***************
+    //     setRepoModal(!repoModal);
+    //     console.log("****** SAVED ******")
+    // };
+
+    const toogleProjectNameExists = (val) => {
+
+        console.log("Value changed to: ", val);
+
+        setProjectNameExists(val);
+    };
+
+
+    // USESTATE SETTERS 
+
+    const handlePorpulatingNewProject = (field, value) => {
+
+        setNewProject(prev => ({
+            ...prev,
+            [field]: value
+        }))
+
+    };
+
+    // SERVER BASED REQUEST FUNCTION DEFINITION SECTION
+
+    const handleSaveNewProject = async () => {
+        try {
+            console.log("Sending project:", newProject);
+
+            const res = await fetch('/newProject', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newProject)
+            });
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`)
+            }
+
+            const resData = await res.json();
+
+            if (resData.message == "Project name already exists") {
+
+                console.log("shii there cuhh");
+
+                toogleProjectNameExists(true);
+
+                return;
+
+            }
+
+            fetch('/getProjects/' + email)
+                .then(res => {
+                    return res.json();
+                }).then(data => {
+                    if (Array.isArray(data)) {
+                        setProjects(data);
+                    } else if (data.message) {
+                        setProjects([]);
+                    }
+                })
+                ;
+            setRepoModal(!repoModal);
+
+            set
+
+            console.log("****** SAVED NEW PROJECT******")
+
+
+        } catch (error) {
+
+            console.log(error.message);
+
+        }
+    };
+
     return (
         <>
             <link rel="stylesheet" type="text/css" href="/assets/css/Home.css" />
 
             {repoModal ? <div className="newProjectContainer">
-                <NewProject toggle={toggleModal} />
+                <NewProject
+                    handlePorpulatingNewProject={handlePorpulatingNewProject}
+                    projectNameExists={projectNameExists}
+                    toogleProjectNameExists={toogleProjectNameExists}
+                    newProject={newProject}
+                    handleSaveNewProject={handleSaveNewProject}
+                    toggle={toggleModal} />
             </div> : ''}
             <NavBar />
 
-            <div className="mesh-wrap" aria-hidden="true">
+            {/* <div className="mesh-wrap" aria-hidden="true">
                 <div className="mesh-layer layer-1"></div>
                 <div className="mesh-layer layer-2"></div>
                 <div className="mesh-layer layer-3"></div>
                 <div className="mesh-layer layer-4"></div>
                 <div className="mesh-layer layer-5"></div>
                 <div className="mesh-layer layer-6"></div>
-            </div>
+            </div> */}
 
             <div className="homePage">
                 <div className='welcomeMessage'>
@@ -116,16 +229,24 @@ const Home = () => {
             </div>
 
             <div className="AllProject">
-                {Repositories && Repositories.map((data, index) => (
-                    <ProjectCard key={data.projectName} data={data} pos={index} />
-                ))}
+                {projects.length > 0 ? projects.map((data, index) => (
+                    <ProjectCard projectNameExists={projectNameExists} key={data.projectName} data={data} pos={index} />
+                )) :
+                    <div className='noProjects'>
+                        <p>Your workspace is empty.</p>
+                        <p>✨Create a project to begin💫</p>
+                    </div>
+                }
             </div>
 
-            <div className='Loadmore'>
+            {/* <div className='Loadmore'>
                 <Button1 text={"Load More.."} style={"button3"} />
+            </div> */}
+
+            <div className='footerDiv'>
+                <Footer />
             </div>
 
-            <Footer />
         </>
     );
 }

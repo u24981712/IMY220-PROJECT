@@ -6,6 +6,7 @@
   --light: #f5edd8;
   --BACKWIDTH: 500px;
   --red: #dd3e3e;
+  --success: #35af31;
   --redOutline: #e37b7b;
 }
 
@@ -186,6 +187,32 @@
 }
 
 .button0:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  scale: 0.8;
+  opacity: 0.3;
+}
+
+.acceptBtn {
+  background-color: var(--success);
+  border: none;
+  width: 220px;
+  color: var(--light);
+  padding: 10px 0px;
+  text-align: center;
+  text-overflow: none;
+  border-radius: 50px;
+  text-decoration: none;
+  display: inline;
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.acceptBtn:active {
   transform: translateY(0);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   scale: 0.8;

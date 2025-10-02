@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Button1 from '../components/Button1';
 import { Link } from 'react-router-dom';
@@ -6,6 +6,10 @@ import { Link } from 'react-router-dom';
 const NavBar = () => {
 
     const profileImage = localStorage.getItem("profileImage") || "";
+
+    const email = localStorage.getItem("username");
+
+    // console.log(email);
 
     // const activeBTN = localStorage.getItem("Home");
 
@@ -18,6 +22,7 @@ const NavBar = () => {
     // const handleActive2 = () => {
     //     setActive("Explore")
     // }
+
 
     return (
         <nav className="navbar">
@@ -41,11 +46,11 @@ const NavBar = () => {
                 </Link>
             </div>
             <div className="NavProfileImage">
-                <Link to="/profile" >
+                <Link to={`/profile?email=${encodeURIComponent(email)}`}>
                     <img className="profileImage" src={profileImage} alt="Profile" />
                 </Link>
             </div>
-        </nav>
+        </nav >
     );
 }
 

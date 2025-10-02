@@ -1,0 +1,177 @@
+[
+    {
+        "email": "u24981712@tuks.co.za",
+        "projectName": "JavaScript Calculator",
+        "Label": "Private",
+        "description": "Advanced calculator with scientific functions, memory operations, and history tracking. Built with vanilla JavaScript.",
+        "dateCreated": "2024-08-12",
+        "commits": 1,
+        "downloads": 79,
+        "shares": 50,
+        "files": [
+            "js/",
+            "css/",
+            "assets/",
+            "calculator.js",
+            "operations.js",
+            "memory.js",
+            "history.js",
+            "style.css",
+            "index.html"
+        ],
+        "changes": [
+            {
+                "editor": "u24981712@tuks.co.za",
+                "message": "Fixed decimal calculation precision issues",
+                "dateEditted": "2024-08-14"
+            }
+        ],
+        "collaborators": []
+    },
+    {
+        "email": "u24981712@tuks.co.za",
+        "projectName": "Angular E-commerce",
+        "Label": "Public",
+        "description": "Modern e-commerce frontend with shopping cart, product filtering, and payment integration using Angular and TypeScript.",
+        "dateCreated": "2024-08-22",
+        "commits": 1,
+        "downloads": 456,
+        "shares": 312,
+        "files": [
+            "src/",
+            "components/",
+            "services/",
+            "assets/",
+            "environments/",
+            "app.component.ts",
+            "product.component.ts",
+            "cart.component.ts",
+            "payment.component.ts",
+            "angular.json"
+        ],
+        "changes": [
+            {
+                "editor": "u24981712@tuks.co.za",
+                "message": "Integrated Stripe payment processing",
+                "dateEditted": "2024-08-24"
+            }
+        ],
+        "collaborators": []
+    },
+    {
+        "email": "michael.b@example.com",
+        "projectName": "FastAPI Backend",
+        "Label": "Private",
+        "description": "High-performance API backend with async support, automatic documentation, and database migrations using FastAPI.",
+        "dateCreated": "2024-08-04",
+        "commits": 1,
+        "downloads": 276,
+        "shares": 162,
+        "files": [
+            "app/",
+            "models/",
+            "routers/",
+            "migrations/",
+            "main.py",
+            "database.py",
+            "schemas.py",
+            "auth.py",
+            "requirements.txt"
+        ],
+        "messages": [
+            {
+                "editor": "michael.b@example.com",
+                "message": "Implemented automatic API documentation with Swagger",
+                "dateEditted": "2024-08-07"
+            }
+        ],
+        "collaborators": []
+    },
+    {
+        "email": "michael.b@example.com",
+        "projectName": "Java Spring Boot API",
+        "Label": "Private",
+        "description": "Enterprise-grade REST API with Spring Security, JPA, and comprehensive testing for inventory management system.",
+        "dateCreated": "2024-08-14",
+        "commits": 1,
+        "downloads": 156,
+        "shares": 94,
+        "files": [
+            "src/main/java/",
+            "src/test/java/",
+            "src/main/resources/",
+            "config/",
+            "Application.java",
+            "SecurityConfig.java",
+            "InventoryController.java",
+            "InventoryService.java",
+            "pom.xml"
+        ],
+        "messages": [
+            {
+                "editor": "michael.b@example.com",
+                "message": "Enhanced Spring Security configuration",
+                "dateEditted": "2024-08-17"
+            }
+        ],
+        "collaborators": []
+    },
+    {
+        "email": "jane.smith@example.com",
+        "projectName": "Svelte Weather App",
+        "Label": "Public",
+        "description": "Responsive weather application with location-based forecasts and interactive maps using Svelte and weather APIs.",
+        "dateCreated": "2024-08-26",
+        "commits": 1,
+        "downloads": 213,
+        "shares": 145,
+        "files": [
+            "src/",
+            "public/",
+            "components/",
+            "stores/",
+            "App.svelte",
+            "Weather.svelte",
+            "Map.svelte",
+            "api.js",
+            "package.json"
+        ],
+        "messages": [
+            {
+                "editor": "jane.smith@example.com",
+                "message": "Added interactive map component for weather visualization",
+                "dateEditted": "2024-08-28"
+            }
+        ],
+        "collaborators": []
+    },
+    {
+        "email": "jane.smith@example.com",
+        "projectName": "C# Desktop Tool",
+        "Label": "Private",
+        "description": "Windows desktop application for PDF manipulation with merge, split, and annotation features using WPF and C#.",
+        "dateCreated": "2024-08-21",
+        "commits": 1,
+        "downloads": 234,
+        "shares": 123,
+        "files": [
+            "Views/",
+            "ViewModels/",
+            "Models/",
+            "Services/",
+            "MainWindow.xaml",
+            "PDFService.cs",
+            "AnnotationTool.cs",
+            "MergeUtility.cs",
+            "App.config"
+        ],
+        "messages": [
+            {
+                "editor": "jane.smith@example.com",
+                "message": "Added PDF annotation tools with color options",
+                "dateEditted": "2024-08-23"
+            }
+        ],
+        "collaborators": []
+    }
+]
