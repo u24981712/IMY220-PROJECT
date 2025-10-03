@@ -63,6 +63,13 @@ app.get('/api', (req, res) => {
   res.json({ message: "Bruhhh" })
 })
 
+const uploadFile = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+  }
+});
+
 app.post('/uploadBanner/:projectName', upload.single('banner'), async (req, res) => {
   try {
 
@@ -113,12 +120,65 @@ app.post('/uploadBanner/:projectName', upload.single('banner'), async (req, res)
   }
 });
 
-const uploadFile = multer({
-  storage: storage,
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit for code files
-  }
-});
+// app.post('/uploadFile/:projectName', uploadFile.single('file'), async (req, res) => {
+//   try {
+//     if (!req.file) {
+//       return res.status(400).json({ error: 'No file provided' });
+//     }
+
+//     const projectName = decodeURIComponent(req.params.projectName);
+//     const email = req.body.email;
+//     const fileName = req.body.fileName || req.file.originalname;
+
+//     const base64File = req.file.buffer.toString('base64');
+
+//     const date = new Date().toISOString();
+//     const dateOnly = date.split('T')[0];
+
+//     const result = await DATABASE.collection(projectsCollection).updateOne(
+//       {
+//         projectName: projectName,
+//         email: email
+//       },
+//       {
+//         $push: {
+//           files: {
+//             fileName: fileName,
+//             fileType: req.file.mimetype,
+//             fileSize: req.file.size,
+//             content: base64File,
+//             uploadedAt: dateOnly
+//           }
+//         }
+//       }
+//     );
+
+//     if (result.modifiedCount === 0) {
+//       return res.status(404).json({ error: 'Project not found' });
+//     }
+
+//     const project = await DATABASE.collection(projectsCollection).findOne(
+//       {
+//         projectName: projectName,
+//         email: email
+//       });
+
+
+//     res.json({
+//       message: 'File uploaded successfully',
+//       file: {
+//         fileName: fileName,
+//         fileSize: req.file.size
+//       },
+//       project: project
+//     });
+
+//   } catch (error) {
+//     console.error('Upload error:', error);
+//     res.status(500).json({ error: 'Upload failed' });
+//   }
+// });
+
 
 app.post('/uploadFile/:projectName', uploadFile.single('file'), async (req, res) => {
   try {
@@ -129,14 +189,14 @@ app.post('/uploadFile/:projectName', uploadFile.single('file'), async (req, res)
     const projectName = decodeURIComponent(req.params.projectName);
     const email = req.body.email;
     const fileName = req.body.fileName || req.file.originalname;
+    const checkInMessage = req.body.checkInMessage || 'No message provided';
 
     const base64File = req.file.buffer.toString('base64');
+    const date = new Date().toISOString();
+    const dateOnly = date.split('T')[0];
 
     const result = await DATABASE.collection(projectsCollection).updateOne(
-      {
-        projectName: projectName,
-        email: email
-      },
+      { projectName: projectName, email: email },
       {
         $push: {
           files: {
@@ -144,7 +204,12 @@ app.post('/uploadFile/:projectName', uploadFile.single('file'), async (req, res)
             fileType: req.file.mimetype,
             fileSize: req.file.size,
             content: base64File,
-            uploadedAt: new Date()
+            uploadedAt: dateOnly
+          },
+          messages: {
+            message: checkInMessage,
+            date: dateOnly,
+            fileName: fileName
           }
         }
       }
@@ -154,13 +219,14 @@ app.post('/uploadFile/:projectName', uploadFile.single('file'), async (req, res)
       return res.status(404).json({ error: 'Project not found' });
     }
 
+    const project = await DATABASE.collection(projectsCollection).findOne({
+      projectName: projectName,
+      email: email
+    });
+
     res.json({
       message: 'File uploaded successfully',
-      file: {
-        fileName: fileName,
-        fileType: req.file.mimetype,
-        fileSize: req.file.size
-      }
+      project: project
     });
 
   } catch (error) {
@@ -169,7 +235,86 @@ app.post('/uploadFile/:projectName', uploadFile.single('file'), async (req, res)
   }
 });
 
-/************************************************************************* */
+app.get('/downloadFile/:projectName/:fileName', async (req, res) => {
+  try {
+    const { projectName, fileName } = req.params;
+
+    const email = req.query.email;
+
+    const project = await DATABASE.collection('projects').findOne({
+      projectName: projectName,
+      email: email
+    });
+
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    const file = project.files.find(f => f.fileName === fileName);
+
+    if (!file) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+
+    const fileBuffer = Buffer.from(file.content, 'base64');
+
+    res.setHeader('Content-Type', 'application/octet-stream');
+
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+
+    res.send(fileBuffer);
+
+  } catch (error) {
+
+    console.error('Download error:', error);
+
+    res.status(500).json({ message: 'Error downloading file' });
+  }
+});
+
+app.post('/deleteFile', async (req, res) => {
+  try {
+    const { projectName, fileName, email } = req.body;
+
+    if (!projectName || !fileName || !email) {
+      return res.status(400).json({ message: 'Project name, file name, and email are required' });
+    }
+
+    const result = await DATABASE.collection(projectsCollection).updateOne(
+      {
+        projectName: projectName,
+        email: email
+      },
+      {
+        $pull: {
+          files: { fileName: fileName }
+        }
+      }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: 'File or project not found' });
+    }
+
+    res.json({
+      message: 'File deleted successfully',
+      deletedFile: fileName
+    });
+
+  } catch (error) {
+
+    console.error('Delete file error:', error);
+
+    res.status(500).json({
+      message: 'Error deleting file',
+      error: error.message
+    });
+  }
+});
+
+/**************************************************************************/
+// PROJECT BASED ENDPOINTS
+/**************************************************************************/
 
 app.get('/getProjects', async (req, res) => {
 
@@ -252,6 +397,85 @@ app.get('/getProjects/:email', async (req, res) => {
   }
 });
 
+app.post('/newProject', async (req, res) => {
+  try {
+
+    // FIRST CHECK IF A PROJECT WITH THE SAME NAME BY THE SAME USER EXISTS
+    const { projectName, email } = req.body;
+
+    // const existingProject = await DATABASE.collection(projectsCollection).findOne({
+    //   email: email,
+    //   projectName: projectName
+    // });
+
+    const existingProject = await findOneProject(email, projectName);
+
+    if (existingProject) {
+      return res.json({ message: "Project name already exists" }); // IMPORTANT: return here
+    }
+
+    const date = new Date().toISOString();
+    const dateOnly = date.split('T')[0];
+    // ONLY INSERT THE DOCUMENT IF SIMILAR NAME DOESN'T EXIST
+    const projectData = {
+      ...req.body,
+      dateCreated: dateOnly
+    };
+
+    const result = await DATABASE.collection(projectsCollection).insertOne(projectData);
+
+    res.json({
+      message: "Project saved successfully",
+      projectId: result.insertedId
+    });
+
+  } catch (error) {
+
+    console.error('Error: ', error);
+
+    res.status(500).json({ message: 'Error saving project' });
+
+  }
+});
+
+// DELETE PROJECT
+app.post('/deleteProject', async (req, res) => {
+  try {
+    const { projectName, email } = req.body;
+
+    // if (!projectName || !email) {
+    //   return res.status(400).json({ message: 'Project name and email are required' });
+    // }
+
+    const result = await DATABASE.collection(projectsCollection).deleteOne({
+      projectName: projectName,
+      email: email
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        message: 'Project not found or already deleted'
+      });
+    }
+
+    res.json({
+      message: "Project deleted successfully",
+      deletedCount: result.deletedCount
+    });
+
+  } catch (error) {
+    console.error('Delete error: ', error);
+    res.status(500).json({
+      message: 'Error deleting project',
+      error: error.message
+    });
+  }
+});
+
+/***************************************************************************/
+// USER RELATED ENDPOINTS 
+/***************************************************************************/
+
 app.get('/getUsers', async (req, res) => {
   try {
 
@@ -300,8 +524,6 @@ app.get('/getUser/:email', async (req, res) => {
     res.status(500).json({ error: 'Failed to retrieve user' });
   }
 });
-
-/*********** TESTIMONIAL ENDPOINT ************/
 
 app.get('/getTestimonials', async (req, res) => {
   try {
@@ -372,171 +594,47 @@ app.get('/getEmails', async (req, res) => {
   }
 });
 
-/*********** SAVE NEW PROJECT ENDPOINT ************/
-
-app.post('/newProject', async (req, res) => {
-  try {
-
-    // FIRST CHECK IF A PROJECT WITH THE SAME NAME BY THE SAME USER EXISTS
-    const { projectName, email } = req.body;
-
-    // const existingProject = await DATABASE.collection(projectsCollection).findOne({
-    //   email: email,
-    //   projectName: projectName
-    // });
-
-    const existingProject = await findOneProject(email, projectName);
-
-    if (existingProject) {
-      return res.json({ message: "Project name already exists" }); // IMPORTANT: return here
-    }
-
-    const date = new Date().toISOString();
-    const dateOnly = date.split('T')[0];
-    // ONLY INSERT THE DOCUMENT IF SIMILAR NAME DOESN'T EXIST
-    const projectData = {
-      ...req.body,
-      dateCreated: dateOnly
-    };
-
-    const result = await DATABASE.collection(projectsCollection).insertOne(projectData);
-
-    res.json({
-      message: "Project saved successfully",
-      projectId: result.insertedId
-    });
-
-  } catch (error) {
-
-    console.error('Error: ', error);
-
-    res.status(500).json({ message: 'Error saving project' });
-
-  }
-});
-
-
-
-app.post('/addFollowing', async (req, res) => {
-  try {
-    const users = await DATABASE.collection(usersCollection).find({}).toArray();
-
-    const results = [];
-
-    for (const user of users) {
-
-      let following = [];
-
-      if (user.email === "u24981712@tuks.co.za") {
-        // Njabulo follows backend and mobile developers
-        following = ["robert.j@example.com", "michael.b@example.com"];
-      } else if (user.email === "jane.smith@example.com") {
-        // Jane follows other frontend developers
-        following = ["u24981712@tuks.co.za"];
-      } else if (user.email === "robert.j@example.com") {
-        // Robert follows full-stack and backend developers
-        following = ["u24981712@tuks.co.za", "michael.b@example.com"];
-      } else if (user.email === "michael.b@example.com") {
-        // Michael follows frontend and backend developers
-        following = ["jane.smith@example.com", "robert.j@example.com"];
-      }
-
-      const result = await DATABASE.collection(usersCollection).updateOne(
-        { _id: user._id },
-        { $set: { following: following } }
-      );
-
-      results.push({
-        name: user.name,
-        email: user.email,
-        following: following,
-        modifiedCount: result.modifiedCount
-      });
-    }
-
-    res.json({
-      message: 'Following arrays added to all users',
-      results: results
-    });
-
-  } catch (error) {
-    console.error('Error adding following:', error);
-    res.status(500).json({ error: 'Failed to add following arrays' });
-  }
-});
-
-
-
-// DELETE PROJECT
-app.post('/deleteProject', async (req, res) => {
-  try {
-    const { projectName, email } = req.body;
-
-    // if (!projectName || !email) {
-    //   return res.status(400).json({ message: 'Project name and email are required' });
-    // }
-
-    const result = await DATABASE.collection(projectsCollection).deleteOne({
-      projectName: projectName,
-      email: email
-    });
-
-    if (result.deletedCount === 0) {
-      return res.status(404).json({
-        message: 'Project not found or already deleted'
-      });
-    }
-
-    res.json({
-      message: "Project deleted successfully",
-      deletedCount: result.deletedCount
-    });
-
-  } catch (error) {
-    console.error('Delete error: ', error);
-    res.status(500).json({
-      message: 'Error deleting project',
-      error: error.message
-    });
-  }
-});
-
 // SEND FREIND REQEUST
 app.post('/sendFriendRequest', async (req, res) => {
   try {
-    const { senderUsername, receiverEmail } = req.body;
+    const { email, receiverEmail } = req.body;
 
-    if (!senderUsername || !receiverEmail) {
+    if (!email || !receiverEmail) {
       return res.status(400).json({ message: 'Sender username and receiver email are required' });
     }
 
-    const receiver = await DATABASE.collection('users').findOne({ email: receiverEmail });
+    const receiver = await DATABASE.collection(usersCollection).findOne({ email: receiverEmail });
 
     if (!receiver) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const existingRequest = receiver.friendRequests?.find(
-      request => request.senderUsername === senderUsername
-    );
+    const sender = await DATABASE.collection(usersCollection).findOne({ email: email });
 
-    if (existingRequest) {
-      return res.status(400).json({ message: 'Friend request already sent' });
+    if (!sender) {
+      return res.status(404).json({ message: 'Sender not found' });
     }
 
-    const existingFriend = receiver.friends?.find(
-      friend => friend.username === senderUsername
-    );
+    console.log(receiver.friendRequests)
 
-    if (existingFriend) {
-      return res.status(400).json({ message: 'You are already friends with this user' });
+
+    const friendRequests = receiver.friendRequests || [];
+    const followers = receiver.followers || [];
+
+
+    if (friendRequests.includes(email)) {
+      return res.json({ message: 'Friend request already sent' });
+    }
+
+    if (followers.includes(email)) {
+      return res.json({ message: 'This user is already following you' });
     }
 
     const result = await DATABASE.collection('users').updateOne(
       { email: receiverEmail },
       {
         $push: {
-          friendRequests: senderUsername
+          friendRequests: email
         }
       }
     );
@@ -559,64 +657,61 @@ app.post('/sendFriendRequest', async (req, res) => {
   }
 });
 
-
 // ACCEPT FRIEND REQUEST
 app.post('/acceptFriendRequest', async (req, res) => {
   try {
-    const { userEmail, requesterEmail } = req.body;
+    const { currentUserEmail, requesterEmail } = req.body;
 
-    if (!userEmail || !requesterEmail) {
+    if (!currentUserEmail || !requesterEmail) {
       return res.status(400).json({ message: 'User email and requester email are required' });
     }
 
-    const user = await DATABASE.collection('users').findOne({ email: userEmail });
+    const user = await DATABASE.collection(usersCollection).findOne({ email: currentUserEmail });
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const requester = await DATABASE.collection('users').findOne({ email: requesterEmail });
+    const requester = await DATABASE.collection(usersCollection).findOne({ email: requesterEmail });
+
     if (!requester) {
       return res.status(404).json({ message: 'Requester not found' });
     }
 
-    if (!user.friendRequests || !user.friendRequests.includes(requesterEmail)) {
+
+    // const friendRequests = user.friendRequests || [];
+    console.log(user.friendRequests.includes(requesterEmail))
+
+    if (!user.friendRequests.includes(requesterEmail)) {
       return res.status(400).json({ message: 'Friend request not found' });
     }
 
-    const alreadyFriends = user.friends?.some(friend => friend.username === requesterEmail);
-    if (alreadyFriends) {
-      return res.status(400).json({ message: 'Already friends with this user' });
+    // const followers = user.followers || [];
+
+    console.log(user.followers.includes(requesterEmail))
+
+    if (user.followers.includes(requesterEmail)) {
+      return res.status(400).json({ message: 'Already following this user' });
     }
 
-    const session = DATABASE.client.startSession();
+    const session = CLIENT.startSession();
 
     try {
       await session.withTransaction(async () => {
 
         await DATABASE.collection(usersCollection).updateOne(
-          { email: userEmail },
+          { email: currentUserEmail },
           {
             $pull: { friendRequests: requesterEmail },
-            $push: {
-              friends: {
-                username: requesterEmail,
-                image: requester.profileImage,
-              }
-            }
+            $addToSet: { followers: requesterEmail }
           },
           { session }
         );
 
-
         await DATABASE.collection(usersCollection).updateOne(
           { email: requesterEmail },
           {
-            $push: {
-              friends: {
-                username: userEmail,
-                image: user.profileImage,
-              }
-            }
+            $addToSet: { following: currentUserEmail }
           },
           { session }
         );
@@ -627,9 +722,10 @@ app.post('/acceptFriendRequest', async (req, res) => {
 
     res.json({
       message: 'Friend request accepted successfully',
-      newFriend: {
-        username: requesterEmail,
-        image: requester.profileImage,
+      newFollower: {
+        email: requesterEmail,
+        name: requester.name,
+        profileImage: requester.profileImage
       }
     });
 
@@ -641,6 +737,189 @@ app.post('/acceptFriendRequest', async (req, res) => {
     });
   }
 });
+
+// ACCEPT FRIEND REQUEST
+app.post('/declineFriendRequest', async (req, res) => {
+  try {
+    const { currentUserEmail, requesterEmail } = req.body;
+
+    if (!currentUserEmail || !requesterEmail) {
+      return res.status(400).json({ message: 'User email and requester email are required' });
+    }
+
+    const user = await DATABASE.collection(usersCollection).findOne({ email: currentUserEmail });
+
+    if (!user) {
+      return res.json({ message: 'User not found' });
+    }
+
+    const friendRequests = user.friendRequests || [];
+
+    if (!friendRequests.includes(requesterEmail)) {
+      return res.json({ message: 'Friend request not found' });
+    }
+
+    const result = await DATABASE.collection(usersCollection).updateOne(
+      { email: currentUserEmail },
+      {
+        $pull: { friendRequests: requesterEmail }
+      }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.json({ message: 'Failed to decline friend request' });
+    }
+
+    res.json({
+      message: 'Friend request declined successfully',
+      declinedRequest: requesterEmail
+    });
+
+  } catch (error) {
+    console.error('Error declining friend request:', error);
+    res.status(500).json({
+      message: 'Error declining friend request',
+      error: error.message
+    });
+  }
+});
+
+app.put('/updateUser', async (req, res) => {
+  try {
+    const userData = req.body;
+    const { email } = userData;
+
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' });
+    }
+
+    const { _id, ...updateData } = userData;
+
+    const result = await DATABASE.collection(usersCollection).updateOne(
+      { email: email },
+      { $set: updateData }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const updatedUser = await DATABASE.collection(usersCollection).findOne({ email: email });
+
+    res.status(200).json({
+      message: 'User updated successfully',
+      user: updatedUser
+    });
+
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Failed to update user' });
+  }
+});
+
+
+app.delete('/deleteProfile', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    // Verify user exists
+    const user = await DATABASE.collection(usersCollection).findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const session = CLIENT.startSession();
+
+    try {
+      await session.withTransaction(async () => {
+
+        const projectsResult = await DATABASE.collection(projectsCollection).deleteMany(
+          { email: email },
+          { session }
+        );
+
+        await DATABASE.collection(usersCollection).updateMany(
+          {
+            $or: [
+              { followers: email },
+              { following: email },
+              { friendRequests: email }
+            ]
+          },
+          {
+            $pull: {
+              followers: email,
+              following: email,
+              friendRequests: email
+            }
+          },
+          { session }
+        );
+
+        const userResult = await DATABASE.collection(usersCollection).deleteOne(
+          { email: email },
+          { session }
+        );
+
+        if (userResult.deletedCount === 0) {
+          throw new Error('Failed to delete user');
+        }
+      });
+
+      res.json({
+        message: 'Profile and all associated data deleted successfully',
+        projectsDeleted: await DATABASE.collection(projectsCollection).countDocuments({ email })
+      });
+
+    } finally {
+      await session.endSession();
+    }
+
+  } catch (error) {
+    console.error('Error deleting profile:', error);
+    res.status(500).json({
+      message: 'Error deleting profile',
+      error: error.message
+    });
+  }
+});
+
+/**************************************************************************************/
+// TESTIMONIAL ENDPOINT 
+/**************************************************************************************/
+
+
+app.get('/getProfileImages', async (req, res) => {
+  try {
+
+    const profileImages = await DATABASE.collection("profileImages").find({}, { projection: { _id: 0 } }).toArray();
+
+    if (profileImages.length === 0) {
+
+      console.log("No profile images found");
+
+      res.json({ error: "No profile images found" });
+
+    } else {
+
+      res.status(200).json(profileImages);
+
+    }
+
+  } catch (error) {
+
+    res.status(500).json({ error: 'Failed to retreive users' });
+  }
+});
+
+
+
+
 
 // DRY: DON'T REPEAT YOURSELF BUDDY
 const findOneProject = async (email, projectName) => {

@@ -105,8 +105,6 @@ body {
   display: none;
 }
 
-.ProjectInfoHeader {}
-
 .label {
   background: var(--accent);
   color: white;
@@ -137,16 +135,30 @@ body {
 
 .fileManagement {
   display: grid;
-  grid-template-columns: 5fr 1fr 1fr;
+  grid-template-columns: 4fr 1fr 1fr;
   padding: 10px 0;
   gap: 15px;
-  margin-top: 15px;
+  margin: 15px auto 0 auto;
+}
+
+.fileManagementNoBtns {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  padding: 10px 0;
+  gap: 15px;
+  margin: 15px auto 0 auto;
+}
+
+.fileFormBTNS {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
 }
 
 .ProjectSearchBar {
   font-family: "Poppins", sans-serif;
   font-weight: 400;
-  width: 90%;
+  width: 96%;
   height: 20px;
   border: 2px solid var(--light);
   padding: 10px;
@@ -411,11 +423,48 @@ body {
   border-radius: 10px;
   background-color: var(--light);
   color: var(--bgLight);
-  padding: 15px;
+  padding: 25px;
   font-weight: 400;
   font-family: "Poppins";
   border: 2px solid var(--bgLight);
   box-shadow: 0 0 15px var(--bg);
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+}
+
+.actionBTN {
+  background-color: var(--light);
+  border: none;
+  width: 120px;
+  color: var(--bg);
+  padding: 10px 5px;
+  text-align: center;
+  text-overflow: none;
+  border-radius: 10px;
+  border: 1px solid var(--bgLight);
+  text-decoration: none;
+  display: inline;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.612);
+
+
+}
+
+.actionBTN:active {
+  scale: 0.90;
+  opacity: 0.5;
+}
+
+.downloadFile {
+  border: 1px solid var(--light);
+  background-color: var(--bgLight);
+  color: var(--light);
 }
 
 .ProjectInfoHeader {
@@ -524,4 +573,89 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   justify-content: center;
+}
+
+
+/******** FILE UPLOAD *********/
+
+.fileSelect {
+  background-color: var(--light);
+  border: none;
+  width: 220px;
+  color: var(--bg);
+  padding: 10px 0px;
+  text-align: center;
+  text-overflow: none;
+  border-radius: 10px;
+  text-decoration: none;
+  display: inline;
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.fileSelect:active {
+  scale: 0.90;
+  opacity: 0.5;
+}
+
+
+.checkInModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.checkInContent {
+  background: var(--bgLight);
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  border: 2px solid var(--accent);
+}
+
+.checkInContent h3 {
+  color: var(--light);
+  margin-bottom: 0.5rem;
+}
+
+.checkInContent p {
+  color: var(--accent);
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.checkInTextarea {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--bg);
+  color: var(--light);
+  border: 2px solid var(--secondary);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.checkInTextarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.checkInButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
 }

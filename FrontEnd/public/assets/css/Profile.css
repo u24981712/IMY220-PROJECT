@@ -404,6 +404,7 @@ body {
 }
 
 .friendRequest {
+  margin-top: 20px;
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
@@ -416,7 +417,7 @@ body {
 }
 
 .friendRequest h3 {
-  font-size: 25px;
-  font-weight: 400;
+  font-size: 20px;
+  font-weight: 00;
   margin: 0 auto;
 }

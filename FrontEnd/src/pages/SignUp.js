@@ -6,20 +6,21 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
 
-    const profileImages = [
-        "https://api.dicebear.com/9.x/adventurer/svg?seed=Alexander",
-        "https://api.dicebear.com/9.x/adventurer/svg?seed=Jocelyn",
-        "https://api.dicebear.com/9.x/adventurer/svg?seed=Sawyer",
-        "https://api.dicebear.com/9.x/adventurer/svg?seed=Luis",
-        "https://api.dicebear.com/9.x/adventurer/svg?seed=Brian",
-        "https://api.dicebear.com/9.x/adventurer/svg?seed=Kingston",
-        "https://api.dicebear.com/9.x/adventurer/svg?seed=Sophia",
-        "https://api.dicebear.com/9.x/adventurer/svg?seed=Ryker",
-        "https://api.dicebear.com/9.x/adventurer/svg?seed=Caleb",
-        "https://api.dicebear.com/9.x/adventurer/svg?seed=Mason",
-    ]
+    // const profileImages = [
+    //     "https://api.dicebear.com/9.x/adventurer/svg?seed=Alexander",
+    //     "https://api.dicebear.com/9.x/adventurer/svg?seed=Jocelyn",
+    //     "https://api.dicebear.com/9.x/adventurer/svg?seed=Sawyer",
+    //     "https://api.dicebear.com/9.x/adventurer/svg?seed=Luis",
+    //     "https://api.dicebear.com/9.x/adventurer/svg?seed=Brian",
+    //     "https://api.dicebear.com/9.x/adventurer/svg?seed=Kingston",
+    //     "https://api.dicebear.com/9.x/adventurer/svg?seed=Sophia",
+    //     "https://api.dicebear.com/9.x/adventurer/svg?seed=Ryker",
+    //     "https://api.dicebear.com/9.x/adventurer/svg?seed=Caleb",
+    //     "https://api.dicebear.com/9.x/adventurer/svg?seed=Mason",
+    // ]
 
     const randomIndex = Math.floor(Math.random() * 10);
+    const [profileImages, setProfileImages] = useState([])
 
     const [newUser, setNewUser] = useState({
         "name": "",
@@ -28,7 +29,7 @@ const SignUp = () => {
         "password": "",
         "confirmpassword": "",
         "bio": "",
-        "profileImage": profileImages[randomIndex],
+        "profileImage": "",
         "friends": [],
         "skills": {
             "programmingLanguages": [],
@@ -40,12 +41,35 @@ const SignUp = () => {
 
     useEffect(() => {
 
-        fetch('/getEmails')
+
+        fetch('/getProfileImages')
             .then(res => {
                 return res.json();
             }).then(data => {
-                setCodeXUsers(data);
-                // console.log(data);
+
+                const images = data[0].profileImages
+
+                // console.log(images);
+
+                const randomIndex = Math.floor(Math.random() * images.length);
+
+                setProfileImages();
+
+                setNewUser(prev => ({
+                    ...prev,
+                    profileImage: images[randomIndex]
+                }));
+
+                localStorage.setItem("profileImage", images[randomIndex]);
+
+
+                fetch('/getEmails')
+                    .then(res => {
+                        return res.json();
+                    }).then(data => {
+                        setCodeXUsers(data);
+                        // console.log(data);
+                    })
             })
     }, [])
 
@@ -144,8 +168,8 @@ const SignUp = () => {
             body: JSON.stringify(newUser)
         })
             .then(res => res.json())
-            .then(res => {
-                if (res.message === "User already exist") {
+            .then(data => {
+                if (data.message === "User already exist") {
 
                     console.log(res.message);
 
@@ -154,7 +178,6 @@ const SignUp = () => {
 
                 localStorage.setItem("username", newUser.email);
 
-                localStorage.setItem("profileImage", newUser.profileImage);
 
                 navigate('/home');
 

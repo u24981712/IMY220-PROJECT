@@ -1,7 +1,8 @@
 import React from "react";
 import Button1 from "./Button1";
+import { Link } from "react-router-dom";
 
-const ProfilePreview = ({ toggle, profile }) => {
+const ProfilePreview = ({ toggle, profile, }) => {
     const { name, surname, email, bio, profileImage, skills } = profile;
 
     const topSkills = skills?.programmingLanguages?.slice(0, 3) || [];
@@ -48,7 +49,15 @@ const ProfilePreview = ({ toggle, profile }) => {
             </div>
 
             <div className="PreviewBTN">
-                <Button1 toggle={toggle} text={"Close"} style={"buttonClose"} />
+                <div>
+                    <Link to={`/profile?email=${encodeURIComponent(email)}`} >
+                        <Button1 text={"Go To Profile"} style={"acceptBtn"} />
+                    </Link>
+                </div>
+
+                <div>
+                    <Button1 toggle={toggle} text={"Close"} style={"buttonClose"} />
+                </div>
             </div>
 
         </div>

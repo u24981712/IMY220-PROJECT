@@ -47,15 +47,15 @@ const ProjectCard = ({ data }) => {
                 <div className="projectCardStats">
                     <div className="projectCardItem">
                         <span className="projectCardDot">●</span>
-                        <span className="projectCardText">file no. {data.files.length}</span>
+                        <span className="projectCardText">file no. {data?.files?.length || 0}</span>
                     </div>
                     <div className="projectCardItem">
                         <span className="projectCardDot">●</span>
-                        <span className="projectCardText">commit no. {data.commits}</span>
+                        <span className="projectCardText">check-in no. {data?.changes?.length || 0}</span>
                     </div>
                     <div className="projectCardItem">
                         <span className="projectCardDot">●</span>
-                        <span className="projectCardText">collab no. {data.collaborators.length}</span>
+                        <span className="projectCardText">collab no. {data?.collaborators?.length || 0}</span>
                     </div>
                 </div>
 

@@ -17,6 +17,8 @@ const Home = () => {
 
     const [projectNameExists, setProjectNameExists] = useState(false);
 
+    const email = localStorage.getItem("username");
+
     const [newProject, setNewProject] = useState({
         email: "",
         projectName: "",
@@ -33,13 +35,12 @@ const Home = () => {
                 dateEditted: ""
             }
         ],
-        collaborators: [],
+        collaborators: [email],
         hashtags: []
     });
 
     useEffect(() => {
 
-        const email = localStorage.getItem("username");
 
         if (email) {
             setNewProject(prev => ({
@@ -150,9 +151,8 @@ const Home = () => {
                     }
                 })
                 ;
-            setRepoModal(!repoModal);
 
-            set
+            setRepoModal(false);
 
             console.log("****** SAVED NEW PROJECT******")
 
@@ -178,15 +178,6 @@ const Home = () => {
                     toggle={toggleModal} />
             </div> : ''}
             <NavBar />
-
-            {/* <div className="mesh-wrap" aria-hidden="true">
-                <div className="mesh-layer layer-1"></div>
-                <div className="mesh-layer layer-2"></div>
-                <div className="mesh-layer layer-3"></div>
-                <div className="mesh-layer layer-4"></div>
-                <div className="mesh-layer layer-5"></div>
-                <div className="mesh-layer layer-6"></div>
-            </div> */}
 
             <div className="homePage">
                 <div className='welcomeMessage'>
@@ -238,10 +229,6 @@ const Home = () => {
                     </div>
                 }
             </div>
-
-            {/* <div className='Loadmore'>
-                <Button1 text={"Load More.."} style={"button3"} />
-            </div> */}
 
             <div className='footerDiv'>
                 <Footer />

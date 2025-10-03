@@ -26,7 +26,7 @@ const Profile = () => {
 
     const [following, setFollowing] = useState([]);
 
-    const [friendRequests, setFriendRequests] = useState([]);
+    const [friendRequestMessage, setFriendRequestsMessage] = useState("");
 
     const [loading, setLoading] = useState(true);
 
@@ -34,7 +34,7 @@ const Profile = () => {
 
     const toggleProfileModal = () => {
         setEditModal(!editModal);
-        console.log("******REACHED HERE....******")
+        // console.log("******REACHED HERE....******")
     }
 
     const navigate = useNavigate();
@@ -73,21 +73,21 @@ const Profile = () => {
 
                     const followingUsers = await Promise.all(followingPromises);
 
-                    console.log(followingUsers);
-                    setFollowers(followingUsers);
+                    // console.log(followingUsers);
+                    setFollowing(followingUsers);
 
                 }
 
                 if (userData.followers && Array.isArray(userData.followers)) {
 
-                    const followingPromises = userData.followers.map(followEmail =>
+                    const followersPromises = userData.followers.map(followEmail =>
                         fetch('/getUser/' + followEmail).then(res => res.json())
                     );
 
-                    const followingUsers = await Promise.all(followingPromises);
+                    const followersUsers = await Promise.all(followersPromises);
 
-                    console.log(followingUsers);
-                    setFollowing(followingUsers);
+                    setFollowers(followersUsers);
+                    // console.log(followersUsers);
 
                 }
 
@@ -106,8 +106,12 @@ const Profile = () => {
 
     // SENDIND A FRIEND REQEUST
     const sendFriendRequest = async (receiverEmail) => {
+
+        console.log(receiverEmail);
+
+        console.log(currentUserEmail);
+
         try {
-            const email = localStorage.getItem('username');
 
             const response = await fetch('/sendFriendRequest', {
                 method: 'POST',
@@ -115,16 +119,34 @@ const Profile = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    email: email,
+                    email: currentUserEmail,
                     receiverEmail: receiverEmail
                 })
             });
 
             const result = await response.json();
 
+            if (response.message === "request already sent") {
+                setFriendRequestsMessage(result.message);
+                return;
+            }
+
+            if (response.message === "You are already friends with this user") {
+                setFriendRequestsMessage(result.message);
+                return;
+            }
+
             if (!response.ok) {
                 throw new Error(result.message || 'Failed to send friend request');
             }
+
+            setFriendRequestsMessage(result.message);
+
+            setTimeout(() => {
+
+                setFriendRequestsMessage("");
+
+            }, 4000)
 
             console.log('Friend request sent successfully:', result);
 
@@ -133,19 +155,12 @@ const Profile = () => {
         }
     };
 
-
     // ACCEPT A FRIEND REQUEST
     const acceptFriendRequest = async (requesterEmail) => {
+        console.log(requesterEmail);
+        console.log(currentUserEmail);
+
         try {
-
-            const userData = JSON.parse(localStorage.getItem('user'));
-
-            const userEmail = userData?.email;
-
-            if (!userEmail) {
-
-                return;
-            }
 
             const response = await fetch('/acceptFriendRequest', {
                 method: 'POST',
@@ -153,7 +168,7 @@ const Profile = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    userEmail: userEmail,
+                    currentUserEmail: currentUserEmail,
                     requesterEmail: requesterEmail
                 })
             });
@@ -164,16 +179,95 @@ const Profile = () => {
                 throw new Error(result.message || 'Failed to accept friend request');
             }
 
-            console.log('Friend request accepted:', result);
-
 
         } catch (error) {
             console.error('Error accepting friend request:', error);
         }
     };
 
+    // DECLINE A FRIEND REQUEST
+    const handleDeclineRequest = async (requesterEmail) => {
+        try {
+            const response = await fetch('/declineFriendRequest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    currentUserEmail: currentUserEmail,
+                    requesterEmail: requesterEmail
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Failed to decline friend request');
+            }
+
+            setUser(prevUser => ({
+                ...prevUser,
+                friendRequests: prevUser.friendRequests.filter(email => email !== requesterEmail)
+            }));
+
+            console.log('Friend request declined:', result);
+
+        } catch (error) {
+            console.error('Error declining friend request:', error);
+        }
+    };
+
+    // DELETE PROFILE 
+    const handleDeleteProfile = async () => {
+        const confirmDelete = window.confirm(
+            'Are you sure you want to delete your profile? This will permanently delete your account and all your projects. This action cannot be undone.'
+        );
+
+        if (!confirmDelete) return;
+
+        const doubleConfirm = window.confirm(
+            'This is your last chance. Are you absolutely sure? All your data will be lost forever.'
+        );
+
+        if (!doubleConfirm) return;
+
+        try {
+            const response = await fetch('/deleteProfile', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: currentUserEmail
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Failed to delete profile');
+            }
+
+            alert('Profile deleted successfully');
+
+            localStorage.clear();
+            navigate('/');
+
+        } catch (error) {
+
+            console.error('Error deleting profile:', error);
+
+        }
+    };
+
+
     if (loading) {
-        return <div>Loading...</div>;
+        return <>
+            <link rel="stylesheet" type="text/css" href="/assets/css/Profile.css" />
+            <div className="isLoadingDiv">
+                <div className="loader"></div>
+            </div>
+        </>
     }
 
     return (
@@ -182,18 +276,21 @@ const Profile = () => {
             <link rel="stylesheet" type="text/css" href="/assets/css/Profile.css" />
 
             {editModal ?
-                <EditProfile toggle={toggleProfileModal} user={user} /> :
+                <EditProfile toggle={toggleProfileModal} user={user} setUser={setUser} /> :
 
                 <div className="profileContainer">
                     <div className="profile-sidebar">
                         <div className="profile-card">
                             <div className="avatar">
-                                <img className="avatarImage" src={profileImage} alt="Profile" />
+                                <img className="avatarImage" src={user?.profileImage} alt="Profile" />
                             </div>
-                            <h1 className="username">Njabulo Nhlengethwa</h1>
+                            <h1 className="username">{user?.name} {user?.surname}</h1>
 
-                            <Button1 toggle={toggleProfileModal} text={"Edit Profile"} style={"buttonEdit"} />
-
+                            {currentUserEmail === email && (
+                                <>
+                                    <Button1 toggle={toggleProfileModal} text={"Edit Profile"} style={"buttonEdit"} />
+                                </>
+                            )}
                             <div className="handle">{email}</div>
 
                             <p className="bio">{user ? user.bio : ""}</p>
@@ -220,10 +317,17 @@ const Profile = () => {
                             {
                                 currentUserEmail !== email ?
 
-                                    <Button1 text={"Follow"} style={"button4 followButton"} />
+                                    <Button1 toggle={() => sendFriendRequest(email)} text={"Follow"} style={"button4 followButton"} />
                                     :
                                     <Button1 toggle={handleLogout} text={"Log out"} style={"buttonOut"} />
                             }
+
+                            {friendRequestMessage !== "" ?
+                                <p>
+                                    {friendRequestMessage}
+                                </p>
+                                :
+                                null}
 
                         </div>
 
@@ -279,7 +383,7 @@ const Profile = () => {
                     <div className="friendsContainer">
                         <h2 className="friendsTitle">
                             <span>💖</span>
-                            Friends ({user?.followers ? user?.followers?.length : 0})
+                            Friends ({followers ? followers?.length : 0})
                         </h2>
 
                         <div className="friendsDivider"></div>
@@ -288,7 +392,7 @@ const Profile = () => {
                             <div>Loading friends...</div>
                         )
                             :
-                            followers > 0 ? (
+                            followers.length > 0 ? (
                                 <>
                                     <div className="friendsGrid">
                                         {followers.map((friend, index) => (
@@ -312,33 +416,47 @@ const Profile = () => {
                                 </div>
                             )}
 
-                        <div className="friendRequest">
-                            <h3> Friend Requests</h3>
-                            <div className="friendsDivider">
-                            </div>
-
-
-                            {user.friendRequests.map((friend, index) => (
-
-                                <div key={index} className="friendCard friendRequestCard">
-                                    <div className="friendInfo">
-                                        <p>{friend} </p>
-                                    </div>
-                                    <div className="friendReqBTN" >
-                                        <Button1 text={"Accept"} style={"acceptBtn"} />
-                                    </div>
-                                    <div className="friendReqBTN" >
-                                        <Button1 text={"Decline"} style={"button0"} />
-                                    </div>
+                        {email === currentUserEmail ?
+                            <div className="friendRequest">
+                                <h3> Friend Requests</h3>
+                                <div className="friendsDivider">
                                 </div>
-                            ))}
-                        </div>
+
+
+                                {user?.friendRequests && user.friendRequests.length > 0 ? (
+                                    user.friendRequests.map((friend, index) => (
+                                        <div key={index} className="friendCard friendRequestCard">
+                                            <div className="friendInfo">
+                                                <p>{friend}</p>
+                                            </div>
+                                            <div className="friendReqBTN">
+                                                <Button1
+                                                    toggle={() => acceptFriendRequest(friend)}
+                                                    text={"Accept"}
+                                                    style={"acceptBtn"}
+                                                />
+                                            </div>
+                                            <div className="friendReqBTN">
+                                                <Button1 toggle={() => handleDeclineRequest(friend)} text={"Decline"} style={"button0"} />
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="no-requests">
+                                        <p>No friend requests</p>
+                                    </div>
+                                )}
+                            </div>
+                            : null}
                     </div>
 
-                    <div className="deleteProfile">
-                        <Button1 text={"Delete Profile"} style={"button0"} />
-                    </div>
-                </div>
+                    {email === currentUserEmail ?
+
+                        <div className="deleteProfile">
+                            <Button1 toggle={handleDeleteProfile} text={"Delete Profile"} style={"button0"} />
+                        </div>
+                        : null}
+                </div >
 
             }
         </>

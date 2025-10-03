@@ -2,23 +2,99 @@ import React, { useState, useEffect } from "react";
 import NavBar from "../components/NavBar";
 import Button1 from "../components/Button1";
 
-const EditProfile = ({ toggle, user }) => {
-    // const [formData, setFormData] = useState({
-    //     name: "Michael",
-    //     surname: "Brown",
-    //     email: "michael.b@example.com",
-    //     bio: "Mobile developer focused on React Native and Flutter. Passionate about cross-platform development, AI integration, and creating seamless mobile experiences. Always exploring new tech trends.",
-    //     profileImage: "https://api.dicebear.com/9.x/adventurer/svg?seed=Leo",
-    //     skills: {
-    //         programmingLanguages: ["C#", "Java", "Kotlin", "Swift", "Python", "JavaScript"],
-    //         technologies: [".NET", "Spring Boot", "Android", "iOS", "Azure", "SQL Server", "Unity"]
-    //     }
-    // });
+const EditProfile = ({ toggle, user, setUser }) => {
 
     const [formData, setFormData] = useState(user);
-
     const [newLanguage, setNewLanguage] = useState("");
     const [newTechnology, setNewTechnology] = useState("");
+    const [message, setMessage] = useState("");
+
+    const handleAddLanguage = () => {
+        if (!newLanguage.trim()) return;
+
+        setFormData(prev => ({
+            ...prev,
+            skills: {
+                ...prev.skills,
+                programmingLanguages: [...prev.skills.programmingLanguages, newLanguage.trim()]
+            }
+        }));
+        setNewLanguage("");
+    };
+
+    const handleRemoveLanguage = (index) => {
+        setFormData(prev => ({
+            ...prev,
+            skills: {
+                ...prev.skills,
+                programmingLanguages: prev.skills.programmingLanguages.filter((_, i) => i !== index)
+            }
+        }));
+    };
+
+    const handleAddTechnology = () => {
+        if (!newTechnology.trim()) return;
+
+        setFormData(prev => ({
+            ...prev,
+            skills: {
+                ...prev.skills,
+                technologies: [...prev.skills.technologies, newTechnology.trim()]
+            }
+        }));
+        setNewTechnology("");
+    };
+
+    const handleRemoveTechnology = (index) => {
+        setFormData(prev => ({
+            ...prev,
+            skills: {
+                ...prev.skills,
+                technologies: prev.skills.technologies.filter((_, i) => i !== index)
+            }
+        }));
+    };
+
+    const handleSaveChanges = async () => {
+        try {
+            const response = await fetch('/updateUser', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                setMessage('Profile updated successfully!');
+
+                console.log("NEW DATA: ", result.user);
+
+                setUser(result.user);
+                setTimeout(() => {
+                    toggle();
+                }, 1500);
+            } else {
+                setMessage(result.error || 'Update failed');
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            setMessage('Update failed. Please try again.');
+        }
+    };
+
+    const handleKeyPress = (e, type) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (type === 'language') {
+                handleAddLanguage();
+            } else {
+                handleAddTechnology();
+            }
+        }
+    };
 
     return (
         <>
@@ -66,8 +142,9 @@ const EditProfile = ({ toggle, user }) => {
                                 type="email"
                                 id="email"
                                 value={formData.email}
-                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                disabled
                                 className="form-input"
+                                title="Email cannot be changed"
                             />
                         </div>
 
@@ -79,9 +156,9 @@ const EditProfile = ({ toggle, user }) => {
                                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                                 className="form-textarea"
                                 rows="4"
+                                placeholder="Tell us about yourself..."
                             />
                         </div>
-
                     </div>
 
                     <div className="skills-section">
@@ -90,7 +167,12 @@ const EditProfile = ({ toggle, user }) => {
                             {formData.skills.programmingLanguages.map((language, index) => (
                                 <span key={index} className="skill-tag">
                                     {language}
-                                    <button className="remove-tag">×</button>
+                                    <button
+                                        onClick={() => handleRemoveLanguage(index)}
+                                        className="remove-tag"
+                                    >
+                                        ×
+                                    </button>
                                 </span>
                             ))}
                         </div>
@@ -100,9 +182,15 @@ const EditProfile = ({ toggle, user }) => {
                                 placeholder="Add programming language..."
                                 value={newLanguage}
                                 onChange={(e) => setNewLanguage(e.target.value)}
+                                onKeyPress={(e) => handleKeyPress(e, 'language')}
                                 className="form-input"
                             />
-                            <button className="add-skill-btn">Add</button>
+                            <button
+                                onClick={handleAddLanguage}
+                                className="add-skill-btn"
+                            >
+                                Add
+                            </button>
                         </div>
 
                         <h3>Technologies</h3>
@@ -110,7 +198,12 @@ const EditProfile = ({ toggle, user }) => {
                             {formData.skills.technologies.map((tech, index) => (
                                 <span key={index} className="skill-tag">
                                     {tech}
-                                    <button className="remove-tag">×</button>
+                                    <button
+                                        onClick={() => handleRemoveTechnology(index)}
+                                        className="remove-tag"
+                                    >
+                                        x
+                                    </button>
                                 </span>
                             ))}
                         </div>
@@ -120,15 +213,35 @@ const EditProfile = ({ toggle, user }) => {
                                 placeholder="Add technology..."
                                 value={newTechnology}
                                 onChange={(e) => setNewTechnology(e.target.value)}
+                                onKeyPress={(e) => handleKeyPress(e, 'technology')}
                                 className="form-input"
                             />
-                            <button className="add-skill-btn">Add</button>
+                            <button
+                                onClick={handleAddTechnology}
+                                className="add-skill-btn"
+                            >
+                                Add
+                            </button>
                         </div>
                     </div>
 
+                    {message && (
+                        <div className={`message ${message.includes('success') ? 'success' : 'error'}`}>
+                            {message}
+                        </div>
+                    )}
+
                     <div className="form-actions">
-                        <Button1 text="Save Changes" style="buttonSave" />
-                        <Button1 toggle={toggle} text="Cancel" style="button0" />
+                        <Button1
+                            toggle={handleSaveChanges}
+                            text="Save Changes"
+                            style="buttonSave"
+                        />
+                        <Button1
+                            toggle={toggle}
+                            text="Cancel"
+                            style="button0"
+                        />
                     </div>
                 </div>
             </div>

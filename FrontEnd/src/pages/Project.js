@@ -17,8 +17,6 @@ const Project = () => {
 
     const currentUserEmail = localStorage.getItem("username");
 
-    // const profileImage = localStorage.getItem("profileImage") || "";
-
     const { projectName } = useParams();
 
     const [searchParams] = useSearchParams();
@@ -41,6 +39,43 @@ const Project = () => {
 
     const [confirmDelete, setConfirmDelete] = useState(false);
 
+    const [checkInMessage, setCheckInMessage] = useState('');
+
+    const [showCheckInModal, setShowCheckInModal] = useState(false);
+
+    const [projectChanges, setProjectChanges] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+
+                const repoResponse = await fetch(`/getProject/${projectName}?email=${encodeURIComponent(email)}`);
+
+                const repoData = await repoResponse.json();
+                setProject(repoData);
+
+                const userResponse = await fetch('/getUser/' + repoData.email);
+                const userData = await userResponse.json();
+                setRepoUser(userData);
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+
+        // PROJECT NAME USED AS A DEPENDENCY FOR EACH PROJECT
+    }, [projectName]);
+
+
+    useEffect(() => {
+        if (project && project.files) {
+            setShowEditOptions(new Array(project.files.length).fill(false));
+        }
+    }, [project]);
 
     const toggleShowProfile = () => {
         setShowProfile(!showProfile);
@@ -50,7 +85,7 @@ const Project = () => {
 
     const toggleShowEditOptions = (index) => {
 
-        console.log("FILE INDEX :" + index);
+        // console.log("FILE INDEX :" + index);
 
         // setShowEditOptions(!showEditOptions[index]);
         setShowEditOptions(prev => {
@@ -62,17 +97,20 @@ const Project = () => {
         });
     }
 
+    // UPLOAD AND EDIT BANNER IMAGES
     const handleFileSelect = (event) => {
         const file = event.target.files[0];
         if (!file) return;
 
         if (file.size > 1 * 1024 * 1024) {
             setMessage('Image too large! Max 1MB allowed.');
+            timeOutFunc();
             return;
         }
 
         if (!file.type.startsWith('image/')) {
             setMessage('Please select an image file.');
+            timeOutFunc();
             return;
         }
 
@@ -84,6 +122,7 @@ const Project = () => {
 
         if (!selectedFile) {
             setMessage('Please select an image first.');
+            timeOutFunc();
             return;
         }
 
@@ -113,16 +152,19 @@ const Project = () => {
                 const updatedData = await updatedResponse.json();
 
                 setProject(updatedData);
+                timeOutFunc();
 
             } else {
 
                 setMessage(result.error || 'Upload failed');
+                timeOutFunc();
             }
 
         } catch (error) {
             console.error('Upload error:', error);
 
             setMessage('Upload failed. Please try again.');
+            timeOutFunc();
 
         } finally {
             setUploading(false);
@@ -182,42 +224,170 @@ const Project = () => {
         }
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
+    // FILE SECTION
+    // UPLOAD FILES
 
-                const repoResponse = await fetch(`/getProject/${projectName}?email=${encodeURIComponent(email)}`);
+    const [file, setFile] = useState(null);
+    const [fileMessage, setFileMessage] = useState('');
 
-                const repoData = await repoResponse.json();
-                setProject(repoData);
+    // SELECT SINGLE FILE
+    const FileSelect = (event) => {
+        const selectedFile = event.target.files[0];
+        if (!selectedFile) return;
 
-                const userResponse = await fetch('/getUser/' + repoData.email);
-                const userData = await userResponse.json();
-                setRepoUser(userData);
-
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-
-        // PROJECT NAME USED AS A DEPENDENCY FOR EACH PROJECT
-    }, [projectName]);
-
-
-    useEffect(() => {
-        if (project && project.files) {
-            setShowEditOptions(new Array(project.files.length).fill(false));
+        if (selectedFile.size > 10 * 1024 * 1024) {
+            setFileMessage('File too large! Max 10MB allowed.');
+            timeOutFunc();
+            return;
         }
-    }, [project]);
 
+        setFile(selectedFile);
+        setFileMessage(`Selected: ${selectedFile.name}`);
+        setShowCheckInModal(true);
+    }
+
+    // SELECT SINGLE FILE
+    const FileUpload = async () => {
+        if (!file) {
+            setFileMessage('Please select a file first.');
+            timeOutFunc();
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('email', localStorage.getItem("username"));
+        formData.append('checkInMessage', checkInMessage);
+
+        try {
+            const response = await fetch(`/uploadFile/${encodeURIComponent(projectName)}`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                setFileMessage('File uploaded successfully!');
+                setFile(null);
+                setCheckInMessage('');
+
+                setProject(result.project);
+                setProjectChanges(result.project);
+
+            } else {
+                setFileMessage(result.error || 'Upload failed');
+                timeOutFunc();
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            setFileMessage('Upload failed. Please try again.');
+            timeOutFunc();
+        }
+    }
+
+    const handleCancelCheckIn = () => {
+
+        setShowCheckInModal(false);
+        setFile(null);
+        setCheckInMessage('');
+        document.getElementById('file-upload').value = '';
+
+    }
+
+    const handleCheckIn = () => {
+
+        if (!checkInMessage.trim()) {
+            setFileMessage('Please enter a check-in message');
+            return;
+        }
+        setShowCheckInModal(false);
+        FileUpload();
+    }
+
+    // DOWNLOAD FILE
+    const handleDownloadFile = async (file) => {
+        try {
+            const response = await fetch(`/downloadFile/${encodeURIComponent(projectName)}/${encodeURIComponent(file.fileName)}?email=${encodeURIComponent(email)}`);
+
+            if (!response.ok) {
+                throw new Error('File download failed');
+            }
+
+            const blob = await response.blob();
+
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = file.fileName;
+            document.body.appendChild(a);
+            a.click();
+
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+            // console.log('File downloaded successfully:', file.fileName);
+
+        } catch (error) {
+
+            console.error('Error downloading file:', error);
+
+            setFileMessage('Failed to download file');
+        }
+    };
+
+    // DELETE FILE
+    const handleDeleteFile = async (fileName) => {
+        try {
+            if (!confirm(`Are you sure you want to delete "${fileName}"?`)) {
+                return;
+            }
+
+            const response = await fetch('/deleteFile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    projectName: projectName,
+                    fileName: fileName,
+                    email: localStorage.getItem("username")
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Failed to delete file');
+            }
+
+            // console.log('File deleted successfully:', fileName);
+
+            const updatedResponse = await fetch(`/getProject/${projectName}?email=${encodeURIComponent(email)}`);
+
+            const updatedData = await updatedResponse.json();
+
+            setProject(updatedData);
+
+            setFileMessage('File deleted successfully!');
+
+            timeOutFunc();
+
+        } catch (error) {
+            console.error('Error deleting file:', error);
+            setFileMessage('Failed to delete file');
+        }
+    };
+
+    const timeOutFunc = () => {
+
+        setTimeout(() => {
+            setFileMessage('');
+            setMessage('');
+        }, 4000);
+    }
 
     const handleProjectDetele = async (projectName, email) => {
-
-        // console.log(projectName, "--- ", email);
 
         const res = await fetch("/deleteProject", {
             method: 'POST',
@@ -345,51 +515,122 @@ const Project = () => {
                 <div className="horintalLine">
                 </div>
 
-                <div className="fileManagement">
-                    <input placeholder="Search for a file..." className="ProjectSearchBar" />
-                    <div className="downloadfiles">
-                        <Button1 text={"Download Files"} style={"DownloadFiles"} />
-                    </div>
-                    <div className="addfiles">
-                        <Button1 text={"Add Files"} style={"DownloadFiles"} />
+                <div>
+                    <div className={project.collaborators?.includes(currentUserEmail) ? "fileManagement" : "fileManagementNoBtns"}>
+                        <input placeholder="Search for a file..." className="ProjectSearchBar" />
+                        <div className="downloadfiles">
+                            <Button1 text={"Download Files"} style={"DownloadFiles"} />
+                        </div>
+
+                        {project.collaborators?.includes(currentUserEmail) &&
+                            <div className="fileFormBTNS">
+                                <form className="fileSelect" >
+                                    <div className="fileform">
+                                        <label htmlFor="file-upload" className="fileLabel">
+                                            Add File
+                                        </label>
+                                        <input
+                                            id="file-upload"
+                                            type="file"
+                                            accept="*"
+                                            className="imageInput"
+                                            onChange={FileSelect}
+                                        />
+                                    </div>
+
+                                </form>
+                                {showCheckInModal && (
+                                    <div className="checkInModal">
+                                        <div className="checkInContent">
+                                            <h3>Check-in Message</h3>
+                                            <p>Describe what you're adding or changing:</p>
+                                            <textarea
+                                                value={checkInMessage}
+                                                onChange={(e) => setCheckInMessage(e.target.value)}
+                                                placeholder="e.g., Added login functionality, Fixed navigation bug..."
+                                                rows="4"
+                                                className="checkInTextarea"
+                                            />
+                                            <div className="checkInButtons">
+                                                <Button1
+                                                    toggle={handleCheckIn}
+                                                    text="Check In & Upload"
+                                                    style="DownloadFiles"
+                                                />
+                                                <Button1
+                                                    toggle={handleCancelCheckIn}
+                                                    text="Cancel"
+                                                    style="button0"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+
+                            </div>
+
+                        }
+                        <div>
+                            {fileMessage && (
+                                <div className={`message ${fileMessage.includes('success') ? 'success' : 'error'}`}>
+                                    {fileMessage}
+                                </div>
+                            )}
+                        </div>
+
                     </div>
                 </div>
 
                 <div className="fileGrid">
 
                     <div className="fileContainer">
-                        {project.files && project.files.length > 0 ? project.files.map((file, index) => ( // FIXED: Check files array
+
+                        {project.files && project.files.length > 0 ? (project.files.map((file, index) => (
 
                             <div key={index} className="singleFiles">
+
                                 <div>
-                                    {file.includes('/') ? '📁' : '📄'}
-                                    <Link to={`/file/${file}`}>{file}</Link>
+                                    📄
+                                    <Link to={`/file/${file.fileName}`}>{file.fileName}</Link>
                                 </div>
+
                                 <div className="creationDate">
-                                    2025-09-02
+                                    {file.uploadedAt
+                                        ? new Date(file.uploadedAt).toLocaleDateString()
+                                        : 'Loading...'}
                                 </div>
+
                                 <span onClick={() => toggleShowEditOptions(index)} className="more_vert material-symbols-outlined">
                                     more_vert
                                 </span>
 
-                                {showEditOptions[index] ?
-                                    <div onMouseLeave={() => toggleShowEditOptions(index)} className="showEditOptions">
+                                {showEditOptions[index] && (
+                                    < div onMouseLeave={() => toggleShowEditOptions(index)} className="showEditOptions">
 
-                                        <p>DELETE {file.includes('/') ? "Directory" : "File"}</p>
-                                        <p>Download {file.includes('/') ? "Directory" : "File"}</p>
-                                    </div> : ''
-                                    // SHOW SETTING RELATED OPTIONS FOR THE SPECTIFIC FILE
-                                }
+                                        {currentUserEmail === email ?
+                                            < button className="deleteFile actionBTN" onClick={() => handleDeleteFile(file.fileName)}>
+                                                Delete File
+                                            </button>
+                                            : null}
+
+                                        <button className="downloadFile actionBTN" onClick={() => handleDownloadFile(file)}>
+                                            Download File
+                                        </button>
+                                    </div>
+                                )}
                             </div>
-                        )) :
+                        ))) : (
+
                             <div className="noProjectFiles">
                                 <span >Project has no files</span>
                             </div>
-                        }
+                        )}
                     </div>
 
                     <div className="MessagesContainer">
-                        {project.messages && project.messages.length > 0 ? project.messages.map((messages, index) => ( // FIXED: Check messages array
+
+                        {projectChanges && projectChanges.length > 0 ? projectChanges.map((messages, index) => (
                             <div className="SingleMessage" key={index}>
                                 <Messages messages={messages} />
                             </div>
@@ -402,7 +643,7 @@ const Project = () => {
                         }
                     </div>
                 </div>
-            </div>
+            </div >
 
             <div className="projectDelete">
 
@@ -424,31 +665,33 @@ const Project = () => {
 
             </div>
 
-            {confirmDelete ? (
-                <div className="modalOverlay">
-                    <div className="modal">
-                        <div className="modalContent">
-                            <p>Are you sure you want to delete <span><strong>{project.projectName.toUpperCase()} </strong> </span>?</p>
-                            <div className="modalButtons">
-                                <div>
-                                    <Button1 toggle={() => setConfirmDelete(false)} text={"Cancel"} style={"button2"} />
-                                </div>
-                                <div>
-                                    <Button1 toggle={() => handleProjectDetele(project.projectName, repoUser.email)} text={"Delete"} style={"button0"} />
-                                </div>
+            {
+                confirmDelete ? (
+                    <div className="modalOverlay">
+                        <div className="modal">
+                            <div className="modalContent">
+                                <p>Are you sure you want to delete <span><strong>{project.projectName.toUpperCase()} </strong> </span>?</p>
+                                <div className="modalButtons">
+                                    <div>
+                                        <Button1 toggle={() => setConfirmDelete(false)} text={"Cancel"} style={"button2"} />
+                                    </div>
+                                    <div>
+                                        <Button1 toggle={() => handleProjectDetele(project.projectName, repoUser.email)} text={"Delete"} style={"button0"} />
+                                    </div>
 
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div >
-            ) : null}
+                    </div >
+                ) : null
+            }
 
 
 
             {
                 showProfile && repoUser ?
                     <div className="ProjectOwner">
-                        <ProfilePreview className="ProjectOwnerPreview" toggle={toggleShowProfile} profile={repoUser} />
+                        <ProfilePreview className="ProjectOwnerPreview" toggle={toggleShowProfile} profile={repoUser} email={email} />
                     </div> : ""
             }
         </>
