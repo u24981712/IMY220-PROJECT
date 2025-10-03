@@ -51,7 +51,7 @@ const ProjectCard = ({ data }) => {
                     </div>
                     <div className="projectCardItem">
                         <span className="projectCardDot">●</span>
-                        <span className="projectCardText">check-in no. {data?.changes?.length || 0}</span>
+                        <span className="projectCardText">check-in no. {data?.messages?.length || 0}</span>
                     </div>
                     <div className="projectCardItem">
                         <span className="projectCardDot">●</span>

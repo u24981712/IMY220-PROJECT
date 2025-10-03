@@ -43,8 +43,6 @@ const Project = () => {
 
     const [showCheckInModal, setShowCheckInModal] = useState(false);
 
-    const [projectChanges, setProjectChanges] = useState([]);
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -273,7 +271,6 @@ const Project = () => {
                 setCheckInMessage('');
 
                 setProject(result.project);
-                setProjectChanges(result.project);
 
             } else {
                 setFileMessage(result.error || 'Upload failed');
@@ -630,7 +627,7 @@ const Project = () => {
 
                     <div className="MessagesContainer">
 
-                        {projectChanges && projectChanges.length > 0 ? projectChanges.map((messages, index) => (
+                        {project.messages && project.messages.length > 0 ? project.messages.map((messages, index) => (
                             <div className="SingleMessage" key={index}>
                                 <Messages messages={messages} />
                             </div>

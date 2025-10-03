@@ -4,8 +4,8 @@ const Messages = ({ messages }) => {
     return (
         <>
             <p className="ProjectMessage">{messages.message}</p>
-            <p className="ProjectEditor">{messages.editor}</p>
-            <p className="ProjectEditDate">{messages.dateEditted}</p>
+            <p className="ProjectEditor">{messages.uploadedBy}</p>
+            <p className="ProjectEditDate">{messages.date}</p>
 
         </>
     )

@@ -195,6 +195,14 @@ app.post('/uploadFile/:projectName', uploadFile.single('file'), async (req, res)
     const date = new Date().toISOString();
     const dateOnly = date.split('T')[0];
 
+    const newMessage = {
+      message: checkInMessage,
+      date: dateOnly,
+      fileName: fileName,
+      uploadedBy: email,
+      timestamp: dateOnly
+    };
+
     const result = await DATABASE.collection(projectsCollection).updateOne(
       { projectName: projectName, email: email },
       {
@@ -206,11 +214,7 @@ app.post('/uploadFile/:projectName', uploadFile.single('file'), async (req, res)
             content: base64File,
             uploadedAt: dateOnly
           },
-          messages: {
-            message: checkInMessage,
-            date: dateOnly,
-            fileName: fileName
-          }
+          messages: newMessage
         }
       }
     );
@@ -234,7 +238,6 @@ app.post('/uploadFile/:projectName', uploadFile.single('file'), async (req, res)
     res.status(500).json({ error: 'Upload failed' });
   }
 });
-
 app.get('/downloadFile/:projectName/:fileName', async (req, res) => {
   try {
     const { projectName, fileName } = req.params;

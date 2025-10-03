@@ -6,19 +6,22 @@ import Footer from "../components/Footer";
 
 const Explore = () => {
     const [Repositories, setRepositories] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         fetch('/getProjects')
             .then(res => {
                 return res.json();
             }).then(data => {
-
-                const newData = data.filter((data) => data.Label === "Public")
-
+                const newData = data.filter((data) => data.Label === "Public");
                 setRepositories(newData);
-                // console.log(newData);
-            })
+            });
     }, []);
+
+    const filteredRepositories = Repositories.filter(repo =>
+        repo.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        repo.description?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
         <>
@@ -26,10 +29,10 @@ const Explore = () => {
 
             <NavBar />
             <div className="ExplorePage">
-                <h2 className="LETSEXPLORE" >Let's <span>X</span>plore!</h2>
+                <h2 className="LETSEXPLORE">Let's <span>X</span>plore!</h2>
 
                 <div className="ExplorePageSearchBar">
-                    <SearchBar />
+                    <SearchBar onSearch={setSearchTerm} />
                 </div>
 
                 <div className="HomePageDropDowns">
@@ -51,11 +54,15 @@ const Explore = () => {
                 </div>
 
                 <div className="ExplorePageProjects">
-                    {Repositories && Repositories.map((data, index) => (
-                        <div key={index} >
-                            <ProjectCard data={data} />
-                        </div>
-                    ))}
+                    {filteredRepositories.length > 0 ? (
+                        filteredRepositories.map((data, index) => (
+                            <div key={index}>
+                                <ProjectCard data={data} />
+                            </div>
+                        ))
+                    ) : (
+                        <p>No projects found.</p>
+                    )}
                 </div>
             </div>
             <div className='footerDiv'>

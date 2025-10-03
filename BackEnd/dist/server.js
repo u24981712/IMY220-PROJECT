@@ -231,7 +231,7 @@ app.post('/uploadBanner/:projectName', upload.single('banner'), /*#__PURE__*/fun
 
 app.post('/uploadFile/:projectName', uploadFile.single('file'), /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(req, res) {
-    var projectName, email, fileName, checkInMessage, base64File, date, dateOnly, result, project, _t2;
+    var projectName, email, fileName, checkInMessage, base64File, date, dateOnly, newMessage, result, project, _t2;
     return _regenerator().w(function (_context2) {
       while (1) switch (_context2.p = _context2.n) {
         case 0:
@@ -251,6 +251,13 @@ app.post('/uploadFile/:projectName', uploadFile.single('file'), /*#__PURE__*/fun
           base64File = req.file.buffer.toString('base64');
           date = new Date().toISOString();
           dateOnly = date.split('T')[0];
+          newMessage = {
+            message: checkInMessage,
+            date: dateOnly,
+            fileName: fileName,
+            uploadedBy: email,
+            timestamp: dateOnly
+          };
           _context2.n = 2;
           return DATABASE.collection(projectsCollection).updateOne({
             projectName: projectName,
@@ -264,11 +271,7 @@ app.post('/uploadFile/:projectName', uploadFile.single('file'), /*#__PURE__*/fun
                 content: base64File,
                 uploadedAt: dateOnly
               },
-              messages: {
-                message: checkInMessage,
-                date: dateOnly,
-                fileName: fileName
-              }
+              messages: newMessage
             }
           });
         case 2:

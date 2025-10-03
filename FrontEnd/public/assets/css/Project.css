@@ -361,6 +361,7 @@ body {
   font-size: 20px;
   color: var(--accent);
   width: 100%;
+  max-height: 400px;
 }
 
 .noProjectFiles {
