@@ -558,6 +558,65 @@ app.post("/newProject", async (req, res) => {
     res.status(500).json({ message: "Error saving project" });
   }
 });
+
+app.post("/updateProject", async (req, res) => {
+  try {
+    const { oldProjectName, newProjectName, label, email } = req.body;
+
+    if (!oldProjectName || !newProjectName || !label || !email) {
+      return res.status(400).json({
+        message:
+          "Old project name, new project name, label, and email are required",
+      });
+    }
+
+    // DON'T ALLOW DUPLICATE PROJECT NAMES FOR THE SAME USER
+    if (oldProjectName !== newProjectName) {
+      const existingProject = await DATABASE.collection(
+        projectsCollection
+      ).findOne({
+        projectName: newProjectName,
+        email: email,
+      });
+
+      if (existingProject) {
+        return res.status(400).json({
+          message: "A project with this name already exists",
+        });
+      }
+    }
+
+    const result = await DATABASE.collection(projectsCollection).updateOne(
+      {
+        projectName: oldProjectName,
+        email: email,
+      },
+      {
+        $set: {
+          projectName: newProjectName,
+          Label: label,
+        },
+      }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({
+        message: "Project not found or no changes made",
+      });
+    }
+
+    res.json({
+      message: "Project updated successfully",
+      projectName: newProjectName,
+    });
+  } catch (error) {
+    console.error("Update project error:", error);
+    res.status(500).json({
+      message: "Error updating project",
+      error: error.message,
+    });
+  }
+});
 /***************************************************************************/
 // DELETE PROJECT
 /***************************************************************************/

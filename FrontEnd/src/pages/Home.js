@@ -34,7 +34,7 @@ const Home = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Filter states
+  // FILTER STATES
   const [sortBy, setSortBy] = useState("Alphabetical");
   const [labelFilter, setLabelFilter] = useState("All");
   const [timeFilter, setTimeFilter] = useState("All Time");

@@ -128,3 +128,82 @@ body {
   font-weight: 600;
   padding: 20px;
 }
+
+.userSearch {
+  width: 80%;
+  background: var(--bgLight);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow-s);
+  margin: 20px auto;
+  border: 1px solid var(--secondary);
+}
+
+.userSearchDiv {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 10px;
+
+}
+
+.userSearch h3 {
+  color: var(--accent);
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+  border-bottom: 1px solid var(--secondary);
+  padding-bottom: 10px;
+}
+
+.userSearchContainer {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-direction: row;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--secondary);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.userSearchContainer:hover {
+  background: var(--secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.userSearchContainer img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.userDeatils {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  box-sizing: border-box;
+}
+
+.userSearchContainer span:first-child {
+  color: var(--light);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.userSearchContainer span:last-child {
+  color: var(--accent);
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.noUsersFound {
+  height: 50px;
+}

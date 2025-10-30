@@ -556,12 +556,115 @@ body {
   margin: 20px;
 }
 
+.editProjectDetail {
+  width: 80%;
+  margin: 0 auto;
+  height: fit-content;
+  background-color: var(--bgLight);
+  border-radius: 15px;
+}
+
 .projectDelete {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin-bottom: 50px;
+}
+
+.editProjectBTNDiv {
+  display: flex;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+.editProjectDetailOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.editProjectDetail {
+  background-color: #0a2231;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.editProjectHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.editProjectHeader h2 {
+  color: #f5edd8;
+  margin: 0;
+}
+
+.closeEditForm {
+  background: none;
+  border: none;
+  color: #f5edd8;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+}
+
+.closeEditForm:hover {
+  color: #7be3d0;
+}
+
+.editProjectForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroup label {
+  color: #f5edd8;
+  font-weight: 500;
+}
+
+.editInput,
+.editDropdown {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #7be3d0;
+  background-color: #0d2d3f;
+  color: #f5edd8;
+  font-size: 16px;
+}
+
+.editInput:focus,
+.editDropdown:focus {
+  outline: none;
+  border-color: #7be3d0;
+  box-shadow: 0 0 0 2px rgba(123, 227, 208, 0.2);
+}
+
+.editProjectButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .modalOverlay {

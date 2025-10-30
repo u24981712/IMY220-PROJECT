@@ -44,6 +44,19 @@ const Project = () => {
 
   const [showCheckInModal, setShowCheckInModal] = useState(false);
 
+  const [newProjectName, setNewProjectName] = useState(projectName);
+
+  const [newLabel, setLabel] = useState("");
+
+  const [EditForm, setEditForm] = useState(false);
+
+  useEffect(() => {
+    if (project) {
+      setNewProjectName(project.projectName);
+      setLabel(project.Label);
+    }
+  }, [project]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -53,8 +66,6 @@ const Project = () => {
 
         const repoData = await repoResponse.json();
         setProject(repoData);
-
-        // setCollaborators(repoData.collaborators);
 
         const userResponse = await fetch("/getUser/" + repoData.email);
         const userData = await userResponse.json();
@@ -500,6 +511,70 @@ const Project = () => {
     }
   };
 
+  const toggleEditForm = () => {
+    setEditForm(!EditForm);
+  };
+
+  const handleEditProjectDetails = async () => {
+    try {
+      // Validation
+      if (!newProjectName.trim()) {
+        setFileMessage("Project name cannot be empty");
+        timeOutFunc();
+        return;
+      }
+
+      if (!newLabel) {
+        setFileMessage("Please select a label");
+        timeOutFunc();
+        return;
+      }
+
+      const response = await fetch("/updateProject", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          oldProjectName: project.projectName,
+          newProjectName: newProjectName,
+          label: newLabel,
+          email: currentUserEmail,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setFileMessage(data.message || "Failed to update project");
+        timeOutFunc();
+        return;
+      }
+
+      const updatedResponse = await fetch(
+        `/getProject/${newProjectName}?email=${encodeURIComponent(
+          currentUserEmail
+        )}`
+      );
+      const updatedData = await updatedResponse.json();
+
+      setProject(updatedData);
+      setFileMessage("Project updated successfully!");
+      timeOutFunc();
+      setEditForm(false);
+
+      if (newProjectName !== project.projectName) {
+        navigate(`/project/${newProjectName}?email=${currentUserEmail}`, {
+          replace: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error updating project:", error);
+      setFileMessage("Failed to update project");
+      timeOutFunc();
+    }
+  };
+
   if (loading) {
     return (
       <div
@@ -843,6 +918,70 @@ const Project = () => {
         </div>
       </div>
 
+      {EditForm ? (
+        <div className="editProjectDetailOverlay">
+          <div className="editProjectDetail">
+            <div className="editProjectHeader">
+              <h2>Edit Project Details</h2>
+              <button onClick={toggleEditForm} className="closeEditForm">
+                ✕
+              </button>
+            </div>
+
+            <div className="editProjectForm">
+              <div className="formGroup">
+                <label htmlFor="projectName">Project Name</label>
+                <input
+                  id="projectName"
+                  type="text"
+                  value={newProjectName}
+                  onChange={(e) => setNewProjectName(e.target.value)}
+                  placeholder="Enter project name"
+                  className="editInput"
+                />
+              </div>
+
+              <div className="formGroup">
+                <label htmlFor="projectLabel">Label</label>
+                <select
+                  id="projectLabel"
+                  value={newLabel}
+                  onChange={(e) => setLabel(e.target.value)}
+                  className="editDropdown"
+                >
+                  <option value="">Select Label</option>
+                  <option value="Public">Public</option>
+                  <option value="Private">Private</option>
+                </select>
+              </div>
+
+              <div className="editProjectButtons">
+                <Button1
+                  toggle={handleEditProjectDetails}
+                  text="Save Changes"
+                  style="button1"
+                />
+                <Button1
+                  toggle={toggleEditForm}
+                  text="Cancel"
+                  style="button0"
+                />
+              </div>
+
+              {fileMessage && (
+                <div
+                  className={`message ${
+                    fileMessage.includes("success") ? "success" : "error"
+                  }`}
+                >
+                  {fileMessage}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       <div className="projectDelete">
         <button onClick={toggleShowProfile} className="ProfileViewerCard">
           <div className="ProfileViewerAvatar">
@@ -852,6 +991,15 @@ const Project = () => {
             <p>Project Owner: {repoUser?.email} </p>
           </div>
         </button>
+
+        <div className="editProjectBTNDiv">
+          <Button1
+            className="editProjectBTN"
+            toggle={toggleEditForm}
+            text={"Edit Project"}
+            style={"button1"}
+          />
+        </div>
 
         {project.email === currentUserEmail ? (
           <div>

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+
+import { Link } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import ProjectCard from "../components/ProjectCard";
 import SearchBar from "../components/SearchBar";
@@ -7,6 +9,7 @@ import Footer from "../components/Footer";
 const Explore = () => {
   const [Repositories, setRepositories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [allUsers, setAllUsers] = useState([]);
 
   // Filter states
   const [sortBy, setSortBy] = useState("Alphabetical");
@@ -20,6 +23,14 @@ const Explore = () => {
       .then((data) => {
         const newData = data.filter((data) => data.Label === "Public");
         setRepositories(newData);
+      });
+
+    fetch("/getUsers")
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setAllUsers(data);
       });
   }, []);
 
@@ -52,6 +63,12 @@ const Explore = () => {
         return true;
     }
   };
+
+  const filteredUsers = allUsers?.filter(
+    (user) =>
+      user.name?.toLowerCase().includes(searchTerm.trim().toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.trim().toLowerCase())
+  );
 
   // COMBINED FILTERS AND SORTING HERE
   const filteredRepositories = Repositories.filter((repo) => {
@@ -127,6 +144,30 @@ const Explore = () => {
             <option value="This Year">This Year</option>
           </select>
         </div>
+
+        {searchTerm !== "" ? (
+          <div className="userSearch">
+            <h3>USER SEARCH DIV</h3>
+            <div className="userSearchDiv">
+              {filteredUsers.map((user, i) => (
+                <Link
+                  key={i}
+                  to={`/profile?email=${encodeURIComponent(user.email)}`}
+                >
+                  <div className="userSearchContainer">
+                    <div className="userIMGDIV">
+                      <img src={user.profileImage} alt={user.profileImage} />
+                    </div>
+                    <div className="userDeatils">
+                      <span>{user.name}</span>
+                      <span>{user.email}</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        ) : null}
 
         <div className="ExplorePageProjects">
           {filteredRepositories.length > 0 ? (

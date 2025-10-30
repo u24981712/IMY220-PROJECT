@@ -110,7 +110,6 @@ const EditProfile = ({ toggle, user, setUser }) => {
     const selectedFile = event.target.files[0];
     if (!selectedFile) return;
 
-    // Validate file type
     if (!selectedFile.type.startsWith("image/")) {
       setFileMessage("Please select an image file.");
       setTimeout(() => setFileMessage(""), 3000);
