@@ -121,43 +121,108 @@ app.post(
   }
 );
 
+// app.post(
+//   "/uploadFile/:projectName",
+//   uploadFile.single("file"),
+//   async (req, res) => {
+//     try {
+//       if (!req.file) {
+//         return res.status(400).json({ error: "No file provided" });
+//       }
+
+//       const projectName = decodeURIComponent(req.params.projectName);
+//       const email = req.body.email;
+//       const fileName = req.body.fileName || req.file.originalname;
+//       const checkInMessage = req.body.checkInMessage || "No message provided";
+
+//       const base64File = req.file.buffer.toString("base64");
+//       const date = new Date().toISOString();
+//       const dateOnly = date.split("T")[0];
+
+//       const newMessage = {
+//         message: checkInMessage,
+//         date: dateOnly,
+//         fileName: fileName,
+//         uploadedBy: email,
+//         timestamp: dateOnly,
+//       };
+
+//       const result = await DATABASE.collection(projectsCollection).updateOne(
+//         { projectName: projectName, email: email },
+//         {
+//           $push: {
+//             files: {
+//               fileName: fileName,
+//               fileType: req.file.mimetype,
+//               fileSize: req.file.size,
+//               content: base64File,
+//               uploadedAt: dateOnly,
+//             },
+//             messages: newMessage,
+//           },
+//         }
+//       );
+
+//       if (result.modifiedCount === 0) {
+//         return res.status(404).json({ error: "Project not found" });
+//       }
+
+//       const project = await DATABASE.collection(projectsCollection).findOne({
+//         projectName: projectName,
+//         email: email,
+//       });
+
+//       res.json({
+//         message: "File uploaded successfully",
+//         project: project,
+//       });
+//     } catch (error) {
+//       console.error("Upload error:", error);
+//       res.status(500).json({ error: "Upload failed" });
+//     }
+//   }
+// );
+
 app.post(
   "/uploadFile/:projectName",
-  uploadFile.single("file"),
+  uploadFile.array("files", 10),
   async (req, res) => {
     try {
-      if (!req.file) {
-        return res.status(400).json({ error: "No file provided" });
+      if (!req.files || req.files.length === 0) {
+        return res.status(400).json({ error: "No files provided" });
       }
 
       const projectName = decodeURIComponent(req.params.projectName);
       const email = req.body.email;
-      const fileName = req.body.fileName || req.file.originalname;
       const checkInMessage = req.body.checkInMessage || "No message provided";
 
-      const base64File = req.file.buffer.toString("base64");
       const date = new Date().toISOString();
       const dateOnly = date.split("T")[0];
+
+      const newFiles = req.files.map((file) => ({
+        fileName: file.originalname,
+        fileType: file.mimetype,
+        fileSize: file.size,
+        content: file.buffer.toString("base64"),
+        uploadedAt: dateOnly,
+      }));
+
+      const fileNames = req.files.map((file) => file.originalname).join(", ");
 
       const newMessage = {
         message: checkInMessage,
         date: dateOnly,
-        fileName: fileName,
+        fileName: fileNames,
         uploadedBy: email,
         timestamp: dateOnly,
+        fileCount: req.files.length,
       };
 
       const result = await DATABASE.collection(projectsCollection).updateOne(
         { projectName: projectName, email: email },
         {
           $push: {
-            files: {
-              fileName: fileName,
-              fileType: req.file.mimetype,
-              fileSize: req.file.size,
-              content: base64File,
-              uploadedAt: dateOnly,
-            },
+            files: { $each: newFiles },
             messages: newMessage,
           },
         }
@@ -173,8 +238,9 @@ app.post(
       });
 
       res.json({
-        message: "File uploaded successfully",
+        message: `${req.files.length} file(s) uploaded successfully`,
         project: project,
+        filesUploaded: req.files.length,
       });
     } catch (error) {
       console.error("Upload error:", error);
@@ -182,7 +248,6 @@ app.post(
     }
   }
 );
-
 app.post("/uploadProfileImage", uploadFile.single("file"), async (req, res) => {
   try {
     if (!req.file) {
@@ -493,8 +558,10 @@ app.post("/newProject", async (req, res) => {
     res.status(500).json({ message: "Error saving project" });
   }
 });
-
+/***************************************************************************/
 // DELETE PROJECT
+/***************************************************************************/
+
 app.post("/deleteProject", async (req, res) => {
   try {
     const { projectName, email } = req.body;

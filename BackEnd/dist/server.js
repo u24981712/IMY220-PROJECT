@@ -170,35 +170,113 @@ app.post("/uploadBanner/:projectName", upload.single("banner"), /*#__PURE__*/fun
     return _ref.apply(this, arguments);
   };
 }());
-app.post("/uploadFile/:projectName", uploadFile.single("file"), /*#__PURE__*/function () {
+
+// app.post(
+//   "/uploadFile/:projectName",
+//   uploadFile.single("file"),
+//   async (req, res) => {
+//     try {
+//       if (!req.file) {
+//         return res.status(400).json({ error: "No file provided" });
+//       }
+
+//       const projectName = decodeURIComponent(req.params.projectName);
+//       const email = req.body.email;
+//       const fileName = req.body.fileName || req.file.originalname;
+//       const checkInMessage = req.body.checkInMessage || "No message provided";
+
+//       const base64File = req.file.buffer.toString("base64");
+//       const date = new Date().toISOString();
+//       const dateOnly = date.split("T")[0];
+
+//       const newMessage = {
+//         message: checkInMessage,
+//         date: dateOnly,
+//         fileName: fileName,
+//         uploadedBy: email,
+//         timestamp: dateOnly,
+//       };
+
+//       const result = await DATABASE.collection(projectsCollection).updateOne(
+//         { projectName: projectName, email: email },
+//         {
+//           $push: {
+//             files: {
+//               fileName: fileName,
+//               fileType: req.file.mimetype,
+//               fileSize: req.file.size,
+//               content: base64File,
+//               uploadedAt: dateOnly,
+//             },
+//             messages: newMessage,
+//           },
+//         }
+//       );
+
+//       if (result.modifiedCount === 0) {
+//         return res.status(404).json({ error: "Project not found" });
+//       }
+
+//       const project = await DATABASE.collection(projectsCollection).findOne({
+//         projectName: projectName,
+//         email: email,
+//       });
+
+//       res.json({
+//         message: "File uploaded successfully",
+//         project: project,
+//       });
+//     } catch (error) {
+//       console.error("Upload error:", error);
+//       res.status(500).json({ error: "Upload failed" });
+//     }
+//   }
+// );
+
+app.post("/uploadFile/:projectName", uploadFile.array("files", 10),
+/*#__PURE__*/
+// Allow up to 10 files at once
+function () {
   var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(req, res) {
-    var projectName, email, fileName, checkInMessage, base64File, date, dateOnly, newMessage, result, project, _t2;
+    var projectName, email, checkInMessage, date, dateOnly, newFiles, fileNames, newMessage, result, project, _t2;
     return _regenerator().w(function (_context2) {
       while (1) switch (_context2.p = _context2.n) {
         case 0:
           _context2.p = 0;
-          if (req.file) {
+          if (!(!req.files || req.files.length === 0)) {
             _context2.n = 1;
             break;
           }
           return _context2.a(2, res.status(400).json({
-            error: "No file provided"
+            error: "No files provided"
           }));
         case 1:
           projectName = decodeURIComponent(req.params.projectName);
           email = req.body.email;
-          fileName = req.body.fileName || req.file.originalname;
           checkInMessage = req.body.checkInMessage || "No message provided";
-          base64File = req.file.buffer.toString("base64");
           date = new Date().toISOString();
-          dateOnly = date.split("T")[0];
+          dateOnly = date.split("T")[0]; // Prepare all files
+          newFiles = req.files.map(function (file) {
+            return {
+              fileName: file.originalname,
+              fileType: file.mimetype,
+              fileSize: file.size,
+              content: file.buffer.toString("base64"),
+              uploadedAt: dateOnly
+            };
+          }); // Create ONE message for the entire upload with all file names
+          fileNames = req.files.map(function (file) {
+            return file.originalname;
+          }).join(", ");
           newMessage = {
             message: checkInMessage,
             date: dateOnly,
-            fileName: fileName,
+            fileName: fileNames,
+            // All files in one string
             uploadedBy: email,
-            timestamp: dateOnly
-          };
+            timestamp: dateOnly,
+            fileCount: req.files.length // Optional: track how many files
+          }; // Update project with all files and ONE message
           _context2.n = 2;
           return DATABASE.collection(projectsCollection).updateOne({
             projectName: projectName,
@@ -206,13 +284,9 @@ app.post("/uploadFile/:projectName", uploadFile.single("file"), /*#__PURE__*/fun
           }, {
             $push: {
               files: {
-                fileName: fileName,
-                fileType: req.file.mimetype,
-                fileSize: req.file.size,
-                content: base64File,
-                uploadedAt: dateOnly
+                $each: newFiles
               },
-              messages: newMessage
+              messages: newMessage // Just one message, no $each
             }
           });
         case 2:
@@ -233,8 +307,9 @@ app.post("/uploadFile/:projectName", uploadFile.single("file"), /*#__PURE__*/fun
         case 4:
           project = _context2.v;
           res.json({
-            message: "File uploaded successfully",
-            project: project
+            message: "".concat(req.files.length, " file(s) uploaded successfully"),
+            project: project,
+            filesUploaded: req.files.length
           });
           _context2.n = 6;
           break;
@@ -746,8 +821,10 @@ app.post("/newProject", /*#__PURE__*/function () {
     return _ref1.apply(this, arguments);
   };
 }());
-
+/***************************************************************************/
 // DELETE PROJECT
+/***************************************************************************/
+
 app.post("/deleteProject", /*#__PURE__*/function () {
   var _ref10 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee10(req, res) {
     var _req$body5, projectName, email, result, _t10;

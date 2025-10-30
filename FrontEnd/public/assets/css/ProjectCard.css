@@ -4,8 +4,7 @@
   --secondary: #017b7e;
   --accent: #7be3d0;
   --light: #f5edd8;
-  --bb: #ffffff
-  ;
+  --bb: #ffffff;
 }
 
 body {
@@ -14,7 +13,9 @@ body {
 
 .projectCardContainer {
   color: var(--light);
-  width: 85%;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
   background-color: var(--bgLight);
   padding: 20px 30px;
   border-radius: 15px;

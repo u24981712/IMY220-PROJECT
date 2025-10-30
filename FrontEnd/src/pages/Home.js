@@ -34,10 +34,9 @@ const Home = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Filter states
   const [sortBy, setSortBy] = useState("Alphabetical");
-
   const [labelFilter, setLabelFilter] = useState("All");
-
   const [timeFilter, setTimeFilter] = useState("All Time");
 
   const [newProject, setNewProject] = useState({
@@ -144,11 +143,6 @@ const Home = () => {
     }
   };
 
-  // const toggleModalSave = () => {
-  //     // SAVE IMPLEMENTATION BUDDY, DON'T FORGET ***************
-  //     setRepoModal(!repoModal);
-  // };
-
   const toogleProjectNameExists = (val) => {
     setProjectNameExists(val);
   };
@@ -204,11 +198,70 @@ const Home = () => {
     }
   };
 
-  const filteredRepositories = projects.filter(
-    (repo) =>
-      repo.name?.toLowerCase().includes(searchTerm.trim().toLowerCase()) ||
-      repo.description?.toLowerCase().includes(searchTerm.trim().toLowerCase())
-  );
+  // FILTER PROJECTS BASED ON TIME
+  const filterByTime = (project) => {
+    if (timeFilter === "All Time") return true;
+
+    const projectDate = new Date(project.dateCreated);
+    const today = new Date();
+
+    switch (timeFilter) {
+      case "Today":
+        return projectDate.toDateString() === today.toDateString();
+
+      case "This Week":
+        const weekAgo = new Date(today);
+        weekAgo.setDate(today.getDate() - 7);
+        return projectDate >= weekAgo;
+
+      case "This Month":
+        return (
+          projectDate.getMonth() === today.getMonth() &&
+          projectDate.getFullYear() === today.getFullYear()
+        );
+
+      case "This Year":
+        return projectDate.getFullYear() === today.getFullYear();
+
+      default:
+        return true;
+    }
+  };
+
+  // COMBINING FILTERS AND SORTING HERE
+  const filteredRepositories = projects
+    .filter((repo) => {
+      const matchesSearch =
+        repo.projectName
+          ?.toLowerCase()
+          .includes(searchTerm.trim().toLowerCase()) ||
+        repo.description
+          ?.toLowerCase()
+          .includes(searchTerm.trim().toLowerCase());
+
+      // FILTER THE PROJECTS BASED ON LABEL
+      const matchesLabel = labelFilter === "All" || repo.Label === labelFilter;
+
+      // FILTER THE PROJECTS BASED ON TIME
+      const matchesTime = filterByTime(repo);
+
+      return matchesSearch && matchesLabel && matchesTime;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "Most Files":
+          return (b.files?.length || 0) - (a.files?.length || 0);
+
+        case "Least Files":
+          return (a.files?.length || 0) - (b.files?.length || 0);
+
+        case "Alphabetical":
+          return a.projectName.localeCompare(b.projectName);
+
+        default:
+          return 0;
+      }
+    });
 
   const filteredUsers = allUsers?.filter(
     (user) =>
@@ -408,18 +461,31 @@ const Home = () => {
         ) : null}
 
         <div className="HomePageDropDowns">
-          <select className="dropdown" defaultValue="Popularity">
-            <option value="Recent">Sort by Most Files</option>
-            <option value="Shared">Sort by Least Files</option>
+          <select
+            className="dropdown"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="Most Files">Sort by Most Files</option>
+            <option value="Least Files">Sort by Least Files</option>
             <option value="Alphabetical">Sort Alphabetically</option>
           </select>
 
-          <select className="dropdown" defaultValue="Private">
+          <select
+            className="dropdown"
+            value={labelFilter}
+            onChange={(e) => setLabelFilter(e.target.value)}
+          >
+            <option value="All">All Projects</option>
             <option value="Private">Private</option>
             <option value="Public">Public</option>
           </select>
 
-          <select className="dropdown" defaultValue="All Time">
+          <select
+            className="dropdown"
+            value={timeFilter}
+            onChange={(e) => setTimeFilter(e.target.value)}
+          >
             <option value="All Time">All Time</option>
             <option value="Today">Today</option>
             <option value="This Week">This Week</option>

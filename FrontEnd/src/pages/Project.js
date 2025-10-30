@@ -228,35 +228,52 @@ const Project = () => {
   // UPLOAD FILES
 
   const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
   const [fileMessage, setFileMessage] = useState("");
 
-  // SELECT SINGLE FILE
+  // SELECT MULTIPLE FILES
   const FileSelect = (event) => {
-    const selectedFile = event.target.files[0];
-    if (!selectedFile) return;
+    const selectedFiles = Array.from(event.target.files);
+    if (selectedFiles.length === 0) return;
 
-    if (selectedFile.size > 10 * 1024 * 1024) {
-      setFileMessage("File too large! Max 10MB allowed.");
+    const oversizedFiles = selectedFiles.filter(
+      (file) => file.size > 10 * 1024 * 1024
+    );
+
+    if (oversizedFiles.length > 0) {
+      setFileMessage(
+        `${oversizedFiles.length} file(s) too large! Max 10MB per file.`
+      );
       timeOutFunc();
       return;
     }
 
-    setFile(selectedFile);
-    setFileMessage(`Selected: ${selectedFile.name}`);
+    setFiles(selectedFiles);
+
+    setFileMessage(
+      `Selected: ${selectedFiles.length} file(s) - ${selectedFiles
+        .map((f) => f.name)
+        .join(", ")}`
+    );
     setShowCheckInModal(true);
   };
 
-  // SELECT SINGLE FILE
+  // UPLOAD MULTIPLE FILES
   const FileUpload = async () => {
-    if (!file) {
-      setFileMessage("Please select a file first.");
+    if (!files || files.length === 0) {
+      setFileMessage("Please select files first.");
       timeOutFunc();
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", file);
+
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+
     formData.append("email", localStorage.getItem("username"));
+
     formData.append("checkInMessage", checkInMessage);
 
     try {
@@ -271,11 +288,14 @@ const Project = () => {
       const result = await response.json();
 
       if (response.ok) {
-        setFileMessage("File uploaded successfully!");
-        setFile(null);
+        setFileMessage(
+          `${result.filesUploaded} file(s) uploaded successfully!`
+        );
+        setFiles([]);
         setCheckInMessage("");
 
         setProject(result.project);
+        timeOutFunc();
       } else {
         setFileMessage(result.error || "Upload failed");
         timeOutFunc();
@@ -289,7 +309,7 @@ const Project = () => {
 
   const handleCancelCheckIn = () => {
     setShowCheckInModal(false);
-    setFile(null);
+    setFiles([]);
     setCheckInMessage("");
     document.getElementById("file-upload").value = "";
   };
@@ -539,9 +559,6 @@ const Project = () => {
                 src={`data:${project.banner.contentType};base64,${project.banner.imageBase64}`}
                 alt="Project Banner"
                 className="bannerImage"
-
-                // onMouseEnter={handleDeteleBanner(true)}
-                // onMouseLeave={handleDeteleBanner(false)}
               />
 
               <form className="updateBannerForm">
@@ -569,13 +586,13 @@ const Project = () => {
                 </div>
               </form>
             </div>
-          ) : (
+          ) : project.collaborators?.includes(currentUserEmail) ? (
             <div className="noProjectBanner">
+              project.collaborators?.includes(currentUserEmail) ? (
               <span>No Project Banner</span>
               <span className="recommendedDimension">
                 Recommended dimension: 1770px x 250px • Max size: 1MB
               </span>
-
               <form>
                 <div className="imageform">
                   <label htmlFor="image-upload" className="imageLabel">
@@ -590,7 +607,6 @@ const Project = () => {
                   />
                 </div>
               </form>
-
               {message && (
                 <div
                   className={`message ${
@@ -600,7 +616,6 @@ const Project = () => {
                   {message}
                 </div>
               )}
-
               <div>
                 <Button1
                   toggle={handleFileUpload}
@@ -608,12 +623,16 @@ const Project = () => {
                   style={"DownloadFiles"}
                 />
               </div>
-
               {selectedFile && (
                 <div className="selected-file">
                   Selected: {selectedFile.name}
                 </div>
               )}
+              )
+            </div>
+          ) : (
+            <div className="noProjectBannerView">
+              <h1>No Project Banner</h1>
             </div>
           )}
         </div>
@@ -658,12 +677,13 @@ const Project = () => {
                 <form className="fileSelect">
                   <div className="fileform">
                     <label htmlFor="file-upload" className="fileLabel">
-                      Add File
+                      Add Files
                     </label>
                     <input
                       id="file-upload"
                       type="file"
                       accept="*"
+                      multiple
                       className="imageInput"
                       onChange={FileSelect}
                     />
@@ -802,21 +822,24 @@ const Project = () => {
               ))}
             </div>
           </div>
+          {repoUser.email !== currentUserEmail ? null : (
+            <div className="addCollabs">
+              <h3>Add Friend To Project</h3>
 
-          <div className="addCollabs">
-            <h3>Add Friend To Project</h3>
-
-            {repoUser.followers
-              .filter((f) => !project.collaborators.includes(f))
-              .map((f) => (
-                <div className="addFriendAsCollab" key={f}>
-                  <span>{f}</span>
-                  <button onClick={() => handleAddCollaborator(f, projectName)}>
-                    Add as Collaborator
-                  </button>
-                </div>
-              ))}
-          </div>
+              {repoUser.followers
+                .filter((f) => !project.collaborators.includes(f))
+                .map((f) => (
+                  <div className="addFriendAsCollab" key={f}>
+                    <span>{f}</span>
+                    <button
+                      onClick={() => handleAddCollaborator(f, projectName)}
+                    >
+                      Add as Collaborator
+                    </button>
+                  </div>
+                ))}
+            </div>
+          )}
         </div>
       </div>
 

@@ -228,12 +228,47 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <>
-        <link rel="stylesheet" type="text/css" href="/assets/css/Profile.css" />
-        <div className="isLoadingDiv">
-          <div className="loader"></div>
-        </div>
-      </>
+      <div
+        style={{
+          width: "100%",
+          height: "100vh",
+          backgroundColor: "#0a2231",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "20px",
+        }}
+      >
+        <div
+          style={{
+            width: "60px",
+            height: "60px",
+            border: "6px solid rgba(123, 227, 208, 0.2)",
+            borderTop: "6px solid #7be3d0",
+            borderRadius: "50%",
+            animation: "spin 1s linear infinite",
+          }}
+        />
+        <h2
+          style={{
+            color: "#f5edd8",
+            margin: 0,
+            fontSize: "24px",
+            fontWeight: 500,
+            fontFamily: "Poppins",
+          }}
+        >
+          Loading...
+        </h2>
+
+        <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+      </div>
     );
   }
 
