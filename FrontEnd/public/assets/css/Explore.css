@@ -207,3 +207,11 @@ body {
 .noUsersFound {
   height: 50px;
 }
+
+.loadMoreContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 40px 0;
+  padding: 20px;
+}

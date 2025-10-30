@@ -55,29 +55,29 @@ function connectToMongo() {
   return _connectToMongo.apply(this, arguments);
 } // MIDDLEWARE
 function _connectToMongo() {
-  _connectToMongo = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee27() {
-    var _t25;
-    return _regenerator().w(function (_context27) {
-      while (1) switch (_context27.p = _context27.n) {
+  _connectToMongo = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee28() {
+    var _t26;
+    return _regenerator().w(function (_context28) {
+      while (1) switch (_context28.p = _context28.n) {
         case 0:
-          _context27.p = 0;
+          _context28.p = 0;
           CLIENT = new MongoClient(MONGO_URI);
-          _context27.n = 1;
+          _context28.n = 1;
           return CLIENT.connect();
         case 1:
           DATABASE = CLIENT.db(DB_NAME);
           console.log("Connected to MongoDB successfully");
-          _context27.n = 3;
+          _context28.n = 3;
           break;
         case 2:
-          _context27.p = 2;
-          _t25 = _context27.v;
-          console.error("Error connecting to MongoDB:", _t25);
-          throw _t25;
+          _context28.p = 2;
+          _t26 = _context28.v;
+          console.error("Error connecting to MongoDB:", _t26);
+          throw _t26;
         case 3:
-          return _context27.a(2);
+          return _context28.a(2);
       }
-    }, _callee27, null, [[0, 2]]);
+    }, _callee28, null, [[0, 2]]);
   }));
   return _connectToMongo.apply(this, arguments);
 }
@@ -896,31 +896,98 @@ app.post("/updateProject", /*#__PURE__*/function () {
   };
 }());
 /***************************************************************************/
-// DELETE PROJECT
+// FILE BASED ENDPOINTS
 /***************************************************************************/
 
-app.post("/deleteProject", /*#__PURE__*/function () {
+app.get("/getFileContent/:projectName/:fileName", /*#__PURE__*/function () {
   var _ref11 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee11(req, res) {
-    var _req$body6, projectName, email, result, _t11;
+    var _req$params2, projectName, fileName, email, project, file, fileBuffer, fileContent, _t11;
     return _regenerator().w(function (_context11) {
       while (1) switch (_context11.p = _context11.n) {
         case 0:
           _context11.p = 0;
+          _req$params2 = req.params, projectName = _req$params2.projectName, fileName = _req$params2.fileName;
+          email = req.query.email;
+          _context11.n = 1;
+          return DATABASE.collection(projectsCollection).findOne({
+            projectName: decodeURIComponent(projectName),
+            email: email
+          });
+        case 1:
+          project = _context11.v;
+          if (project) {
+            _context11.n = 2;
+            break;
+          }
+          return _context11.a(2, res.status(404).json({
+            message: "Project not found"
+          }));
+        case 2:
+          file = project.files.find(function (f) {
+            return f.fileName === decodeURIComponent(fileName);
+          });
+          if (file) {
+            _context11.n = 3;
+            break;
+          }
+          return _context11.a(2, res.status(404).json({
+            message: "File not found"
+          }));
+        case 3:
+          fileBuffer = Buffer.from(file.content, "base64");
+          fileContent = fileBuffer.toString("utf-8");
+          res.json({
+            fileName: file.fileName,
+            content: fileContent,
+            fileType: file.fileType,
+            uploadedAt: file.uploadedAt
+          });
+          _context11.n = 5;
+          break;
+        case 4:
+          _context11.p = 4;
+          _t11 = _context11.v;
+          console.error("Get file content error:", _t11);
+          res.status(500).json({
+            message: "Error retrieving file content",
+            error: _t11.message
+          });
+        case 5:
+          return _context11.a(2);
+      }
+    }, _callee11, null, [[0, 4]]);
+  }));
+  return function (_x23, _x24) {
+    return _ref11.apply(this, arguments);
+  };
+}());
+
+/***************************************************************************/
+// DELETE PROJECT
+/***************************************************************************/
+
+app.post("/deleteProject", /*#__PURE__*/function () {
+  var _ref12 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee12(req, res) {
+    var _req$body6, projectName, email, result, _t12;
+    return _regenerator().w(function (_context12) {
+      while (1) switch (_context12.p = _context12.n) {
+        case 0:
+          _context12.p = 0;
           _req$body6 = req.body, projectName = _req$body6.projectName, email = _req$body6.email; // if (!projectName || !email) {
           //   return res.status(400).json({ message: 'Project name and email are required' });
           // }
-          _context11.n = 1;
+          _context12.n = 1;
           return DATABASE.collection(projectsCollection).deleteOne({
             projectName: projectName,
             email: email
           });
         case 1:
-          result = _context11.v;
+          result = _context12.v;
           if (!(result.deletedCount === 0)) {
-            _context11.n = 2;
+            _context12.n = 2;
             break;
           }
-          return _context11.a(2, res.status(404).json({
+          return _context12.a(2, res.status(404).json({
             message: "Project not found or already deleted"
           }));
         case 2:
@@ -928,23 +995,23 @@ app.post("/deleteProject", /*#__PURE__*/function () {
             message: "Project deleted successfully",
             deletedCount: result.deletedCount
           });
-          _context11.n = 4;
+          _context12.n = 4;
           break;
         case 3:
-          _context11.p = 3;
-          _t11 = _context11.v;
-          console.error("Delete error: ", _t11);
+          _context12.p = 3;
+          _t12 = _context12.v;
+          console.error("Delete error: ", _t12);
           res.status(500).json({
             message: "Error deleting project",
-            error: _t11.message
+            error: _t12.message
           });
         case 4:
-          return _context11.a(2);
+          return _context12.a(2);
       }
-    }, _callee11, null, [[0, 3]]);
+    }, _callee12, null, [[0, 3]]);
   }));
-  return function (_x23, _x24) {
-    return _ref11.apply(this, arguments);
+  return function (_x25, _x26) {
+    return _ref12.apply(this, arguments);
   };
 }());
 
@@ -953,16 +1020,16 @@ app.post("/deleteProject", /*#__PURE__*/function () {
 /***************************************************************************/
 
 app.get("/getUsers", /*#__PURE__*/function () {
-  var _ref12 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee12(req, res) {
-    var users, _t12;
-    return _regenerator().w(function (_context12) {
-      while (1) switch (_context12.p = _context12.n) {
+  var _ref13 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee13(req, res) {
+    var users, _t13;
+    return _regenerator().w(function (_context13) {
+      while (1) switch (_context13.p = _context13.n) {
         case 0:
-          _context12.p = 0;
-          _context12.n = 1;
+          _context13.p = 0;
+          _context13.n = 1;
           return DATABASE.collection(usersCollection).find().toArray();
         case 1:
-          users = _context12.v;
+          users = _context13.v;
           if (users.length === 0) {
             console.log("No projects found");
             res.json({
@@ -971,134 +1038,134 @@ app.get("/getUsers", /*#__PURE__*/function () {
           } else {
             res.status(200).json(users);
           }
-          _context12.n = 3;
+          _context13.n = 3;
           break;
         case 2:
-          _context12.p = 2;
-          _t12 = _context12.v;
-          console.error("Error reading Users.json:", _t12);
+          _context13.p = 2;
+          _t13 = _context13.v;
+          console.error("Error reading Users.json:", _t13);
           res.status(500).json({
             error: "Failed to retreive projects"
           });
         case 3:
-          return _context12.a(2);
-      }
-    }, _callee12, null, [[0, 2]]);
-  }));
-  return function (_x25, _x26) {
-    return _ref12.apply(this, arguments);
-  };
-}());
-app.get("/getUser/:email", /*#__PURE__*/function () {
-  var _ref13 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee13(req, res) {
-    var email, user, _t13;
-    return _regenerator().w(function (_context13) {
-      while (1) switch (_context13.p = _context13.n) {
-        case 0:
-          _context13.p = 0;
-          email = req.params.email;
-          if (!(!email || email === "undefined")) {
-            _context13.n = 1;
-            break;
-          }
-          return _context13.a(2, res.status(400).json({
-            error: "Invalid email parameter"
-          }));
-        case 1:
-          _context13.n = 2;
-          return DATABASE.collection(usersCollection).findOne({
-            email: email
-          });
-        case 2:
-          user = _context13.v;
-          if (user) {
-            _context13.n = 3;
-            break;
-          }
-          console.log("User not found");
-          return _context13.a(2, res.status(404).json({
-            message: "User not found"
-          }));
-        case 3:
-          res.status(200).json(user);
-          _context13.n = 5;
-          break;
-        case 4:
-          _context13.p = 4;
-          _t13 = _context13.v;
-          console.error("Error fetching user:", _t13);
-          res.status(500).json({
-            error: "Failed to retrieve user"
-          });
-        case 5:
           return _context13.a(2);
       }
-    }, _callee13, null, [[0, 4]]);
+    }, _callee13, null, [[0, 2]]);
   }));
   return function (_x27, _x28) {
     return _ref13.apply(this, arguments);
   };
 }());
-app.get("/getTestimonials", /*#__PURE__*/function () {
+app.get("/getUser/:email", /*#__PURE__*/function () {
   var _ref14 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee14(req, res) {
-    var testimonials, _t14;
+    var email, user, _t14;
     return _regenerator().w(function (_context14) {
       while (1) switch (_context14.p = _context14.n) {
         case 0:
           _context14.p = 0;
-          _context14.n = 1;
-          return DATABASE.collection(testimonialsCollection).find().toArray();
-        case 1:
-          testimonials = _context14.v;
-          if (testimonials) {
-            // console.log(testimonials);
+          email = req.params.email;
+          if (!(!email || email === "undefined")) {
+            _context14.n = 1;
+            break;
           }
-          res.json(testimonials);
-          _context14.n = 3;
-          break;
-        case 2:
-          _context14.p = 2;
-          _t14 = _context14.v;
-          res.status(404).json({
-            message: "Failed to retreive testimonial data"
+          return _context14.a(2, res.status(400).json({
+            error: "Invalid email parameter"
+          }));
+        case 1:
+          _context14.n = 2;
+          return DATABASE.collection(usersCollection).findOne({
+            email: email
           });
+        case 2:
+          user = _context14.v;
+          if (user) {
+            _context14.n = 3;
+            break;
+          }
+          console.log("User not found");
+          return _context14.a(2, res.status(404).json({
+            message: "User not found"
+          }));
         case 3:
+          res.status(200).json(user);
+          _context14.n = 5;
+          break;
+        case 4:
+          _context14.p = 4;
+          _t14 = _context14.v;
+          console.error("Error fetching user:", _t14);
+          res.status(500).json({
+            error: "Failed to retrieve user"
+          });
+        case 5:
           return _context14.a(2);
       }
-    }, _callee14, null, [[0, 2]]);
+    }, _callee14, null, [[0, 4]]);
   }));
   return function (_x29, _x30) {
     return _ref14.apply(this, arguments);
   };
 }());
-app.post("/signup", /*#__PURE__*/function () {
+app.get("/getTestimonials", /*#__PURE__*/function () {
   var _ref15 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee15(req, res) {
-    var newUser, email, user, confirmpassword, userToSave, _t15;
+    var testimonials, _t15;
     return _regenerator().w(function (_context15) {
       while (1) switch (_context15.p = _context15.n) {
         case 0:
           _context15.p = 0;
+          _context15.n = 1;
+          return DATABASE.collection(testimonialsCollection).find().toArray();
+        case 1:
+          testimonials = _context15.v;
+          if (testimonials) {
+            // console.log(testimonials);
+          }
+          res.json(testimonials);
+          _context15.n = 3;
+          break;
+        case 2:
+          _context15.p = 2;
+          _t15 = _context15.v;
+          res.status(404).json({
+            message: "Failed to retreive testimonial data"
+          });
+        case 3:
+          return _context15.a(2);
+      }
+    }, _callee15, null, [[0, 2]]);
+  }));
+  return function (_x31, _x32) {
+    return _ref15.apply(this, arguments);
+  };
+}());
+app.post("/signup", /*#__PURE__*/function () {
+  var _ref16 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee16(req, res) {
+    var newUser, email, user, confirmpassword, userToSave, _t16;
+    return _regenerator().w(function (_context16) {
+      while (1) switch (_context16.p = _context16.n) {
+        case 0:
+          _context16.p = 0;
           newUser = req.body;
           email = newUser.email;
-          _context15.n = 1;
+          _context16.n = 1;
           return DATABASE.collection(usersCollection).findOne({
             email: email
           });
         case 1:
-          user = _context15.v;
+          user = _context16.v;
           if (!user) {
-            _context15.n = 2;
+            _context16.n = 2;
             break;
           }
           console.log("User already exist");
           res.status(400).json({
             message: "User already exist"
           });
-          _context15.n = 4;
+          _context16.n = 4;
           break;
         case 2:
           confirmpassword = newUser.confirmpassword, userToSave = _objectWithoutProperties(newUser, _excluded);
-          _context15.n = 3;
+          _context16.n = 3;
           return DATABASE.collection(usersCollection).insertOne(userToSave);
         case 3:
           res.status(201).json({
@@ -1106,39 +1173,39 @@ app.post("/signup", /*#__PURE__*/function () {
             user: userToSave
           });
         case 4:
-          _context15.n = 6;
+          _context16.n = 6;
           break;
         case 5:
-          _context15.p = 5;
-          _t15 = _context15.v;
-          console.error("Error creating user:", _t15);
+          _context16.p = 5;
+          _t16 = _context16.v;
+          console.error("Error creating user:", _t16);
           res.status(500).json({
             error: "Failed to create user"
           });
         case 6:
-          return _context15.a(2);
+          return _context16.a(2);
       }
-    }, _callee15, null, [[0, 5]]);
+    }, _callee16, null, [[0, 5]]);
   }));
-  return function (_x31, _x32) {
-    return _ref15.apply(this, arguments);
+  return function (_x33, _x34) {
+    return _ref16.apply(this, arguments);
   };
 }());
 app.get("/getEmails", /*#__PURE__*/function () {
-  var _ref16 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee16(req, res) {
-    var users, _t16;
-    return _regenerator().w(function (_context16) {
-      while (1) switch (_context16.p = _context16.n) {
+  var _ref17 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee17(req, res) {
+    var users, _t17;
+    return _regenerator().w(function (_context17) {
+      while (1) switch (_context17.p = _context17.n) {
         case 0:
-          _context16.p = 0;
-          _context16.n = 1;
+          _context17.p = 0;
+          _context17.n = 1;
           return DATABASE.collection(usersCollection).find({}, {
             projection: {
               email: 1
             }
           }).toArray();
         case 1:
-          users = _context16.v;
+          users = _context17.v;
           if (users.length === 0) {
             console.log("No users found");
             res.json({
@@ -1147,66 +1214,66 @@ app.get("/getEmails", /*#__PURE__*/function () {
           } else {
             res.status(200).json(users);
           }
-          _context16.n = 3;
+          _context17.n = 3;
           break;
         case 2:
-          _context16.p = 2;
-          _t16 = _context16.v;
+          _context17.p = 2;
+          _t17 = _context17.v;
           res.status(500).json({
             error: "Failed to retreive users"
           });
         case 3:
-          return _context16.a(2);
+          return _context17.a(2);
       }
-    }, _callee16, null, [[0, 2]]);
+    }, _callee17, null, [[0, 2]]);
   }));
-  return function (_x33, _x34) {
-    return _ref16.apply(this, arguments);
+  return function (_x35, _x36) {
+    return _ref17.apply(this, arguments);
   };
 }());
 
 // SEND FREIND REQEUST
 app.post("/sendFriendRequest", /*#__PURE__*/function () {
-  var _ref17 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee17(req, res) {
-    var _req$body7, email, receiverEmail, receiver, sender, friendRequests, followers, result, _t17;
-    return _regenerator().w(function (_context17) {
-      while (1) switch (_context17.p = _context17.n) {
+  var _ref18 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee18(req, res) {
+    var _req$body7, email, receiverEmail, receiver, sender, friendRequests, followers, result, _t18;
+    return _regenerator().w(function (_context18) {
+      while (1) switch (_context18.p = _context18.n) {
         case 0:
-          _context17.p = 0;
+          _context18.p = 0;
           _req$body7 = req.body, email = _req$body7.email, receiverEmail = _req$body7.receiverEmail;
           if (!(!email || !receiverEmail)) {
-            _context17.n = 1;
+            _context18.n = 1;
             break;
           }
-          return _context17.a(2, res.status(400).json({
+          return _context18.a(2, res.status(400).json({
             message: "Sender username and receiver email are required"
           }));
         case 1:
-          _context17.n = 2;
+          _context18.n = 2;
           return DATABASE.collection(usersCollection).findOne({
             email: receiverEmail
           });
         case 2:
-          receiver = _context17.v;
+          receiver = _context18.v;
           if (receiver) {
-            _context17.n = 3;
+            _context18.n = 3;
             break;
           }
-          return _context17.a(2, res.status(404).json({
+          return _context18.a(2, res.status(404).json({
             message: "User not found"
           }));
         case 3:
-          _context17.n = 4;
+          _context18.n = 4;
           return DATABASE.collection(usersCollection).findOne({
             email: email
           });
         case 4:
-          sender = _context17.v;
+          sender = _context18.v;
           if (sender) {
-            _context17.n = 5;
+            _context18.n = 5;
             break;
           }
-          return _context17.a(2, res.status(404).json({
+          return _context18.a(2, res.status(404).json({
             message: "Sender not found"
           }));
         case 5:
@@ -1214,22 +1281,22 @@ app.post("/sendFriendRequest", /*#__PURE__*/function () {
           friendRequests = receiver.friendRequests || [];
           followers = receiver.followers || [];
           if (!friendRequests.includes(email)) {
-            _context17.n = 6;
+            _context18.n = 6;
             break;
           }
-          return _context17.a(2, res.json({
+          return _context18.a(2, res.json({
             message: "Friend request already sent"
           }));
         case 6:
           if (!followers.includes(email)) {
-            _context17.n = 7;
+            _context18.n = 7;
             break;
           }
-          return _context17.a(2, res.json({
+          return _context18.a(2, res.json({
             message: "This user is already following you"
           }));
         case 7:
-          _context17.n = 8;
+          _context18.n = 8;
           return DATABASE.collection("users").updateOne({
             email: receiverEmail
           }, {
@@ -1238,12 +1305,12 @@ app.post("/sendFriendRequest", /*#__PURE__*/function () {
             }
           });
         case 8:
-          result = _context17.v;
+          result = _context18.v;
           if (!(result.modifiedCount === 0)) {
-            _context17.n = 9;
+            _context18.n = 9;
             break;
           }
-          return _context17.a(2, res.status(500).json({
+          return _context18.a(2, res.status(500).json({
             message: "Failed to send friend request"
           }));
         case 9:
@@ -1251,157 +1318,20 @@ app.post("/sendFriendRequest", /*#__PURE__*/function () {
             message: "Friend request sent successfully",
             receiver: receiver.name
           });
-          _context17.n = 11;
+          _context18.n = 11;
           break;
         case 10:
-          _context17.p = 10;
-          _t17 = _context17.v;
-          console.error("Error sending friend request:", _t17);
+          _context18.p = 10;
+          _t18 = _context18.v;
+          console.error("Error sending friend request:", _t18);
           res.status(500).json({
             message: "Error sending friend request",
-            error: _t17.message
-          });
-        case 11:
-          return _context17.a(2);
-      }
-    }, _callee17, null, [[0, 10]]);
-  }));
-  return function (_x35, _x36) {
-    return _ref17.apply(this, arguments);
-  };
-}());
-
-// ACCEPT FRIEND REQUEST
-app.post("/acceptFriendRequest", /*#__PURE__*/function () {
-  var _ref18 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee19(req, res) {
-    var _req$body8, currentUserEmail, requesterEmail, user, requester, session, _t18;
-    return _regenerator().w(function (_context19) {
-      while (1) switch (_context19.p = _context19.n) {
-        case 0:
-          _context19.p = 0;
-          _req$body8 = req.body, currentUserEmail = _req$body8.currentUserEmail, requesterEmail = _req$body8.requesterEmail;
-          if (!(!currentUserEmail || !requesterEmail)) {
-            _context19.n = 1;
-            break;
-          }
-          return _context19.a(2, res.status(400).json({
-            message: "User email and requester email are required"
-          }));
-        case 1:
-          _context19.n = 2;
-          return DATABASE.collection(usersCollection).findOne({
-            email: currentUserEmail
-          });
-        case 2:
-          user = _context19.v;
-          if (user) {
-            _context19.n = 3;
-            break;
-          }
-          return _context19.a(2, res.status(404).json({
-            message: "User not found"
-          }));
-        case 3:
-          _context19.n = 4;
-          return DATABASE.collection(usersCollection).findOne({
-            email: requesterEmail
-          });
-        case 4:
-          requester = _context19.v;
-          if (requester) {
-            _context19.n = 5;
-            break;
-          }
-          return _context19.a(2, res.status(404).json({
-            message: "Requester not found"
-          }));
-        case 5:
-          // const friendRequests = user.friendRequests || [];
-          console.log(user.friendRequests.includes(requesterEmail));
-          if (user.friendRequests.includes(requesterEmail)) {
-            _context19.n = 6;
-            break;
-          }
-          return _context19.a(2, res.status(400).json({
-            message: "Friend request not found"
-          }));
-        case 6:
-          // const followers = user.followers || [];
-
-          console.log(user.followers.includes(requesterEmail));
-          if (!user.followers.includes(requesterEmail)) {
-            _context19.n = 7;
-            break;
-          }
-          return _context19.a(2, res.status(400).json({
-            message: "Already following this user"
-          }));
-        case 7:
-          session = CLIENT.startSession();
-          _context19.p = 8;
-          _context19.n = 9;
-          return session.withTransaction(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee18() {
-            return _regenerator().w(function (_context18) {
-              while (1) switch (_context18.n) {
-                case 0:
-                  _context18.n = 1;
-                  return DATABASE.collection(usersCollection).updateOne({
-                    email: currentUserEmail
-                  }, {
-                    $pull: {
-                      friendRequests: requesterEmail
-                    },
-                    $addToSet: {
-                      followers: requesterEmail
-                    }
-                  }, {
-                    session: session
-                  });
-                case 1:
-                  _context18.n = 2;
-                  return DATABASE.collection(usersCollection).updateOne({
-                    email: requesterEmail
-                  }, {
-                    $addToSet: {
-                      following: currentUserEmail
-                    }
-                  }, {
-                    session: session
-                  });
-                case 2:
-                  return _context18.a(2);
-              }
-            }, _callee18);
-          })));
-        case 9:
-          _context19.p = 9;
-          _context19.n = 10;
-          return session.endSession();
-        case 10:
-          return _context19.f(9);
-        case 11:
-          res.json({
-            message: "Friend request accepted successfully",
-            newFollower: {
-              email: requesterEmail,
-              name: requester.name,
-              profileImage: requester.profileImage
-            }
-          });
-          _context19.n = 13;
-          break;
-        case 12:
-          _context19.p = 12;
-          _t18 = _context19.v;
-          console.error("Error accepting friend request:", _t18);
-          res.status(500).json({
-            message: "Error accepting friend request",
             error: _t18.message
           });
-        case 13:
-          return _context19.a(2);
+        case 11:
+          return _context18.a(2);
       }
-    }, _callee19, null, [[8,, 9, 11], [0, 12]]);
+    }, _callee18, null, [[0, 10]]);
   }));
   return function (_x37, _x38) {
     return _ref18.apply(this, arguments);
@@ -1409,14 +1339,14 @@ app.post("/acceptFriendRequest", /*#__PURE__*/function () {
 }());
 
 // ACCEPT FRIEND REQUEST
-app.post("/declineFriendRequest", /*#__PURE__*/function () {
-  var _ref20 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee20(req, res) {
-    var _req$body9, currentUserEmail, requesterEmail, user, friendRequests, result, _t19;
+app.post("/acceptFriendRequest", /*#__PURE__*/function () {
+  var _ref19 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee20(req, res) {
+    var _req$body8, currentUserEmail, requesterEmail, user, requester, session, _t19;
     return _regenerator().w(function (_context20) {
       while (1) switch (_context20.p = _context20.n) {
         case 0:
           _context20.p = 0;
-          _req$body9 = req.body, currentUserEmail = _req$body9.currentUserEmail, requesterEmail = _req$body9.requesterEmail;
+          _req$body8 = req.body, currentUserEmail = _req$body8.currentUserEmail, requesterEmail = _req$body8.requesterEmail;
           if (!(!currentUserEmail || !requesterEmail)) {
             _context20.n = 1;
             break;
@@ -1435,20 +1365,157 @@ app.post("/declineFriendRequest", /*#__PURE__*/function () {
             _context20.n = 3;
             break;
           }
-          return _context20.a(2, res.json({
+          return _context20.a(2, res.status(404).json({
+            message: "User not found"
+          }));
+        case 3:
+          _context20.n = 4;
+          return DATABASE.collection(usersCollection).findOne({
+            email: requesterEmail
+          });
+        case 4:
+          requester = _context20.v;
+          if (requester) {
+            _context20.n = 5;
+            break;
+          }
+          return _context20.a(2, res.status(404).json({
+            message: "Requester not found"
+          }));
+        case 5:
+          // const friendRequests = user.friendRequests || [];
+          console.log(user.friendRequests.includes(requesterEmail));
+          if (user.friendRequests.includes(requesterEmail)) {
+            _context20.n = 6;
+            break;
+          }
+          return _context20.a(2, res.status(400).json({
+            message: "Friend request not found"
+          }));
+        case 6:
+          // const followers = user.followers || [];
+
+          console.log(user.followers.includes(requesterEmail));
+          if (!user.followers.includes(requesterEmail)) {
+            _context20.n = 7;
+            break;
+          }
+          return _context20.a(2, res.status(400).json({
+            message: "Already following this user"
+          }));
+        case 7:
+          session = CLIENT.startSession();
+          _context20.p = 8;
+          _context20.n = 9;
+          return session.withTransaction(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee19() {
+            return _regenerator().w(function (_context19) {
+              while (1) switch (_context19.n) {
+                case 0:
+                  _context19.n = 1;
+                  return DATABASE.collection(usersCollection).updateOne({
+                    email: currentUserEmail
+                  }, {
+                    $pull: {
+                      friendRequests: requesterEmail
+                    },
+                    $addToSet: {
+                      followers: requesterEmail
+                    }
+                  }, {
+                    session: session
+                  });
+                case 1:
+                  _context19.n = 2;
+                  return DATABASE.collection(usersCollection).updateOne({
+                    email: requesterEmail
+                  }, {
+                    $addToSet: {
+                      following: currentUserEmail
+                    }
+                  }, {
+                    session: session
+                  });
+                case 2:
+                  return _context19.a(2);
+              }
+            }, _callee19);
+          })));
+        case 9:
+          _context20.p = 9;
+          _context20.n = 10;
+          return session.endSession();
+        case 10:
+          return _context20.f(9);
+        case 11:
+          res.json({
+            message: "Friend request accepted successfully",
+            newFollower: {
+              email: requesterEmail,
+              name: requester.name,
+              profileImage: requester.profileImage
+            }
+          });
+          _context20.n = 13;
+          break;
+        case 12:
+          _context20.p = 12;
+          _t19 = _context20.v;
+          console.error("Error accepting friend request:", _t19);
+          res.status(500).json({
+            message: "Error accepting friend request",
+            error: _t19.message
+          });
+        case 13:
+          return _context20.a(2);
+      }
+    }, _callee20, null, [[8,, 9, 11], [0, 12]]);
+  }));
+  return function (_x39, _x40) {
+    return _ref19.apply(this, arguments);
+  };
+}());
+
+// ACCEPT FRIEND REQUEST
+app.post("/declineFriendRequest", /*#__PURE__*/function () {
+  var _ref21 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee21(req, res) {
+    var _req$body9, currentUserEmail, requesterEmail, user, friendRequests, result, _t20;
+    return _regenerator().w(function (_context21) {
+      while (1) switch (_context21.p = _context21.n) {
+        case 0:
+          _context21.p = 0;
+          _req$body9 = req.body, currentUserEmail = _req$body9.currentUserEmail, requesterEmail = _req$body9.requesterEmail;
+          if (!(!currentUserEmail || !requesterEmail)) {
+            _context21.n = 1;
+            break;
+          }
+          return _context21.a(2, res.status(400).json({
+            message: "User email and requester email are required"
+          }));
+        case 1:
+          _context21.n = 2;
+          return DATABASE.collection(usersCollection).findOne({
+            email: currentUserEmail
+          });
+        case 2:
+          user = _context21.v;
+          if (user) {
+            _context21.n = 3;
+            break;
+          }
+          return _context21.a(2, res.json({
             message: "User not found"
           }));
         case 3:
           friendRequests = user.friendRequests || [];
           if (friendRequests.includes(requesterEmail)) {
-            _context20.n = 4;
+            _context21.n = 4;
             break;
           }
-          return _context20.a(2, res.json({
+          return _context21.a(2, res.json({
             message: "Friend request not found"
           }));
         case 4:
-          _context20.n = 5;
+          _context21.n = 5;
           return DATABASE.collection(usersCollection).updateOne({
             email: currentUserEmail
           }, {
@@ -1457,12 +1524,12 @@ app.post("/declineFriendRequest", /*#__PURE__*/function () {
             }
           });
         case 5:
-          result = _context20.v;
+          result = _context21.v;
           if (!(result.modifiedCount === 0)) {
-            _context20.n = 6;
+            _context21.n = 6;
             break;
           }
-          return _context20.a(2, res.json({
+          return _context21.a(2, res.json({
             message: "Failed to decline friend request"
           }));
         case 6:
@@ -1470,134 +1537,134 @@ app.post("/declineFriendRequest", /*#__PURE__*/function () {
             message: "Friend request declined successfully",
             declinedRequest: requesterEmail
           });
-          _context20.n = 8;
+          _context21.n = 8;
           break;
         case 7:
-          _context20.p = 7;
-          _t19 = _context20.v;
-          console.error("Error declining friend request:", _t19);
+          _context21.p = 7;
+          _t20 = _context21.v;
+          console.error("Error declining friend request:", _t20);
           res.status(500).json({
             message: "Error declining friend request",
-            error: _t19.message
+            error: _t20.message
           });
         case 8:
-          return _context20.a(2);
+          return _context21.a(2);
       }
-    }, _callee20, null, [[0, 7]]);
+    }, _callee21, null, [[0, 7]]);
   }));
-  return function (_x39, _x40) {
-    return _ref20.apply(this, arguments);
+  return function (_x41, _x42) {
+    return _ref21.apply(this, arguments);
   };
 }());
 app.put("/updateUser", /*#__PURE__*/function () {
-  var _ref21 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee21(req, res) {
-    var userData, email, _id, updateData, result, updatedUser, _t20;
-    return _regenerator().w(function (_context21) {
-      while (1) switch (_context21.p = _context21.n) {
+  var _ref22 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee22(req, res) {
+    var userData, email, _id, updateData, result, updatedUser, _t21;
+    return _regenerator().w(function (_context22) {
+      while (1) switch (_context22.p = _context22.n) {
         case 0:
-          _context21.p = 0;
+          _context22.p = 0;
           userData = req.body;
           email = userData.email;
           if (email) {
-            _context21.n = 1;
+            _context22.n = 1;
             break;
           }
-          return _context21.a(2, res.status(400).json({
+          return _context22.a(2, res.status(400).json({
             error: "Email is required"
           }));
         case 1:
           _id = userData._id, updateData = _objectWithoutProperties(userData, _excluded2);
-          _context21.n = 2;
+          _context22.n = 2;
           return DATABASE.collection(usersCollection).updateOne({
             email: email
           }, {
             $set: updateData
           });
         case 2:
-          result = _context21.v;
+          result = _context22.v;
           if (!(result.matchedCount === 0)) {
-            _context21.n = 3;
+            _context22.n = 3;
             break;
           }
-          return _context21.a(2, res.status(404).json({
+          return _context22.a(2, res.status(404).json({
             error: "User not found"
           }));
         case 3:
-          _context21.n = 4;
+          _context22.n = 4;
           return DATABASE.collection(usersCollection).findOne({
             email: email
           });
         case 4:
-          updatedUser = _context21.v;
+          updatedUser = _context22.v;
           res.status(200).json({
             message: "User updated successfully",
             user: updatedUser
           });
-          _context21.n = 6;
+          _context22.n = 6;
           break;
         case 5:
-          _context21.p = 5;
-          _t20 = _context21.v;
-          console.error("Error updating user:", _t20);
+          _context22.p = 5;
+          _t21 = _context22.v;
+          console.error("Error updating user:", _t21);
           res.status(500).json({
             error: "Failed to update user"
           });
         case 6:
-          return _context21.a(2);
+          return _context22.a(2);
       }
-    }, _callee21, null, [[0, 5]]);
+    }, _callee22, null, [[0, 5]]);
   }));
-  return function (_x41, _x42) {
-    return _ref21.apply(this, arguments);
+  return function (_x43, _x44) {
+    return _ref22.apply(this, arguments);
   };
 }());
 app["delete"]("/deleteProfile", /*#__PURE__*/function () {
-  var _ref22 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee23(req, res) {
-    var email, user, session, _t21, _t22, _t23;
-    return _regenerator().w(function (_context23) {
-      while (1) switch (_context23.p = _context23.n) {
+  var _ref23 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee24(req, res) {
+    var email, user, session, _t22, _t23, _t24;
+    return _regenerator().w(function (_context24) {
+      while (1) switch (_context24.p = _context24.n) {
         case 0:
-          _context23.p = 0;
+          _context24.p = 0;
           email = req.body.email;
           if (email) {
-            _context23.n = 1;
+            _context24.n = 1;
             break;
           }
-          return _context23.a(2, res.status(400).json({
+          return _context24.a(2, res.status(400).json({
             message: "Email is required"
           }));
         case 1:
-          _context23.n = 2;
+          _context24.n = 2;
           return DATABASE.collection(usersCollection).findOne({
             email: email
           });
         case 2:
-          user = _context23.v;
+          user = _context24.v;
           if (user) {
-            _context23.n = 3;
+            _context24.n = 3;
             break;
           }
-          return _context23.a(2, res.status(404).json({
+          return _context24.a(2, res.status(404).json({
             message: "User not found"
           }));
         case 3:
           session = CLIENT.startSession();
-          _context23.p = 4;
-          _context23.n = 5;
-          return session.withTransaction(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee22() {
+          _context24.p = 4;
+          _context24.n = 5;
+          return session.withTransaction(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee23() {
             var projectsResult, userResult;
-            return _regenerator().w(function (_context22) {
-              while (1) switch (_context22.n) {
+            return _regenerator().w(function (_context23) {
+              while (1) switch (_context23.n) {
                 case 0:
-                  _context22.n = 1;
+                  _context23.n = 1;
                   return DATABASE.collection(projectsCollection).deleteMany({
                     email: email
                   }, {
                     session: session
                   });
                 case 1:
-                  projectsResult = _context22.v;
-                  _context22.n = 2;
+                  projectsResult = _context23.v;
+                  _context23.n = 2;
                   return DATABASE.collection(usersCollection).updateMany({
                     $or: [{
                       followers: email
@@ -1616,60 +1683,60 @@ app["delete"]("/deleteProfile", /*#__PURE__*/function () {
                     session: session
                   });
                 case 2:
-                  _context22.n = 3;
+                  _context23.n = 3;
                   return DATABASE.collection(usersCollection).deleteOne({
                     email: email
                   }, {
                     session: session
                   });
                 case 3:
-                  userResult = _context22.v;
+                  userResult = _context23.v;
                   if (!(userResult.deletedCount === 0)) {
-                    _context22.n = 4;
+                    _context23.n = 4;
                     break;
                   }
                   throw new Error("Failed to delete user");
                 case 4:
-                  return _context22.a(2);
+                  return _context23.a(2);
               }
-            }, _callee22);
+            }, _callee23);
           })));
         case 5:
-          _t21 = res;
-          _context23.n = 6;
+          _t22 = res;
+          _context24.n = 6;
           return DATABASE.collection(projectsCollection).countDocuments({
             email: email
           });
         case 6:
-          _t22 = _context23.v;
-          _t21.json.call(_t21, {
+          _t23 = _context24.v;
+          _t22.json.call(_t22, {
             message: "Profile and all associated data deleted successfully",
-            projectsDeleted: _t22
+            projectsDeleted: _t23
           });
         case 7:
-          _context23.p = 7;
-          _context23.n = 8;
+          _context24.p = 7;
+          _context24.n = 8;
           return session.endSession();
         case 8:
-          return _context23.f(7);
+          return _context24.f(7);
         case 9:
-          _context23.n = 11;
+          _context24.n = 11;
           break;
         case 10:
-          _context23.p = 10;
-          _t23 = _context23.v;
-          console.error("Error deleting profile:", _t23);
+          _context24.p = 10;
+          _t24 = _context24.v;
+          console.error("Error deleting profile:", _t24);
           res.status(500).json({
             message: "Error deleting profile",
-            error: _t23.message
+            error: _t24.message
           });
         case 11:
-          return _context23.a(2);
+          return _context24.a(2);
       }
-    }, _callee23, null, [[4,, 7, 9], [0, 10]]);
+    }, _callee24, null, [[4,, 7, 9], [0, 10]]);
   }));
-  return function (_x43, _x44) {
-    return _ref22.apply(this, arguments);
+  return function (_x45, _x46) {
+    return _ref23.apply(this, arguments);
   };
 }());
 
@@ -1678,20 +1745,20 @@ app["delete"]("/deleteProfile", /*#__PURE__*/function () {
 /**************************************************************************************/
 
 app.get("/getProfileImages", /*#__PURE__*/function () {
-  var _ref24 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee24(req, res) {
-    var profileImages, _t24;
-    return _regenerator().w(function (_context24) {
-      while (1) switch (_context24.p = _context24.n) {
+  var _ref25 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee25(req, res) {
+    var profileImages, _t25;
+    return _regenerator().w(function (_context25) {
+      while (1) switch (_context25.p = _context25.n) {
         case 0:
-          _context24.p = 0;
-          _context24.n = 1;
+          _context25.p = 0;
+          _context25.n = 1;
           return DATABASE.collection("profileImages").find({}, {
             projection: {
               _id: 0
             }
           }).toArray();
         case 1:
-          profileImages = _context24.v;
+          profileImages = _context25.v;
           if (profileImages.length === 0) {
             console.log("No profile images found");
             res.json({
@@ -1700,64 +1767,64 @@ app.get("/getProfileImages", /*#__PURE__*/function () {
           } else {
             res.status(200).json(profileImages);
           }
-          _context24.n = 3;
+          _context25.n = 3;
           break;
         case 2:
-          _context24.p = 2;
-          _t24 = _context24.v;
+          _context25.p = 2;
+          _t25 = _context25.v;
           res.status(500).json({
             error: "Failed to retreive users"
           });
         case 3:
-          return _context24.a(2);
+          return _context25.a(2);
       }
-    }, _callee24, null, [[0, 2]]);
+    }, _callee25, null, [[0, 2]]);
   }));
-  return function (_x45, _x46) {
-    return _ref24.apply(this, arguments);
+  return function (_x47, _x48) {
+    return _ref25.apply(this, arguments);
   };
 }());
 
 // DRY: DON'T REPEAT YOURSELF BUDDY
 var findOneProject = /*#__PURE__*/function () {
-  var _ref25 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee25(email, projectName) {
+  var _ref26 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee26(email, projectName) {
     var Project;
-    return _regenerator().w(function (_context25) {
-      while (1) switch (_context25.n) {
+    return _regenerator().w(function (_context26) {
+      while (1) switch (_context26.n) {
         case 0:
-          _context25.n = 1;
+          _context26.n = 1;
           return DATABASE.collection(projectsCollection).findOne({
             email: email,
             projectName: projectName
           });
         case 1:
-          Project = _context25.v;
-          return _context25.a(2, Project);
+          Project = _context26.v;
+          return _context26.a(2, Project);
       }
-    }, _callee25);
+    }, _callee26);
   }));
-  return function findOneProject(_x47, _x48) {
-    return _ref25.apply(this, arguments);
+  return function findOneProject(_x49, _x50) {
+    return _ref26.apply(this, arguments);
   };
 }();
 var findManyProject = /*#__PURE__*/function () {
-  var _ref26 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee26(email) {
+  var _ref27 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee27(email) {
     var Projects;
-    return _regenerator().w(function (_context26) {
-      while (1) switch (_context26.n) {
+    return _regenerator().w(function (_context27) {
+      while (1) switch (_context27.n) {
         case 0:
-          _context26.n = 1;
+          _context27.n = 1;
           return DATABASE.collection(projectsCollection).find({
             email: email
           }).toArray();
         case 1:
-          Projects = _context26.v;
-          return _context26.a(2, Projects);
+          Projects = _context27.v;
+          return _context27.a(2, Projects);
       }
-    }, _callee26);
+    }, _callee27);
   }));
-  return function findManyProject(_x49) {
-    return _ref26.apply(this, arguments);
+  return function findManyProject(_x51) {
+    return _ref27.apply(this, arguments);
   };
 }();
 app.get("/{*any}", function (req, res) {
@@ -1767,28 +1834,28 @@ function startServer() {
   return _startServer.apply(this, arguments);
 }
 function _startServer() {
-  _startServer = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee28() {
-    var _t26;
-    return _regenerator().w(function (_context28) {
-      while (1) switch (_context28.p = _context28.n) {
+  _startServer = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee29() {
+    var _t27;
+    return _regenerator().w(function (_context29) {
+      while (1) switch (_context29.p = _context29.n) {
         case 0:
-          _context28.p = 0;
-          _context28.n = 1;
+          _context29.p = 0;
+          _context29.n = 1;
           return connectToMongo();
         case 1:
           app.listen(PORT, function () {
             console.log("Server running on http://localhost:".concat(PORT));
           });
-          _context28.n = 3;
+          _context29.n = 3;
           break;
         case 2:
-          _context28.p = 2;
-          _t26 = _context28.v;
-          console.error("Failed to start server:", _t26);
+          _context29.p = 2;
+          _t27 = _context29.v;
+          console.error("Failed to start server:", _t27);
         case 3:
-          return _context28.a(2);
+          return _context29.a(2);
       }
-    }, _callee28, null, [[0, 2]]);
+    }, _callee29, null, [[0, 2]]);
   }));
   return _startServer.apply(this, arguments);
 }

@@ -50,6 +50,10 @@ const Project = () => {
 
   const [EditForm, setEditForm] = useState(false);
 
+  const [fileSearchTerm, setFileSearchTerm] = useState("");
+
+  const [showEditOptions, setShowEditOptions] = useState([]);
+
   useEffect(() => {
     if (project) {
       setNewProjectName(project.projectName);
@@ -78,8 +82,6 @@ const Project = () => {
     };
 
     fetchData();
-
-    // PROJECT NAME USED AS A DEPENDENCY FOR EACH PROJECT
   }, [projectName]);
 
   useEffect(() => {
@@ -92,15 +94,10 @@ const Project = () => {
     setShowProfile(!showProfile);
   };
 
-  const [showEditOptions, setShowEditOptions] = useState([]);
-
   const toggleShowEditOptions = (index) => {
-    // setShowEditOptions(!showEditOptions[index]);
     setShowEditOptions((prev) => {
       let newOptionsArray = [...prev];
-
       newOptionsArray[index] = !newOptionsArray[index];
-
       return newOptionsArray;
     });
   };
@@ -365,6 +362,34 @@ const Project = () => {
     }
   };
 
+  // DOWNLOAD ALL FILES
+  const handleDownloadAllFiles = async () => {
+    try {
+      if (!project.files || project.files.length === 0) {
+        setFileMessage("No files to download");
+        timeOutFunc();
+        return;
+      }
+
+      setFileMessage(`Downloading ${project.files.length} file(s)...`);
+
+      for (let i = 0; i < project.files.length; i++) {
+        await handleDownloadFile(project.files[i]);
+
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+
+      setFileMessage(
+        `Successfully downloaded ${project.files.length} file(s)!`
+      );
+      timeOutFunc();
+    } catch (error) {
+      console.error("Error downloading all files:", error);
+      setFileMessage("Failed to download all files");
+      timeOutFunc();
+    }
+  };
+
   // DELETE FILE
   const handleDeleteFile = async (fileName) => {
     try {
@@ -517,7 +542,6 @@ const Project = () => {
 
   const handleEditProjectDetails = async () => {
     try {
-      // Validation
       if (!newProjectName.trim()) {
         setFileMessage("Project name cannot be empty");
         timeOutFunc();
@@ -574,6 +598,12 @@ const Project = () => {
       timeOutFunc();
     }
   };
+
+  // FILTER FILES BASED ON SEARCH TERM
+  const filteredFiles =
+    project?.files?.filter((file) =>
+      file.fileName?.toLowerCase().includes(fileSearchTerm.toLowerCase())
+    ) || [];
 
   if (loading) {
     return (
@@ -663,7 +693,6 @@ const Project = () => {
             </div>
           ) : project.collaborators?.includes(currentUserEmail) ? (
             <div className="noProjectBanner">
-              project.collaborators?.includes(currentUserEmail) ? (
               <span>No Project Banner</span>
               <span className="recommendedDimension">
                 Recommended dimension: 1770px x 250px • Max size: 1MB
@@ -703,7 +732,6 @@ const Project = () => {
                   Selected: {selectedFile.name}
                 </div>
               )}
-              )
             </div>
           ) : (
             <div className="noProjectBannerView">
@@ -742,9 +770,19 @@ const Project = () => {
             <input
               placeholder="Search for a file..."
               className="ProjectSearchBar"
+              value={fileSearchTerm}
+              onChange={(e) => setFileSearchTerm(e.target.value)}
             />
-            <div className="downloadfiles">
+            {/* <div className="downloadfiles">
               <Button1 text={"Download Files"} style={"DownloadFiles"} />
+            </div> */}
+
+            <div className="downloadfiles">
+              <Button1
+                toggle={handleDownloadAllFiles}
+                text={"Download All Files"}
+                style={"DownloadFiles"}
+              />
             </div>
 
             {project.collaborators?.includes(currentUserEmail) && (
@@ -809,12 +847,16 @@ const Project = () => {
 
         <div className="fileGrid">
           <div className="fileContainer">
-            {project.files && project.files.length > 0 ? (
-              project.files.map((file, index) => (
+            {filteredFiles.length > 0 ? (
+              filteredFiles.map((file, index) => (
                 <div key={index} className="singleFiles">
                   <div>
                     📄
-                    <Link to={`/file/${file.fileName}`}>{file.fileName}</Link>
+                    <Link
+                      to={`/file/${file.fileName}?project=${projectName}&email=${email}`}
+                    >
+                      {file.fileName}
+                    </Link>
                   </div>
 
                   <div className="creationDate">
@@ -854,6 +896,10 @@ const Project = () => {
                   )}
                 </div>
               ))
+            ) : fileSearchTerm ? (
+              <div className="noProjectFiles">
+                <span>No files match "{fileSearchTerm}"</span>
+              </div>
             ) : (
               <div className="noProjectFiles">
                 <span>Project has no files</span>
@@ -1037,7 +1083,7 @@ const Project = () => {
                       handleProjectDetele(project.projectName, repoUser.email)
                     }
                     text={"Delete"}
-                    style={"button0"}
+                    style="button0"
                   />
                 </div>
               </div>

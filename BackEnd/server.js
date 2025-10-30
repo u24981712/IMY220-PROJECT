@@ -618,6 +618,50 @@ app.post("/updateProject", async (req, res) => {
   }
 });
 /***************************************************************************/
+// FILE BASED ENDPOINTS
+/***************************************************************************/
+
+app.get("/getFileContent/:projectName/:fileName", async (req, res) => {
+  try {
+    const { projectName, fileName } = req.params;
+    const email = req.query.email;
+
+    const project = await DATABASE.collection(projectsCollection).findOne({
+      projectName: decodeURIComponent(projectName),
+      email: email,
+    });
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    const file = project.files.find(
+      (f) => f.fileName === decodeURIComponent(fileName)
+    );
+
+    if (!file) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    const fileBuffer = Buffer.from(file.content, "base64");
+    const fileContent = fileBuffer.toString("utf-8");
+
+    res.json({
+      fileName: file.fileName,
+      content: fileContent,
+      fileType: file.fileType,
+      uploadedAt: file.uploadedAt,
+    });
+  } catch (error) {
+    console.error("Get file content error:", error);
+    res.status(500).json({
+      message: "Error retrieving file content",
+      error: error.message,
+    });
+  }
+});
+
+/***************************************************************************/
 // DELETE PROJECT
 /***************************************************************************/
 

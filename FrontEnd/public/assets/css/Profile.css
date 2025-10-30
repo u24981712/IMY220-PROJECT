@@ -422,3 +422,18 @@ body {
   font-weight: 00;
   margin: 0 auto;
 }
+
+.loadMoreProjectsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  padding: 10px;
+}
+
+.no-projects {
+  text-align: center;
+  padding: 40px;
+  color: #7be3d0;
+  font-size: 18px;
+}

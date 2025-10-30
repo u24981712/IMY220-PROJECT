@@ -5,6 +5,7 @@ import NavBar from "../components/NavBar";
 import ProjectCard from "../components/ProjectCard";
 import SearchBar from "../components/SearchBar";
 import Footer from "../components/Footer";
+import Button1 from "../components/Button1";
 
 const Explore = () => {
   const [Repositories, setRepositories] = useState([]);
@@ -14,6 +15,9 @@ const Explore = () => {
   // Filter states
   const [sortBy, setSortBy] = useState("Alphabetical");
   const [timeFilter, setTimeFilter] = useState("All Time");
+
+  // COUNT FOR PAGINATION (LOADING MORE PROJECTS BASICALLY)
+  const [visibleCount, setVisibleCount] = useState(4);
 
   useEffect(() => {
     fetch("/getProjects")
@@ -107,6 +111,16 @@ const Explore = () => {
     }
   });
 
+  // GET VISIBLE PROJECTS BASED ON COUNT
+  const visibleProjects = filteredRepositories.slice(0, visibleCount);
+
+  // CHECK IF THERE ARE MORE PROJECTS TO LOAD
+  const hasMoreProjects = visibleCount < filteredRepositories.length;
+
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 2);
+  };
+
   return (
     <>
       <link rel="stylesheet" type="text/css" href="/assets/css/Explore.css" />
@@ -170,8 +184,8 @@ const Explore = () => {
         ) : null}
 
         <div className="ExplorePageProjects">
-          {filteredRepositories.length > 0 ? (
-            filteredRepositories.map((data, index) => (
+          {visibleProjects.length > 0 ? (
+            visibleProjects.map((data, index) => (
               <div key={index}>
                 <ProjectCard data={data} />
               </div>
@@ -182,6 +196,15 @@ const Explore = () => {
             </div>
           )}
         </div>
+        {hasMoreProjects && visibleProjects.length > 0 && (
+          <div className="loadMoreContainer">
+            <Button1
+              toggle={handleLoadMore}
+              text={"Load More"}
+              style="button1"
+            />
+          </div>
+        )}
       </div>
       <div className="footerDiv">
         <Footer />

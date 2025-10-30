@@ -29,6 +29,9 @@ const Profile = () => {
 
   const [editModal, setEditModal] = useState(false);
 
+  // Pagination state for projects
+  const [visibleProjectCount, setVisibleProjectCount] = useState(2);
+
   const toggleProfileModal = () => {
     setEditModal(!editModal);
   };
@@ -226,6 +229,17 @@ const Profile = () => {
     }
   };
 
+  // Load more projects handler
+  const handleLoadMoreProjects = () => {
+    setVisibleProjectCount((prev) => prev + 2);
+  };
+
+  // Get visible projects
+  const visibleProjects = Projects.slice(0, visibleProjectCount);
+
+  // Check if there are more projects to load
+  const hasMoreProjects = visibleProjectCount < Projects.length;
+
   if (loading) {
     return (
       <div
@@ -326,10 +340,6 @@ const Profile = () => {
                 </div>
               </div>
 
-              {/* CHECK IF PASSED IN EMAIL IS THE CURRENT LOGGED IN USER'S EMAIL
-                                IF SO, SHOW LOG OUT BUTTON
-                                ELSE SHOW FOLLOW BUTTON
-                            */}
               {currentUserEmail !== email ? (
                 <Button1
                   toggle={() => sendFriendRequest(email)}
@@ -357,12 +367,26 @@ const Profile = () => {
                 Projects
               </h2>
               <div className="activity-grid">
-                {Projects.slice(0, 3)
-                  //   .filter((data) => data.Label == "Public")
-                  .map((data, index) => (
+                {visibleProjects.length > 0 ? (
+                  visibleProjects.map((data, index) => (
                     <ProjectCard pos={index} key={index} data={data} />
-                  ))}
+                  ))
+                ) : (
+                  <div className="no-projects">
+                    <p>No projects yet</p>
+                  </div>
+                )}
               </div>
+
+              {hasMoreProjects && visibleProjects.length > 0 && (
+                <div className="loadMoreProjectsContainer">
+                  <Button1
+                    toggle={handleLoadMoreProjects}
+                    text={"Load More"}
+                    style="button1"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="section">
