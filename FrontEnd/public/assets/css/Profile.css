@@ -1,0 +1,424 @@
+:root {
+  --bg: #011a27;
+  --bgLight: #0e2736;
+  --secondary: #017b7e;
+  --accent: #7be3d0;
+  --light: #f5edd8;
+  --red: #dd3e3e;
+  --redOutline: #e37b7b;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--light);
+  font-family: "Poppins", sans-serif;
+}
+
+.profileContainer {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  grid-template-rows: auto auto;
+  gap: 30px;
+  padding: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.profile-sidebar {
+  /* position: sticky; */
+  top: 30px;
+  height: fit-content;
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.main-content {
+  overflow-y: auto;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.friendsContainer {
+  grid-column: 1 / span 2;
+  grid-row: 2;
+  width: 100%;
+  height: fit-content;
+  padding: 20px 40px;
+  background-color: var(--bgLight);
+  border-radius: 20px;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 2px 2px var(--secondary);
+}
+
+.profile-card {
+  background: var(--bgLight);
+  border: 2px solid var(--secondary);
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, var(--secondary), var(--accent));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--bg);
+  margin: 0 auto 20px;
+  border: 3px solid var(--accent);
+  position: relative;
+  overflow: hidden;
+}
+
+.avatarImage {
+  position: absolute;
+  width: 100%;
+}
+
+.username {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--light);
+  margin-bottom: 8px;
+}
+
+.handle {
+  color: var(--accent);
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.bio {
+  color: var(--light);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 25px;
+  padding: 20px 0;
+  border-top: 1px solid var(--secondary);
+  border-bottom: 1px solid var(--secondary);
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--light);
+  opacity: 0.8;
+}
+
+.profile-info {
+  text-align: left;
+  margin-bottom: 25px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: var(--light);
+  opacity: 0.9;
+}
+
+.section {
+  margin-bottom: 40px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--light);
+  margin-bottom: 25px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--secondary);
+}
+
+.activity-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.repo-card {
+  background: var(--bgLight);
+  border: 2px solid var(--secondary);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.repo-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(123, 227, 208, 0.1);
+}
+
+.repo-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.repo-name:hover {
+  color: var(--light);
+}
+
+.repo-description {
+  color: var(--light);
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 15px;
+  opacity: 0.9;
+}
+
+.repo-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 12px;
+}
+
+.repo-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--light);
+  opacity: 0.8;
+}
+
+.language-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.language-dot.javascript {
+  background: #f7df1e;
+}
+
+.language-dot.nodejs {
+  background: #68a063;
+}
+
+.language-dot.css {
+  background: #1572b6;
+}
+
+.language-dot.python {
+  background: #3776ab;
+}
+
+.skills-heading {
+  margin-bottom: 15px;
+  color: var(--accent);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.skills-section {
+  margin-bottom: 25px;
+}
+
+.badge {
+  display: inline-block;
+  background: var(--secondary);
+  color: var(--light);
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 4px 8px 4px 0;
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  background: var(--accent);
+  color: var(--bg);
+  transform: scale(1.05);
+}
+
+.buttonOut {
+  background-color: var(--red);
+  border: none;
+  width: 220px;
+  color: var(--light);
+  padding: 10px 0px;
+  text-align: center;
+  text-overflow: none;
+  border-radius: 50px;
+  text-decoration: none;
+  display: inline;
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.buttonOut:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  scale: 0.8;
+  opacity: 0.3;
+}
+
+.LogoutBTN {
+  display: flex;
+  justify-self: center;
+  margin: 20px auto;
+}
+
+.buttonEdit {
+  background-color: var(--bg);
+  border: 2px solid var(--accent);
+  width: 100px;
+  color: var(--light);
+  padding: 10px 0px;
+  text-align: center;
+  text-overflow: none;
+  border-radius: 50px;
+  text-decoration: none;
+  display: inline;
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.3s ease;
+  margin: 10px 0;
+}
+
+.buttonEdit:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  scale: 0.8;
+  opacity: 0.3;
+}
+
+.friendsTitle {
+  color: var(--light);
+  font-size: 24px;
+  text-align: center;
+  gap: 10px;
+  font-family: "Montserrat";
+  font-weight: 700;
+}
+
+.friendsDivider {
+  width: 99%;
+  height: 4px;
+  background-color: var(--light);
+  border-radius: 2px;
+  margin: 20px auto;
+}
+
+.friendsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.friendCard {
+  background-color: var(--bg);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  font-family: "Poppins";
+  font-weight: 300;
+  transition: all 0.3s ease-in;
+}
+
+.friendCard:hover {
+  box-shadow: 0 0 2px var(--secondary);
+}
+
+.friendAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--secondary);
+  transition: all 0.25s ease-in-out;
+}
+
+.friendAvatar:hover {
+  border-radius: 20%;
+  object-fit: cover;
+  background-color: var(--accent);
+}
+
+.friendInfoo h4 {
+  color: var(--light);
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.deleteProfile {
+  display: flex;
+  justify-content: center;
+  /* background-color: #017b7e; */
+  width: 100%;
+  grid-column: span 2;
+}
+
+.friendRequest {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.friendRequestCard {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr;
+  position: relative;
+}
+
+.friendRequest h3 {
+  font-size: 20px;
+  font-weight: 00;
+  margin: 0 auto;
+}

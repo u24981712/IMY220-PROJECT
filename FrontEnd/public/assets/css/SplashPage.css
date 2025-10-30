@@ -1,0 +1,254 @@
+ :root {
+  --bg: #011a27;
+  --bgLight: #0a2231;
+  --secondary: #017b7e;
+  --accent: #7be3d0;
+  --light: #f5edd8;
+  --BACKWIDTH: 500px;
+}
+
+body {
+  margin: 0;
+  padding: 30px 50px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  background-color: var(--bg);
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+.logo img {
+  height: 50px;
+  width: auto;
+  margin-left: 20px;
+}
+
+.mesh-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: -15;
+  pointer-events: none;
+  display: block;
+  /* isolation: isolate; */
+  width: 100%;
+  height: 100%;
+}
+
+.mesh-layer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  filter: blur(140px);
+  opacity: 1;
+  border-radius: 50%;
+}
+
+.layer-1 {
+  width: var(--BACKWIDTH);
+  height: var(--BACKWIDTH);
+  background: var(--light);
+  position: relative;
+  top: 0%;
+  left: 20%;
+}
+
+.layer-2 {
+  width: var(--BACKWIDTH);
+  height: var(--BACKWIDTH);
+  background: var(--accent);
+  position: relative;
+  top: 80%;
+  left: 100%;
+}
+
+/* Navigation Bar */
+.NAV {
+  display: grid;
+  grid-template-columns: 8fr 1fr 1fr;
+  padding: 5px;
+  align-items: center;
+}
+
+/* Hero Section */
+.heroSection {
+  margin-top: 150px;
+  text-align: center;
+  font-family: "Montserrat", italic, sans-serif;
+}
+
+.heroSection h1 {
+  font-size: 80px;
+  line-height: 30px;
+  font-family: "Montserrat", italic, sans-serif;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.heroSection p {
+  font-family: "Poppins", sans-serif;
+  font-weight: 200;
+  max-width: 450px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.callToActionBtns {
+  margin-top: 30px;
+  text-align: center;
+  /* border: 2px solid var(--light); */
+}
+
+/* Section 1 */
+.SECTION1 {
+  padding: 100px;
+  text-align: center;
+  font-family: "Montserrat", italic, sans-serif;
+}
+
+.whyDevelopers {
+  font-size: 50px;
+  line-height: 30px;
+  font-family: "Montserrat", italic, sans-serif;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.webname {
+  /* color: transparent;  */
+  font-family: "Montserrat", italic, sans-serif;
+  font-weight: 900;
+  font-style: italic;
+}
+
+/* Section 2 */
+
+.stats-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat h1 {
+  font-family: "Montserrat", italic, sans-serif;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.stat p {
+  font-family: "Poppins", italic, sans-serif;
+  font-weight: 200;
+}
+
+/* Section 3 */
+
+.SECTION3 {
+  /* padding: 10px; */
+  margin-bottom: 30px;
+  text-align: center;
+  font-family: "Montserrat", italic, sans-serif;
+}
+
+.LovedDevelopers {
+  font-size: 50px;
+  line-height: 30px;
+  font-family: "Montserrat", italic, sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  width: 100%;
+  position: relative;
+}
+
+/* Call-To-Action Section */
+
+.CallToActionSection {
+  background-color: var(--light);
+  padding: 100px 0;
+  position: relative;
+  top: 0;
+  width: 100%;
+  color: var(--secondary);
+  overflow: hidden;
+  /* mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 1) 10%,
+    rgba(0, 0, 0, 1) 90%,
+    rgba(0, 0, 0, 0)
+  ); */
+}
+
+.CallToActionSection {
+  margin-left: -10vw;
+  margin-right: -10vw;
+  padding-left: 10vw;
+  padding-right: 10vw;
+}
+
+.CallToActionSection h1 {
+  text-align: center;
+  font-size: 30px;
+  line-height: 30px;
+  font-family: "Montserrat", italic, sans-serif;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.CallToActionSection p {
+  font-family: "Poppins", italic, sans-serif;
+  font-weight: 300;
+  width: 350px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.CTAbtns {
+  margin-top: 60px;
+  text-align: center;
+}
+
+.ShowExampleContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  background-color: #00020655;
+  backdrop-filter: blur(50px);
+}
+
+.ShowExample {
+  margin: auto auto;
+}
+
+.closeBTN {
+  position: absolute;
+  top: 28%;
+  right: 17%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: rgb(220, 68, 68);
+  padding: 5px;
+  margin: auto auto;
+  border: none;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.closeBTN:hover {
+  background-color: rgb(200, 48, 48);
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.closeBTN:active {
+  transform: scale(0.95);
+}

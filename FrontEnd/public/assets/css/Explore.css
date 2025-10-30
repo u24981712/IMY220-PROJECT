@@ -1,0 +1,130 @@
+:root {
+  --bg: #011a27;
+  --bgLight: #0a2231;
+  --secondary: #017b7e;
+  --accent: #7be3d0;
+  --light: #f5edd8;
+  --BACKWIDTH: 500px;
+}
+
+body {
+  background-color: var(--bg);
+}
+
+.LETSEXPLORE {
+  font-family: "Montserrat", sans-serif;
+  font-size: 50px;
+  font-weight: 800;
+  text-align: center;
+  color: var(--light);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 40px 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.LETSEXPLORE span {
+  color: var(--accent);
+  text-shadow: 0 0 10px var(--accent);
+  animation: pulse 1s ease-in-out infinite alternate;
+  display: inline-block;
+  background: linear-gradient(45deg, var(--accent), var(--secondary));
+  background-clip: text;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+
+  100% {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px var(--secondary);
+  }
+
+  100% {
+    box-shadow: 0 0 20px var(--accent), 0 0 30px var(--accent);
+  }
+}
+
+.mesh-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: -15;
+  pointer-events: none;
+  display: block;
+  /* isolation: isolate; */
+  width: 100%;
+  height: 100%;
+}
+
+.mesh-layer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  filter: blur(140px);
+  opacity: 1;
+  border-radius: 50%;
+}
+
+.layer-1 {
+  width: var(--BACKWIDTH);
+  height: var(--BACKWIDTH);
+  background: var(--accent);
+  position: relative;
+  top: 20%;
+  left: 10%;
+}
+
+.layer-2 {
+  width: var(--BACKWIDTH);
+  height: var(--BACKWIDTH);
+  background: var(--light);
+  position: relative;
+  top: 80%;
+  left: 100%;
+}
+
+.ExplorePage {
+  margin: 0 0 50px 0;
+  padding: 10px 70px;
+  font-family: "Poppins", sans-serif;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+.ExplorePageProjects {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 15px;
+}
+
+.ExplorePageSearchBar {
+  width: 70%;
+  margin: 0 auto;
+}
+
+.Noprojectsfound {
+  background-color: var(--bgLight);
+  border: var(--accent) 1px solid;
+  border-radius: 15px;
+  text-align: center;
+  width: 100%;
+  grid-column: 1 / 3;
+  box-sizing: border-box;
+  margin: 0 auto;
+  position: relative;
+  color: var(--light);
+  font-family: Poppins;
+  font-weight: 600;
+  padding: 20px;
+}

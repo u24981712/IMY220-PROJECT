@@ -1,0 +1,109 @@
+:root {
+  --bg: #011a27;
+  --bgLight: #0a2231;
+  --secondary: #017b7e;
+  --accent: #7be3d0;
+  --light: #f5edd8;
+  --red: #dd3e3e;
+  --green: #70b561;
+}
+
+body {
+  background-color: var(--bg);
+  font-family: "Poppins", monospace;
+}
+
+.fileViewer {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--bgLight);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(1, 123, 126, 0.2);
+  border: 1px solid rgba(123, 227, 208, 0.1);
+}
+
+.fileHeader {
+  background: var(--accent);
+  padding: 2px 20px;
+  border-bottom: 2px solid var(--secondary);
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 10fr 1fr;
+  height: 20%;
+  align-items: center;
+}
+
+.fileHeader::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.fileHeader h2 {
+  font-weight: 600;
+  color: var(--bg);
+  position: relative;
+  z-index: 1;
+}
+
+.fileContent {
+  padding: 2rem;
+  background: var(--bgLight);
+}
+
+.fileTextarea {
+  width: 80%;
+  min-height: 400px;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  background: var(--bg);
+  color: var(--light);
+  border: 2px solid var(--secondary);
+  border-radius: 8px;
+  padding: 1.5rem;
+  resize: vertical;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.fileTextarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3),
+    0 0 0 3px rgba(123, 227, 208, 0.2);
+}
+
+.fileTextarea:hover {
+  border-color: var(--accent);
+}
+
+.fileTextarea::placeholder {
+  color: rgba(245, 237, 216, 0.6);
+  font-style: italic;
+}
+
+.buttonBack {
+  background-color: var(--secondary);
+  border: 2px solid var(--light);
+  width: fit-content;
+  height: fit-content;
+  color: var(--light);
+  padding: 10px 20px;
+  text-align: center;
+  text-overflow: none;
+  border-radius: 50px;
+  text-decoration: none;
+  display: inline;
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.3s ease;
+}

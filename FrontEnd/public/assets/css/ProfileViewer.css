@@ -1,0 +1,156 @@
+:root {
+  --bg: #011a27;
+  --bgLight: #0a2231;
+  --secondary: #017b7e;
+  --accent: #7be3d0;
+  --light: #f5edd8;
+  --red: #f25a5a;
+}
+
+.profilePreview {
+  background: var(--bgLight);
+  border: 1px solid var(--secondary);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  width: 30%;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
+}
+
+.profilePreview:hover {
+  border-color: var(--secondary);
+  box-shadow: 0 4px 12px rgba(35, 63, 93, 0.681);
+  transform: translateY(-1px);
+}
+
+.profilePreviewHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.profilePreviewAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: contain;
+  border: 2px solid var(--accent);
+}
+
+.profilePreviewAvatarDIV {
+  width: 100%;
+  overflow: hidden;
+}
+
+.profilePreviewInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.profilePreviewName {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--light);
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+}
+
+.profilePreviewEmail {
+  font-size: 14px;
+  color: #657786;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profilePreviewBio {
+  font-size: 14px;
+  color: var(--light);
+  line-height: 1.4;
+  margin: 0 0 12px 0;
+}
+
+.profilePreviewSkills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.profilePreviewSkillTag {
+  background: var(--accent);
+  color: var(--bgLight);
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--secondary);
+}
+
+.profilePreviewMoreSkills {
+  color: #657786;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  background: #f7f9fa;
+  border-radius: 12px;
+}
+
+.buttonClose {
+  background-color: var(--red);
+  border: none;
+  width: 150px;
+  color: var(--light);
+  padding: 10px 0px;
+  text-align: center;
+  text-overflow: none;
+  border-radius: 50px;
+  text-decoration: none;
+  display: inline;
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.buttonClose:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  scale: 0.8;
+  opacity: 0.3;
+}
+
+.PreviewBTN {
+  justify-content: center;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+
+
+/****** LOADING SCREEN ******/
+
+.isLoadingDiv {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  color: var(--light);
+  font-size: 1.5rem;
+}
